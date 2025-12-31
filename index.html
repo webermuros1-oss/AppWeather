@@ -1,11 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    
-</body>
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>appWeather</title>
+		<link rel="stylesheet" href="styles.css" />
+		<script src="script.js" defer></script>
+	</head>
+	<body>
+		<header>
+			<h1 class="title"><img class="weather-icon" src="/images/weather-icon.png" alt="weather logo" />TiempoPlus</h1>
+			<input id="get-city" type="text" placeholder="search city here" />
+		</header>
+		<main>
+			<div class="info-container">
+				<h3 class="city-name"></h3>
+				<p class="date-info"><span class="day"></span><span class="date"></span></p>
+				<h2 class="weather-deg"></h2>
+				<h3 class="weather-condition"></h3>
+				<h3 class="humidity"></h3>
+			</div>
+		</main>
+	</body>
 </html>
