@@ -5,7 +5,7 @@ window.addEventListener("load", () => {
 	changeBackgroundImage();
 });
 
-let cityInput = document.querySelector("#get-city");
+let cityInput = document.querySelector("#getCity");
 cityInput.addEventListener("keypress", (event) => {
 	if (event.key == "Enter") {
 		fetchDataFromApi();
@@ -19,9 +19,9 @@ cityInput.value = "";
 
 // Función para cambiar la imagen de fondo
 function changeBackgroundImage() {
-	let randNum = Math.ceil(Math.random() * 5);
-	bodyElem.style.backgroundImage = `url('/media/images/bg${randNum}.jpg')`;
-	if (randNum == 3 || randNum == 4 || randNum == 5) {
+	let randomNumber = Math.ceil(Math.random() * 5);
+	bodyElem.style.backgroundImage = `url('/media/images/bg${randomNumber}.jpg')`;
+	if (randomNumber == 3 || randomNumber == 4 || randomNumber == 5) {
 		titleLogo.style.color = "white";
 	} else {
 		titleLogo.style.color = ""; // Restaurar color original
@@ -77,16 +77,16 @@ async function fetchDataFromApi() {
 	}
 }
 
-let cityName = document.querySelector(".city-name");
-let cityTemp = document.querySelector(".weather-deg");
-let cityCond = document.querySelector(".weather-condition");
+let cityName = document.querySelector(".cityName");
+let cityTemp = document.querySelector(".weatherDeg");
+let cityCondition = document.querySelector(".weatherCondition");
 let cityHumidity = document.querySelector(".humidity");
 let todayDate = document.querySelector(".date");
 
 function addDataToDom(data) {
 	cityName.innerHTML = `${data.name}, ${data.country}`;
 	cityTemp.innerHTML = `${Math.round(data.temperature)}°C`;
-	cityCond.innerHTML = getWeatherDescription(data.weatherCode);
+	cityCondition.innerHTML = getWeatherDescription(data.weatherCode);
 	cityHumidity.innerHTML = `Humidity: ${data.humidity}%`;
 	todayDate.innerHTML = getDate();
 }

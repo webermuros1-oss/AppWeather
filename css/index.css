@@ -5,6 +5,7 @@
 	margin: 0;
 	box-sizing: border-box;
 }
+
 body {
 	font-family: "Barlow", sans-serif;
 	background-image: url("/media/images/bg.jpg");
@@ -13,21 +14,25 @@ body {
 	background-position: 70%;
 	height: 100vh;
 }
+
 header {
 	display: flex;
 	flex-direction: column;
 }
+
 header .title {
 	margin-top: 40px;
 	text-align: center;
 	text-shadow: 0 0 50px black;
 }
+
 header .weatherIcon {
 	width: 60px;
 	margin-bottom: -20px;
 	margin-right: 20px;
 }
-header #get-city {
+
+header #getCity {
 	width: 200px;
 	position: relative;
 	margin: auto;
@@ -39,7 +44,8 @@ header #get-city {
 	outline: none;
 	box-shadow: 0 8px 32px 0 rgba(31, 31, 31, 0.37);
 }
-main .info-container {
+
+main .infoContainer {
 	background: rgba(255, 255, 255, 0.2);
 	box-shadow: 0 8px 32px 0 rgba(31, 31, 31, 0.37);
 	backdrop-filter: blur(7px);
@@ -53,18 +59,22 @@ main .info-container {
 	padding: 20px;
 	text-align: center;
 }
-#get-city {
+
+#getCity {
 	text-align: center;
 }
-.city-name {
+
+.cityName {
 	font-size: 23px;
 	margin: 20px 0;
 }
-.weather-deg {
+
+.weatherDeg {
 	font-size: 80px;
 	margin-top: 20px;
 	margin-bottom: 40px;
 }
-.weather-condition {
+
+.weatherCondition {
 	margin-bottom: 20px;
 }
