@@ -12,7 +12,7 @@ cityInput.addEventListener("keypress", (event) => {
 	}
 });
 
-// Cargar A Coruña por defecto después de un pequeño delay
+// Cargar A coruña por defecto después de un pequeño delay
 setTimeout(() => {
 	cityInput.value = "A coruña";
 	fetchDataFromApi();
@@ -27,43 +27,37 @@ function changeBackgroundImage(weatherCode = null) {
 	if (weatherCode !== null) {
 		// Seleccionar fondo basado en el código del clima
 		if (weatherCode === 0 || weatherCode === 1) {
-			// Cielo despejado - playa soleada, campo soleado
-			const sunnyImages = ['sunny1', 'sunny2', 'beach'];
-			bgImage = sunnyImages[Math.floor(Math.random() * sunnyImages.length)];
+			// Cielo despejado - playa soleada
+			bgImage = 'sunny1','sunny2','beach';
 			useLightText = false;
 		} else if (weatherCode === 2 || weatherCode === 3) {
 			// Nublado - cielo con nubes
-			const cloudyImages = ['cloudy1', 'cloudy2'];
-			bgImage = cloudyImages[Math.floor(Math.random() * cloudyImages.length)];
+			bgImage = 'cloudy1','cloudy2';
 			useLightText = true;
-		} else if (weatherCode >= 61 && weatherCode <= 82) {
-			// Lluvia - ciudad lluviosa, gotas en ventana
-			const rainyImages = ['rainy1', 'rainy2', 'rainy3'];
-			bgImage = rainyImages[Math.floor(Math.random() * rainyImages.length)];
+		} else if (weatherCode >= 51 && weatherCode <= 67 || weatherCode >= 80 && weatherCode <= 82) {
+			// Lluvia - ciudad lluviosa
+			bgImage = 'rainy1','rainy2','rainy3';
 			useLightText = true;
-		} else if (weatherCode >= 71 && weatherCode <= 86) {
+		} else if (weatherCode >= 71 && weatherCode <= 77 || weatherCode >= 85 && weatherCode <= 86) {
 			// Nieve - paisaje nevado
-			const snowyImages = ['snowy1', 'snowy2'];
-			bgImage = snowyImages[Math.floor(Math.random() * snowyImages.length)];
+			bgImage = 'snowy1','snowy2';
 			useLightText = false;
 		} else if (weatherCode >= 95 && weatherCode <= 99) {
 			// Tormenta - cielo tormentoso
-			const stormyImages = ['stormy1', 'stormy2'];
-			bgImage = stormyImages[Math.floor(Math.random() * stormyImages.length)];
+			bgImage = 'stormy1','stormy2';
 			useLightText = true;
 		} else if (weatherCode === 45 || weatherCode === 48) {
 			// Niebla
-			const foggyImages = ['foggy1', 'foggy2'];
-			bgImage = foggyImages[Math.floor(Math.random() * foggyImages.length)];
+			bgImage = 'foggy1','foggy2';
 			useLightText = true;
 		} else {
-			// Por defecto - aleatorio
+			// Por defecto - aleatorio de tus imágenes originales
 			let randomNumber = Math.ceil(Math.random() * 5);
 			bgImage = `bg${randomNumber}`;
 			useLightText = (randomNumber >= 3);
 		}
 	} else {
-		// Sin código de clima - usar aleatorio
+		// Sin código de clima - usar aleatorio de tus imágenes originales
 		let randomNumber = Math.ceil(Math.random() * 5);
 		bgImage = `bg${randomNumber}`;
 		useLightText = (randomNumber >= 3);
@@ -78,18 +72,18 @@ async function fetchDataFromApi() {
 	let insertedCity = cityInput.value;
 	
 	if (!insertedCity) {
-		alert("Please enter a city name");
+		alert("Por favor ingresa el nombre de una ciudad");
 		return;
 	}
 
 	try {
 		const geoResponse = await fetch(
-			`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(insertedCity)}&count=1&language=en&format=json`
+			`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(insertedCity)}&count=1&language=es&format=json`
 		);
 		const geoData = await geoResponse.json();
 
 		if (!geoData.results || geoData.results.length === 0) {
-			alert("City not found. Please try another city.");
+			alert("Ciudad no encontrada. Por favor intenta con otra ciudad.");
 			return;
 		}
 
@@ -109,13 +103,13 @@ async function fetchDataFromApi() {
 			weatherCode: weatherData.current.weather_code
 		};
 
-		console.log("Weather code:", combinedData.weatherCode); // Para debug
+		console.log("Weather code:", combinedData.weatherCode);
 
 		addDataToDom(combinedData);
 		changeBackgroundImage(combinedData.weatherCode);
 	} catch (error) {
 		console.error("Error fetching data:", error);
-		alert("Error fetching weather data. Please try again.");
+		alert("Error al obtener datos del clima. Por favor intenta de nuevo.");
 	}
 }
 
@@ -126,19 +120,17 @@ let cityHumidity = document.querySelector(".humidity");
 let todayDate = document.querySelector(".date");
 
 function addDataToDom(data) {
-	// Obtener el elemento del icono
 	let weatherIconElem = document.querySelector(".weatherIconDisplay");
 	
 	cityName.innerHTML = `${data.name}, ${data.country}`;
 	cityTemp.innerHTML = `${Math.round(data.temperature)}°C`;
 	cityCondition.innerHTML = getWeatherDescription(data.weatherCode);
-	cityHumidity.innerHTML = `Humidity: ${data.humidity}%`;
+	cityHumidity.innerHTML = `Humedad: ${data.humidity}%`;
 	todayDate.innerHTML = getDate();
 	
-	// Asegurarse de que el elemento existe antes de añadir el icono
 	if (weatherIconElem) {
 		weatherIconElem.innerHTML = getWeatherIcon(data.weatherCode);
-		console.log("Icon set:", getWeatherIcon(data.weatherCode)); // Para debug
+		console.log("Icon set:", getWeatherIcon(data.weatherCode));
 	} else {
 		console.error("weatherIconDisplay element not found");
 	}
@@ -147,30 +139,30 @@ function addDataToDom(data) {
 // Función para obtener el icono según el código del clima
 function getWeatherIcon(code) {
 	const weatherIcons = {
-		0: "☀️",           // Clear sky
-		1: "🌤️",          // Mainly clear
-		2: "⛅",          // Partly cloudy
-		3: "☁️",          // Overcast
-		45: "🌫️",         // Foggy
-		48: "🌫️",         // Depositing rime fog
-		51: "🌦️",         // Light drizzle
-		53: "🌦️",         // Moderate drizzle
-		55: "🌧️",         // Dense drizzle
-		61: "🌧️",         // Slight rain
-		63: "🌧️",         // Moderate rain
-		65: "⛈️",         // Heavy rain
-		71: "🌨️",         // Slight snow
-		73: "❄️",          // Moderate snow
-		75: "❄️",          // Heavy snow
-		77: "❄️",          // Snow grains
-		80: "🌦️",         // Slight rain showers
-		81: "🌧️",         // Moderate rain showers
-		82: "⛈️",         // Violent rain showers
-		85: "🌨️",         // Slight snow showers
-		86: "❄️",          // Heavy snow showers
-		95: "⛈️",         // Thunderstorm
-		96: "⛈️",         // Thunderstorm with slight hail
-		99: "⛈️"          // Thunderstorm with heavy hail
+		0: "☀️",
+		1: "🌤️",
+		2: "⛅",
+		3: "☁️",
+		45: "🌫️",
+		48: "🌫️",
+		51: "🌦️",
+		53: "🌦️",
+		55: "🌧️",
+		61: "🌧️",
+		63: "🌧️",
+		65: "⛈️",
+		71: "🌨️",
+		73: "❄️",
+		75: "❄️",
+		77: "❄️",
+		80: "🌦️",
+		81: "🌧️",
+		82: "⛈️",
+		85: "🌨️",
+		86: "❄️",
+		95: "⛈️",
+		96: "⛈️",
+		99: "⛈️"
 	};
 
 	return weatherIcons[code] || "🌡️";
@@ -179,36 +171,36 @@ function getWeatherIcon(code) {
 // Función para convertir el código de clima en descripción
 function getWeatherDescription(code) {
 	const weatherCodes = {
-		0: "Clear sky",
-		1: "Mainly clear",
-		2: "Partly cloudy",
-		3: "Overcast",
-		45: "Foggy",
-		48: "Depositing rime fog",
-		51: "Light drizzle",
-		53: "Moderate drizzle",
-		55: "Dense drizzle",
-		61: "Slight rain",
-		63: "Moderate rain",
-		65: "Heavy rain",
-		71: "Slight snow",
-		73: "Moderate snow",
-		75: "Heavy snow",
-		77: "Snow grains",
-		80: "Slight rain showers",
-		81: "Moderate rain showers",
-		82: "Violent rain showers",
-		85: "Slight snow showers",
-		86: "Heavy snow showers",
-		95: "Thunderstorm",
-		96: "Thunderstorm with slight hail",
-		99: "Thunderstorm with heavy hail"
+		0: "Cielo despejado",
+		1: "Mayormente despejado",
+		2: "Parcialmente nublado",
+		3: "Nublado",
+		45: "Neblinoso",
+		48: "Niebla con escarcha",
+		51: "Llovizna ligera",
+		53: "Llovizna moderada",
+		55: "Llovizna densa",
+		61: "Lluvia ligera",
+		63: "Lluvia moderada",
+		65: "Lluvia intensa",
+		71: "Nevada ligera",
+		73: "Nevada moderada",
+		75: "Nevada intensa",
+		77: "Granizo",
+		80: "Chubascos ligeros",
+		81: "Chubascos moderados",
+		82: "Chubascos violentos",
+		85: "Chubascos de nieve ligeros",
+		86: "Chubascos de nieve intensos",
+		95: "Tormenta eléctrica",
+		96: "Tormenta con granizo ligero",
+		99: "Tormenta con granizo intenso"
 	};
 
-	return weatherCodes[code] || "Unknown";
+	return weatherCodes[code] || "Desconocido";
 }
 
-let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+let months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
 function getDate() {
 	let newTime = new Date();
