@@ -11,8 +11,12 @@ body {
 	background-image: url("/media/images/bg.jpg");
 	background-repeat: no-repeat;
 	background-size: cover;
-	background-position: 70%;
-	height: 100vh;
+	background-position: center;
+	background-attachment: fixed; /* Mantiene la imagen fija */
+	min-height: 100vh; /* Cambia height a min-height */
+	width: 100%;
+	margin: 0;
+	padding: 0;
 }
 
 header {
@@ -20,32 +24,33 @@ header {
 	flex-direction: column;
 }
 
-header .title {
-	margin-top: 40px;
+.title {
+	margin-top: 0%;
+	margin-bottom: 1px;
 	text-align: center;
-	text-shadow: 0 0 50px black;
+	text-shadow: 2px 2px 10px black;
+	color: #ff0000;
+}
+.weatherIcon {
+	width: 200px;
+	height: auto;
 }
 
-header .weatherIcon {
-	width: 60px;
-	margin-bottom: -20px;
-	margin-right: 20px;
-}
-
-header #getCity {
+#getCity {
 	width: 200px;
 	position: relative;
 	margin: auto;
-	margin-top: 50px;
+	margin-top: 0%;
 	height: 50px;
 	border: none;
 	border-radius: 10px;
 	padding: 0 10px;
 	outline: none;
 	box-shadow: 0 8px 32px 0 rgba(31, 31, 31, 0.37);
+	text-align: center;
 }
 
-main .infoContainer {
+.infoContainer {
 	background: rgba(255, 255, 255, 0.2);
 	box-shadow: 0 8px 32px 0 rgba(31, 31, 31, 0.37);
 	backdrop-filter: blur(7px);
@@ -60,9 +65,7 @@ main .infoContainer {
 	text-align: center;
 }
 
-#getCity {
-	text-align: center;
-}
+
 
 .cityName {
 	font-size: 23px;
