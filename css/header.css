@@ -1,0 +1,14 @@
+@import url("https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500&display=swap");
+
+* {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+}
+
+header {
+	display: flex;
+	flex-direction: column;
+    align-items: center;
+
+    
