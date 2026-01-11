@@ -15,7 +15,6 @@ body {
 }
 
 /* ================= HEADER ================= */
-
 header {
 	display: flex;
 	flex-direction: column;
@@ -34,11 +33,6 @@ header {
 	text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
 	color: #ff0000;
 	font-size: clamp(1.8rem, 5vw, 2.5rem);
-}
-
-.weatherIcon {
-	max-width: 200px;
-	height: auto;
 }
 
 #getCity {

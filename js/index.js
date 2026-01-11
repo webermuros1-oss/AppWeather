@@ -1,10 +1,7 @@
 /* =====================
    ELEMENTOS BASE
 ===================== */
-const titleLogo = document.querySelector(".title");
-const bodyElem = document.querySelector("body");
 const cityInput = document.querySelector("#getCity");
-
 const cityName = document.querySelector(".cityName");
 const cityTemp = document.querySelector(".weatherDeg");
 const cityCondition = document.querySelector(".weatherCondition");
@@ -22,6 +19,12 @@ const airContainer = document.querySelector(".airInfo");
 ===================== */
 window.addEventListener("load", () => {
 	changeBackgroundImage();
+	// Cargar ciudad por defecto
+	setTimeout(() => {
+		cityInput.value = "A Coruña";
+		fetchDataFromApi();
+		cityInput.value = "";
+	}, 100);
 });
 
 // Ocultar header al hacer scroll
@@ -32,15 +35,13 @@ window.addEventListener("scroll", () => {
 	const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 	
 	if (scrollTop > lastScrollTop && scrollTop > 100) {
-		// Scrolling hacia abajo
 		header.style.transform = "translateY(-100%)";
 	} else {
-		// Scrolling hacia arriba
 		header.style.transform = "translateY(0)";
 	}
 	
 	lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-}, false);
+});
 
 cityInput.addEventListener("keypress", (event) => {
 	if (event.key === "Enter") {
@@ -48,15 +49,8 @@ cityInput.addEventListener("keypress", (event) => {
 	}
 });
 
-// Cargar ciudad por defecto
-setTimeout(() => {
-	cityInput.value = "A Coruña";
-	fetchDataFromApi();
-	cityInput.value = "";
-}, 100);
-
 /* =====================
-   BACKGROUND DINÁMICO (Solo para la card principal)
+   BACKGROUND DINÁMICO
 ===================== */
 function changeBackgroundImage(weatherCode = null) {
 	let bgImages;
@@ -116,8 +110,6 @@ async function fetchDataFromApi() {
 		const combinedData = {
 			name,
 			country,
-			latitude,
-			longitude,
 			...weatherData,
 			...marineData,
 			...airQualityData
@@ -127,7 +119,7 @@ async function fetchDataFromApi() {
 		changeBackgroundImage(combinedData.weatherCode);
 		cityInput.value = "";
 		
-		// Scroll suave al inicio de la página
+		// Scroll al inicio de la página
 		window.scrollTo({
 			top: 0,
 			behavior: 'smooth'
@@ -140,11 +132,11 @@ async function fetchDataFromApi() {
 }
 
 /* =====================
-   DATOS METEOROLÓGICOS COMPLETOS
+   DATOS METEOROLÓGICOS
 ===================== */
 async function fetchWeatherData(latitude, longitude) {
 	const response = await fetch(
-		`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m,apparent_temperature,precipitation,rain,showers,snowfall,pressure_msl,surface_pressure,cloud_cover,visibility,uv_index,is_day,cape,dew_point_2m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,rain_sum,showers_sum,snowfall_sum,sunrise,sunset,daylight_duration,sunshine_duration,uv_index_max,wind_speed_10m_max,wind_gusts_10m_max&timezone=auto&forecast_days=3`
+		`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m,apparent_temperature,precipitation,rain,showers,snowfall,pressure_msl,surface_pressure,cloud_cover,visibility,uv_index,is_day,cape,dew_point_2m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset,daylight_duration,sunshine_duration,uv_index_max&timezone=auto&forecast_days=3`
 	);
 	const data = await response.json();
 
@@ -166,19 +158,18 @@ async function fetchWeatherData(latitude, longitude) {
 		cloudCover: data.current.cloud_cover,
 		visibility: data.current.visibility,
 		uvIndex: data.current.uv_index,
-		isDay: data.current.is_day,
 		cape: data.current.cape,
 		dailyForecast: data.daily
 	};
 }
 
 /* =====================
-   DATOS MARÍTIMOS COMPLETOS
+   DATOS MARÍTIMOS
 ===================== */
 async function fetchMarineData(latitude, longitude) {
 	try {
 		const response = await fetch(
-			`https://marine-api.open-meteo.com/v1/marine?latitude=${latitude}&longitude=${longitude}&current=wave_height,wave_direction,wave_period,wind_wave_height,wind_wave_direction,wind_wave_period,wind_wave_peak_period,swell_wave_height,swell_wave_direction,swell_wave_period,swell_wave_peak_period,ocean_current_velocity,ocean_current_direction&timezone=auto`
+			`https://marine-api.open-meteo.com/v1/marine?latitude=${latitude}&longitude=${longitude}&current=wave_height,wave_direction,wave_period,wind_wave_height,swell_wave_height,ocean_current_velocity,ocean_current_direction&timezone=auto`
 		);
 
 		if (!response.ok) return { hasMarineData: false };
@@ -200,7 +191,7 @@ async function fetchMarineData(latitude, longitude) {
 async function fetchAirQuality(latitude, longitude) {
 	try {
 		const response = await fetch(
-			`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${latitude}&longitude=${longitude}&current=pm10,pm2_5,carbon_monoxide,nitrogen_dioxide,sulphur_dioxide,ozone,aerosol_optical_depth,dust,uv_index,uv_index_clear_sky,ammonia,alder_pollen,birch_pollen,grass_pollen,mugwort_pollen,olive_pollen,ragweed_pollen&timezone=auto`
+			`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${latitude}&longitude=${longitude}&current=pm10,pm2_5,carbon_monoxide,nitrogen_dioxide,sulphur_dioxide,ozone,dust&timezone=auto`
 		);
 
 		if (!response.ok) return { hasAirQuality: false };
@@ -241,7 +232,7 @@ function addDataToDom(data) {
 		<p>☁️ <strong>${data.cloudCover}%</strong> Nubosidad</p>
 		<p>👁️ <strong>${(data.visibility / 1000).toFixed(1)} km</strong> Visibilidad</p>
 		<p>☀️ <strong>${data.uvIndex || 0}</strong> Índice UV</p>
-		${data.cape ? `<p>⚡ <strong>${Math.round(data.cape)} J/kg</strong> CAPE (tormentas)</p>` : ''}
+		${data.cape ? `<p>⚡ <strong>${Math.round(data.cape)} J/kg</strong> CAPE</p>` : ''}
 	`;
 
 	// INFORMACIÓN DEL VIENTO
@@ -263,7 +254,7 @@ function addDataToDom(data) {
 			<p>🧭 <strong>${Math.round(data.marine.ocean_current_direction || 0)}°</strong> Dirección corriente</p>
 		`;
 	} else {
-		marineContainer.innerHTML = `<p class="notAvailable">Datos marítimos no disponibles para esta ubicación</p>`;
+		marineContainer.innerHTML = `<p class="notAvailable">Datos marítimos no disponibles</p>`;
 	}
 
 	// PRONÓSTICO 3 DÍAS
@@ -284,20 +275,18 @@ function addDataToDom(data) {
 	}
 
 	// DATOS ASTRONÓMICOS
-	if (data.dailyForecast) {
-		const sunrise = new Date(data.dailyForecast.sunrise[0]).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
-		const sunset = new Date(data.dailyForecast.sunset[0]).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
-		const daylightHours = (data.dailyForecast.daylight_duration[0] / 3600).toFixed(1);
-		const sunshineHours = (data.dailyForecast.sunshine_duration[0] / 3600).toFixed(1);
+	const sunrise = new Date(data.dailyForecast.sunrise[0]).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+	const sunset = new Date(data.dailyForecast.sunset[0]).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+	const daylightHours = (data.dailyForecast.daylight_duration[0] / 3600).toFixed(1);
+	const sunshineHours = (data.dailyForecast.sunshine_duration[0] / 3600).toFixed(1);
 
-		astroContainer.innerHTML = `
-			<p>🌅 <strong>${sunrise}</strong> Amanecer</p>
-			<p>🌇 <strong>${sunset}</strong> Atardecer</p>
-			<p>☀️ <strong>${daylightHours} h</strong> Luz del día</p>
-			<p>🌞 <strong>${sunshineHours} h</strong> Horas de sol</p>
-			<p>☀️ <strong>${data.dailyForecast.uv_index_max[0] || 0}</strong> UV máximo</p>
-		`;
-	}
+	astroContainer.innerHTML = `
+		<p>🌅 <strong>${sunrise}</strong> Amanecer</p>
+		<p>🌇 <strong>${sunset}</strong> Atardecer</p>
+		<p>☀️ <strong>${daylightHours} h</strong> Luz del día</p>
+		<p>🌞 <strong>${sunshineHours} h</strong> Horas de sol</p>
+		<p>☀️ <strong>${data.dailyForecast.uv_index_max[0] || 0}</strong> UV máximo</p>
+	`;
 
 	// CALIDAD DEL AIRE
 	if (data.hasAirQuality && data.airQuality) {
