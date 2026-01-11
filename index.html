@@ -1,33 +1,75 @@
 <!DOCTYPE html>
 <html lang="es">
-	<head>
-		<meta charset="UTF-8" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>PlusWeather</title>
-		<link rel="stylesheet" href="/css/index.css" />
-		<script src="/js/index.js" defer></script>
-	</head>
-	<body>
-		<header>
-			
+
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>PlusWeather</title>
+	<link rel="stylesheet" href="/css/index.css" />
+	<script src="/js/index.js" defer></script>
+</head>
+
+<body>
+	<header>
 		<h1 class="title"><img class="weatherIcon" src="/media/images/logoWeatherPlus.png" alt="weather logo"></h1>
-		<input id="getCity" type="text" placeholder="busca ciudad aquí" />
-		</header>
+		<input id="getCity" type="text" placeholder="Busca tu ciudad aquí..." />
+	</header>
 
+	<main class="dashboard">
 
-		
-		<main>
-			<div class="infoContainer">
-				<h3 class="cityName"></h3>
-				<div class="weatherIconDisplay"></div>
-				<p class="dateInfo"><span class="day"></span><span class="date"></span></p>
-				<h2 class="weatherDeg"></h2>
-				<h3 class="weatherCondition"></h3>
-				<h3 class="humidity"></h3>
+		<!-- CARD UBICACIÓN Y CLIMA ACTUAL -->
+		<section class="card mainWeatherCard">
+			<div class="locationInfo">
+				<h2 class="cityName">Cargando...</h2>
+				<p class="date"></p>
 			</div>
-			
+			<div class="currentWeather">
+				<div class="weatherIconDisplay"></div>
+				<div class="tempInfo">
+					<h1 class="weatherDeg">--°</h1>
+					<h3 class="weatherCondition">--</h3>
+				</div>
+			</div>
+		</section>
 
-		</main>
-	</body>
+		<!-- CARD CONDICIONES ATMOSFÉRICAS -->
+		<section class="card atmosphereCard">
+			<h4>🌍 Condiciones Atmosféricas</h4>
+			<div class="atmosphereInfo gridInfo"></div>
+		</section>
+
+		<!-- CARD VIENTO -->
+		<section class="card windCard">
+			<h4>💨 Información del Viento</h4>
+			<div class="windInfo"></div>
+		</section>
+
+		<!-- CARD DATOS MARÍTIMOS -->
+		<section class="card marineCard">
+			<h4>🌊 Condiciones Marítimas</h4>
+			<div class="marineInfo"></div>
+		</section>
+
+		<!-- CARD PRONÓSTICO 3 DÍAS -->
+		<section class="card forecastCard">
+			<h4>📅 Pronóstico Extendido</h4>
+			<div class="forecastInfo"></div>
+		</section>
+
+		<!-- CARD DATOS ASTRONÓMICOS -->
+		<section class="card astroCard">
+			<h4>🌅 Datos Astronómicos</h4>
+			<div class="astroInfo"></div>
+		</section>
+
+		<!-- CARD CALIDAD DEL AIRE -->
+		<section class="card airCard">
+			<h4>🍃 Calidad del Aire</h4>
+			<div class="airInfo"></div>
+		</section>
+
+	</main>
+</body>
+
 </html>

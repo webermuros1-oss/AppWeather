@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600&display=swap");
 
 * {
 	padding: 0;
@@ -8,83 +8,248 @@
 
 body {
 	font-family: "Barlow", sans-serif;
-	background-image: url("/media/images/bg.jpg");
-	background-repeat: no-repeat;
-	background-size: cover;
-	background-position: center;
-	background-attachment: fixed;
+	background-color: #51d9f5;
 	min-height: 100vh;
 	width: 100%;
-	margin: 0;
-	padding: 0;
+	overflow-x: hidden;
 }
 
+/* ================= HEADER ================= */
 header {
 	display: flex;
 	flex-direction: column;
+	align-items: center;
+	gap: 15px;
+	padding: 20px 15px;
 }
 
 .title {
-	margin-top: 0%;
-	margin-bottom: 1px;
 	text-align: center;
-	text-shadow: 2px 2px 10px black;
+	text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
 	color: #ff0000;
+	font-size: clamp(1.8rem, 5vw, 2.5rem);
 }
 
 .weatherIcon {
-	width: 200px;
+	max-width: 200px;
 	height: auto;
 }
 
 #getCity {
-	width: 200px;
-	position: relative;
-	margin: auto;
-	margin-top: 0%;
+	width: 100%;
+	max-width: 400px;
 	height: 50px;
 	border: none;
-	border-radius: 10px;
-	padding: 0 10px;
+	border-radius: 25px;
+	padding: 0 20px;
 	outline: none;
-	box-shadow: 0 8px 32px 0 rgba(31, 31, 31, 0.37);
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 	text-align: center;
+	font-size: 16px;
+	font-family: inherit;
+	transition: all 0.3s ease;
 }
 
-.infoContainer {
-	background: rgba(255, 255, 255, 0.2);
-	box-shadow: 0 8px 32px 0 rgba(31, 31, 31, 0.37);
-	backdrop-filter: blur(7px);
-	-webkit-backdrop-filter: blur(7px);
-	border-radius: 20px;
-	max-width: 300px;
-	min-height: 380px;
+#getCity:focus {
+	transform: scale(1.02);
+	box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* ================= DASHBOARD ================= */
+.dashboard {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	width: 100%;
+	max-width: 700px;
+	margin: 0 auto;
+	padding: 20px 15px 40px;
+}
+
+/* ================= CARD BASE ================= */
+.card {
+	background: rgba(74, 119, 247, 0.95);
+	backdrop-filter: blur(10px);
+	border-radius: 24px;
+	padding: 24px;
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+	color: white;
+	transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+	transform: translateY(-4px);
+	box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+.card h4 {
+	margin-bottom: 16px;
+	font-size: 1.2rem;
+	color: #ffffff;
+	font-weight: 600;
+	text-align: left;
+	border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+	padding-bottom: 8px;
+}
+
+/* ================= CARD PRINCIPAL ================= */
+.mainWeatherCard {
+	background-image: url("/media/images/bg.jpg");
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
 	position: relative;
-	margin: auto;
-	margin-top: 30px;
-	padding: 20px;
 	text-align: center;
+	overflow: hidden;
+	min-height: 400px;
+}
+
+.mainWeatherCard > * {
+	position: relative;
+	z-index: 1;
+	text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+.locationInfo {
+	margin-bottom: 20px;
 }
 
 .cityName {
-	font-size: 23px;
-	margin: 20px 0 10px 0;
+	font-size: clamp(1.8rem, 5vw, 2.2rem);
+	margin-bottom: 8px;
+	font-weight: 600;
+}
+
+.date {
+	font-size: 1rem;
+	opacity: 0.9;
+}
+
+.currentWeather {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 20px;
+	flex-wrap: wrap;
 }
 
 .weatherIconDisplay {
-	font-size: 80px;
-	line-height: 1;
-	margin: 15px 0;
-	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-	display: block;
+	font-size: clamp(5rem, 15vw, 7rem);
+}
+
+.tempInfo {
+	text-align: left;
 }
 
 .weatherDeg {
-	font-size: 60px;
-	margin-top: 10px;
-	margin-bottom: 20px;
+	font-size: clamp(3.5rem, 12vw, 5rem);
+	font-weight: 600;
+	line-height: 1;
 }
 
 .weatherCondition {
-	margin-bottom: 20px;
+	font-size: clamp(1.3rem, 4vw, 1.6rem);
+	margin-top: 8px;
+	opacity: 0.95;
+}
+
+/* ================= GRIDS DE INFORMACIÓN ================= */
+.gridInfo, .windInfo, .marineInfo, .astroInfo, .airInfo {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+	gap: 12px;
+	text-align: left;
+}
+
+.gridInfo p, .windInfo p, .marineInfo p, .astroInfo p, .airInfo p {
+	background: rgba(255, 255, 255, 0.15);
+	padding: 12px;
+	border-radius: 12px;
+	font-size: 0.95rem;
+	line-height: 1.5;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.gridInfo p strong, .windInfo p strong, .marineInfo p strong, 
+.astroInfo p strong, .airInfo p strong {
+	font-size: 1.1rem;
+	color: #fff;
+}
+
+/* ================= PRONÓSTICO ================= */
+.forecastInfo {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.forecastDay {
+	background: rgba(255, 255, 255, 0.15);
+	padding: 16px;
+	border-radius: 16px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	flex-wrap: wrap;
+}
+
+.forecastDayName {
+	font-size: 1.1rem;
+	font-weight: 600;
+	min-width: 100px;
+}
+
+.forecastIcon {
+	font-size: 2.5rem;
+}
+
+.forecastTemps {
+	display: flex;
+	gap: 12px;
+	font-size: 1.1rem;
+}
+
+.forecastMax {
+	font-weight: 600;
+}
+
+.forecastMin {
+	opacity: 0.8;
+}
+
+.forecastRain {
+	font-size: 0.95rem;
+	opacity: 0.9;
+}
+
+/* ================= MENSAJE DE NO DISPONIBLE ================= */
+.notAvailable {
+	text-align: center;
+	opacity: 0.7;
+	font-style: italic;
+	padding: 20px;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (min-width: 768px) {
+	.dashboard {
+		max-width: 800px;
+	}
+
+	.currentWeather {
+		gap: 30px;
+	}
+
+	.gridInfo, .windInfo, .marineInfo, .astroInfo, .airInfo {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media (min-width: 1024px) {
+	.dashboard {
+		max-width: 900px;
+	}
 }
