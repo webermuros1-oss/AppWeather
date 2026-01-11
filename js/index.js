@@ -24,6 +24,24 @@ window.addEventListener("load", () => {
 	changeBackgroundImage();
 });
 
+// Ocultar header al hacer scroll
+let lastScrollTop = 0;
+const header = document.querySelector("header");
+
+window.addEventListener("scroll", () => {
+	const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+	
+	if (scrollTop > lastScrollTop && scrollTop > 100) {
+		// Scrolling hacia abajo
+		header.style.transform = "translateY(-100%)";
+	} else {
+		// Scrolling hacia arriba
+		header.style.transform = "translateY(0)";
+	}
+	
+	lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+}, false);
+
 cityInput.addEventListener("keypress", (event) => {
 	if (event.key === "Enter") {
 		fetchDataFromApi();
@@ -108,6 +126,13 @@ async function fetchDataFromApi() {
 		addDataToDom(combinedData);
 		changeBackgroundImage(combinedData.weatherCode);
 		cityInput.value = "";
+		
+		// Scroll suave al inicio de la página
+		window.scrollTo({
+			top: 0,
+			behavior: 'smooth'
+		});
+		
 	} catch (error) {
 		console.error(error);
 		alert("Error obteniendo datos");
