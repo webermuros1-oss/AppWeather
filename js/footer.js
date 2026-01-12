@@ -2,42 +2,56 @@ class MyFooter extends HTMLElement {
     connectedCallback() {
         this.innerHTML = `
       <footer class="appFooter">
-        <div class="footerItem" data-page="inicio">
+        <div class="footerItem active" data-section="mainWeatherCard">
           <i class="fa-solid fa-house"></i>
-          <span>Inicio</span>
+          <span>Ciudad</span>
         </div>
 
-        <div class="footerItem active" data-page="hoy">
-          <i class="fa-solid fa-calendar-day"></i>
-          <span>Hoy</span>
+        <div class="footerItem" data-section="atmosphereCard">
+          <i class="fa-solid fa-cloud"></i>
+          <span>Atmósfera</span>
         </div>
 
-        <div class="footerItem" data-page="hora">
-          <i class="fa-solid fa-clock"></i>
-          <span>Cada hora</span>
+        <div class="footerItem" data-section="windCard">
+          <i class="fa-solid fa-wind"></i>
+          <span>Viento</span>
         </div>
 
-        <div class="footerItem" data-page="diario">
-          <i class="fa-solid fa-calendar"></i>
-          <span>Diario</span>
+        <div class="footerItem" data-section="forecastCard">
+          <i class="fa-solid fa-calendar-days"></i>
+          <span>Pronóstico</span>
         </div>
 
-        <div class="footerItem" data-page="radar">
-          <i class="fa-solid fa-location-crosshairs"></i>
-          <span>Radar y mapas</span>
+        <div class="footerItem" data-section="marineCard">
+          <i class="fa-solid fa-water"></i>
+          <span>Marítimo</span>
         </div>
       </footer>
         `;
         
-        // Funcionalidad de navegación
         const footerItems = this.querySelectorAll('.footerItem');
         
         footerItems.forEach(item => {
-            item.addEventListener('click', function() {
+            item.addEventListener('click', () => {
+                // Cambiar estado activo
                 footerItems.forEach(i => i.classList.remove('active'));
-                this.classList.add('active');
-                const page = this.getAttribute('data-page');
-                console.log('Navegando a:', page);
+                item.classList.add('active');
+                
+                // Obtener la sección a la que navegar
+                const sectionClass = item.getAttribute('data-section');
+                const targetElement = document.querySelector(`.${sectionClass}`);
+                
+                if (targetElement) {
+                    // Scroll suave a la sección
+                    const headerHeight = document.querySelector('header')?.offsetHeight || 0;
+                    const elementPosition = targetElement.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerHeight - 20;
+                    
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                }
             });
         });
     }
