@@ -15,15 +15,34 @@ const astroContainer = document.querySelector(".astroInfo");
 const airContainer = document.querySelector(".airInfo");
 
 /* =====================
+   INDICADOR DE CARGA
+===================== */
+function showLoading(show = true) {
+	if (show) {
+		cityTemp.innerHTML = '<span style="opacity: 0.5">Cargando...</span>';
+		cityCondition.innerHTML = '';
+	}
+}
+
+/* =====================
    EVENTOS
 ===================== */
 window.addEventListener("load", () => {
+	console.log("App iniciada");
 	changeBackgroundImage();
-	// Cargar ciudad por defecto
-	setTimeout(() => {
-		cityInput.value = "A Coruña";
-		fetchDataFromApi();
-		cityInput.value = "";
+	
+	// Cargar ciudad por defecto con mejor manejo de errores
+	setTimeout(async () => {
+		try {
+			cityInput.value = "A Coruña";
+			showLoading(true);
+			await fetchDataFromApi();
+			cityInput.value = "";
+		} catch (error) {
+			console.error("Error cargando ciudad inicial:", error);
+			cityTemp.innerHTML = "--°C";
+			cityCondition.innerHTML = "Error al cargar";
+		}
 	}, 100);
 });
 
@@ -45,6 +64,7 @@ window.addEventListener("scroll", () => {
 
 cityInput.addEventListener("keypress", (event) => {
 	if (event.key === "Enter") {
+		showLoading(true);
 		fetchDataFromApi();
 	}
 });
@@ -56,7 +76,10 @@ function changeBackgroundImage(weatherCode = null) {
 	let bgImages;
 	const mainCard = document.querySelector('.mainWeatherCard');
 	
-	if (!mainCard) return;
+	if (!mainCard) {
+		console.warn("mainWeatherCard no encontrada");
+		return;
+	}
 
 	if (weatherCode !== null) {
 		if (weatherCode === 0 || weatherCode === 1) {
@@ -79,7 +102,11 @@ function changeBackgroundImage(weatherCode = null) {
 	}
 
 	const selectedImage = bgImages[Math.floor(Math.random() * bgImages.length)];
-	mainCard.style.backgroundImage = `url('/media/images/${selectedImage}.jpg')`;
+	
+	// Ruta relativa sin la barra inicial para GitHub Pages
+	mainCard.style.backgroundImage = `url('media/images/${selectedImage}.jpg')`;
+	
+	console.log("Background aplicado:", selectedImage);
 }
 
 /* =====================
@@ -87,25 +114,50 @@ function changeBackgroundImage(weatherCode = null) {
 ===================== */
 async function fetchDataFromApi() {
 	const insertedCity = cityInput.value.trim();
-	if (!insertedCity) return alert("Introduce una ciudad");
+	if (!insertedCity) {
+		alert("Introduce una ciudad");
+		showLoading(false);
+		return;
+	}
+
+	console.log("Buscando ciudad:", insertedCity);
 
 	try {
+		// PASO 1: Geocodificación
 		const geoResponse = await fetch(
-			`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(insertedCity)}&count=1&language=es&format=json`
+			`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(insertedCity)}&count=1&language=es&format=json`,
+			{
+				method: 'GET',
+				headers: {
+					'Accept': 'application/json'
+				}
+			}
 		);
-		const geoData = await geoResponse.json();
 
-		if (!geoData.results?.length) {
-			return alert("Ciudad no encontrada");
+		if (!geoResponse.ok) {
+			throw new Error(`Error geocoding: ${geoResponse.status}`);
+		}
+
+		const geoData = await geoResponse.json();
+		console.log("Datos geocoding:", geoData);
+
+		if (!geoData.results || geoData.results.length === 0) {
+			alert("Ciudad no encontrada");
+			showLoading(false);
+			return;
 		}
 
 		const { latitude, longitude, name, country } = geoData.results[0];
+		console.log("Coordenadas:", latitude, longitude);
 
+		// PASO 2: Obtener todos los datos
 		const [weatherData, marineData, airQualityData] = await Promise.all([
 			fetchWeatherData(latitude, longitude),
 			fetchMarineData(latitude, longitude),
 			fetchAirQuality(latitude, longitude)
 		]);
+
+		console.log("Datos obtenidos:", { weatherData, marineData, airQualityData });
 
 		const combinedData = {
 			name,
@@ -118,6 +170,7 @@ async function fetchDataFromApi() {
 		addDataToDom(combinedData);
 		changeBackgroundImage(combinedData.weatherCode);
 		cityInput.value = "";
+		showLoading(false);
 		
 		// Scroll al inicio de la página
 		window.scrollTo({
@@ -126,8 +179,13 @@ async function fetchDataFromApi() {
 		});
 		
 	} catch (error) {
-		console.error(error);
-		alert("Error obteniendo datos");
+		console.error("Error completo:", error);
+		alert(`Error obteniendo datos: ${error.message}`);
+		showLoading(false);
+		
+		// Mostrar error en UI
+		cityTemp.innerHTML = "--°C";
+		cityCondition.innerHTML = "Error al cargar";
 	}
 }
 
@@ -135,10 +193,23 @@ async function fetchDataFromApi() {
    DATOS METEOROLÓGICOS
 ===================== */
 async function fetchWeatherData(latitude, longitude) {
-	const response = await fetch(
-		`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m,apparent_temperature,precipitation,rain,showers,snowfall,pressure_msl,surface_pressure,cloud_cover,visibility,uv_index,is_day,cape,dew_point_2m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset,daylight_duration,sunshine_duration,uv_index_max&timezone=auto&forecast_days=3`
-	);
+	const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m,apparent_temperature,precipitation,rain,showers,snowfall,pressure_msl,surface_pressure,cloud_cover,visibility,uv_index,is_day,cape,dew_point_2m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset,daylight_duration,sunshine_duration,uv_index_max&timezone=auto&forecast_days=3`;
+	
+	console.log("Fetching weather data...");
+	
+	const response = await fetch(url, {
+		method: 'GET',
+		headers: {
+			'Accept': 'application/json'
+		}
+	});
+
+	if (!response.ok) {
+		throw new Error(`Weather API error: ${response.status}`);
+	}
+
 	const data = await response.json();
+	console.log("Weather data recibida");
 
 	return {
 		temperature: data.current.temperature_2m,
@@ -168,19 +239,31 @@ async function fetchWeatherData(latitude, longitude) {
 ===================== */
 async function fetchMarineData(latitude, longitude) {
 	try {
+		console.log("Fetching marine data...");
 		const response = await fetch(
-			`https://marine-api.open-meteo.com/v1/marine?latitude=${latitude}&longitude=${longitude}&current=wave_height,wave_direction,wave_period,wind_wave_height,swell_wave_height,ocean_current_velocity,ocean_current_direction&timezone=auto`
+			`https://marine-api.open-meteo.com/v1/marine?latitude=${latitude}&longitude=${longitude}&current=wave_height,wave_direction,wave_period,wind_wave_height,swell_wave_height,ocean_current_velocity,ocean_current_direction&timezone=auto`,
+			{
+				method: 'GET',
+				headers: {
+					'Accept': 'application/json'
+				}
+			}
 		);
 
-		if (!response.ok) return { hasMarineData: false };
+		if (!response.ok) {
+			console.log("Marine data no disponible");
+			return { hasMarineData: false };
+		}
 
 		const data = await response.json();
+		console.log("Marine data recibida");
 
 		return {
 			hasMarineData: true,
 			marine: data.current
 		};
-	} catch {
+	} catch (error) {
+		console.log("Error marine data:", error.message);
 		return { hasMarineData: false };
 	}
 }
@@ -190,19 +273,31 @@ async function fetchMarineData(latitude, longitude) {
 ===================== */
 async function fetchAirQuality(latitude, longitude) {
 	try {
+		console.log("Fetching air quality...");
 		const response = await fetch(
-			`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${latitude}&longitude=${longitude}&current=pm10,pm2_5,carbon_monoxide,nitrogen_dioxide,sulphur_dioxide,ozone,dust&timezone=auto`
+			`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${latitude}&longitude=${longitude}&current=pm10,pm2_5,carbon_monoxide,nitrogen_dioxide,sulphur_dioxide,ozone,dust&timezone=auto`,
+			{
+				method: 'GET',
+				headers: {
+					'Accept': 'application/json'
+				}
+			}
 		);
 
-		if (!response.ok) return { hasAirQuality: false };
+		if (!response.ok) {
+			console.log("Air quality no disponible");
+			return { hasAirQuality: false };
+		}
 
 		const data = await response.json();
+		console.log("Air quality recibida");
 
 		return {
 			hasAirQuality: true,
 			airQuality: data.current
 		};
-	} catch {
+	} catch (error) {
+		console.log("Error air quality:", error.message);
 		return { hasAirQuality: false };
 	}
 }
@@ -211,6 +306,8 @@ async function fetchAirQuality(latitude, longitude) {
    PINTAR DATOS EN DOM
 ===================== */
 function addDataToDom(data) {
+	console.log("Pintando datos en DOM...");
+	
 	document.querySelector(".weatherIconDisplay").innerHTML = getWeatherIcon(data.weatherCode);
 
 	cityName.innerHTML = `${data.name}, ${data.country}`;
@@ -303,6 +400,8 @@ function addDataToDom(data) {
 	} else {
 		airContainer.innerHTML = `<p class="notAvailable">Datos de calidad del aire no disponibles</p>`;
 	}
+	
+	console.log("DOM actualizado correctamente");
 }
 
 /* =====================
