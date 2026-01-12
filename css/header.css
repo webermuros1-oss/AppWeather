@@ -10,7 +10,8 @@ body {
 	font-family: "Barlow", sans-serif;
 	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 	min-height: 100vh;
-	padding-top: 150px; /* Espacio para el header fijo con icono grande */
+	padding-top: 170px; /* Espacio para el header fijo con icono grande */
+
 }
 
 .appHeader {
@@ -34,8 +35,7 @@ body {
 .title {
 	display: flex;
 	align-items: center;
-	margin: 0;
-	flex-shrink: 0;
+	height: 100%;
 }
 
 .weatherIcon {
