@@ -94,7 +94,7 @@ header {
 
 /* ================= CARD PRINCIPAL ================= */
 .mainWeatherCard {
-	background-image: url("/media/images/bg.jpg");
+	background-image: url("../media/images/bg.jpg");
 	background-size: cover;
 	background-position: center;
 	background-repeat: no-repeat;

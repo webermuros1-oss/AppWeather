@@ -79,7 +79,7 @@ function changeBackgroundImage(weatherCode = null) {
 	}
 
 	const selectedImage = bgImages[Math.floor(Math.random() * bgImages.length)];
-	mainCard.style.backgroundImage = `url('/media/images/${selectedImage}.jpg')`;
+	mainCard.style.backgroundImage = `url('./media/images/${selectedImage}.jpg')`;
 }
 
 /* =====================
