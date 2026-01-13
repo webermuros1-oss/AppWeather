@@ -83,7 +83,7 @@ function changeBackgroundImage(weatherCode = null) {
 }
 
 /* =====================
-   FETCH PRINCIPAL
+FETCH PRINCIPAL
 ===================== */
 async function fetchDataFromApi() {
 	const insertedCity = cityInput.value.trim();
@@ -350,12 +350,5 @@ function getDate() {
 	return `${days[d.getDay()]}, ${d.getDate()} de ${months[d.getMonth()]} de ${d.getFullYear()}`;
 }
 
-<!-- Base dinámico: detecta si estamos en GitHub Pages -->
-    
-        (function(){
-            const pathParts = window.location.pathname.split('/');
-            const isGitHub  = window.location.hostname.includes('github.io');
-            const base      = isGitHub ? '/' + pathParts[1] + '/' : '/';
-            document.write('<base href="' + base + '">');
-        })();
+
     
