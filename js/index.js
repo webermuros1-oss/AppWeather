@@ -79,11 +79,11 @@ function changeBackgroundImage(weatherCode = null) {
 	}
 
 	const selectedImage = bgImages[Math.floor(Math.random() * bgImages.length)];
-	mainCard.style.backgroundImage = `url('./media/images/${selectedImage}.jpg')`;
+	mainCard.style.backgroundImage = `url('media/images/${selectedImage}.jpg')`;
 }
 
 /* =====================
-   FETCH PRINCIPAL
+FETCH PRINCIPAL
 ===================== */
 async function fetchDataFromApi() {
 	const insertedCity = cityInput.value.trim();
@@ -349,3 +349,6 @@ function getDate() {
 	const d = new Date();
 	return `${days[d.getDay()]}, ${d.getDate()} de ${months[d.getMonth()]} de ${d.getFullYear()}`;
 }
+
+
+    
