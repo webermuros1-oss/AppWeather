@@ -79,7 +79,7 @@ function changeBackgroundImage(weatherCode = null) {
 	}
 
 	const selectedImage = bgImages[Math.floor(Math.random() * bgImages.length)];
-	mainCard.style.backgroundImage = `url('/media/images/${selectedImage}.jpg')`;
+	mainCard.style.backgroundImage = `url('media/images/${selectedImage}.jpg')`;
 }
 
 /* =====================
@@ -349,3 +349,13 @@ function getDate() {
 	const d = new Date();
 	return `${days[d.getDay()]}, ${d.getDate()} de ${months[d.getMonth()]} de ${d.getFullYear()}`;
 }
+
+<!-- Base dinámico: detecta si estamos en GitHub Pages -->
+    
+        (function(){
+            const pathParts = window.location.pathname.split('/');
+            const isGitHub  = window.location.hostname.includes('github.io');
+            const base      = isGitHub ? '/' + pathParts[1] + '/' : '/';
+            document.write('<base href="' + base + '">');
+        })();
+    
