@@ -136,7 +136,7 @@ async function fetchDataFromApi() {
 ===================== */
 async function fetchWeatherData(latitude, longitude) {
 	const response = await fetch(
-		`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m,apparent_temperature,precipitation,rain,showers,snowfall,pressure_msl,surface_pressure,cloud_cover,visibility,uv_index,is_day,cape,dew_point_2m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset,daylight_duration,sunshine_duration,uv_index_max&timezone=auto&forecast_days=3`
+		`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m,apparent_temperature,precipitation,rain,showers,snowfall,pressure_msl,surface_pressure,cloud_cover,visibility,uv_index,is_day,cape,dew_point_2m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset,daylight_duration,sunshine_duration,uv_index_max&timezone=auto&forecast_days=7`
 	);
 	const data = await response.json();
 
@@ -259,8 +259,16 @@ function addDataToDom(data) {
 
 	// PRONÓSTICO 3 DÍAS
 	forecastContainer.innerHTML = "";
-	for (let i = 0; i < 3; i++) {
+
+	const daysToForecast = data.dailyForecast.time.length;
+
+	for (let i = 0; i < 7; i++) {
 		const date = new Date(data.dailyForecast.time[i]);
+const maxTemp = data.dailyForecast.temperature_2m_max[i] ?? '--';
+    const minTemp = data.dailyForecast.temperature_2m_min[i] ?? '--';
+    const rainProb = data.dailyForecast.precipitation_probability_max?.[i] ?? 0;
+    const weatherCode = data.dailyForecast.weather_code[i];
+
 		forecastContainer.innerHTML += `
 			<div class="forecastDay">
 				<span class="forecastDayName">${i === 0 ? 'Hoy' : days[date.getDay()]}</span>
