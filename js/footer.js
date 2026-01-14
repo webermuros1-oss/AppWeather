@@ -7,21 +7,24 @@ class MyFooter extends HTMLElement {
           <span>Ciudad</span>
         </div>
 
-        <div class="footerItem" data-section="atmosphereCard">
-          <i class="fa-solid fa-cloud"></i>
-          <span>Atmósfera</span>
-        </div>
-
-        <div class="footerItem" data-section="windCard">
-          <i class="fa-solid fa-wind"></i>
-          <span>Viento</span>
-        </div>
-
         <div class="footerItem" data-section="forecastCard">
-          <i class="fa-solid fa-calendar-days"></i>
+          <i class="fa-solid fa-cloud"></i>
           <span>Pronóstico</span>
         </div>
 
+        <div class="footerItem" data-section="atmosphereCard">
+          <i class="fa-solid fa-wind"></i>
+          <span>Atmosfera</span>
+        </div>
+
+        <div class="footerItem" data-section="windCard">
+          <i class="fa-solid fa-calendar-days"></i>
+          <span>Viento</span>
+        </div>
+        <div class="footerItem" data-section="astroCard">
+          <i class="fa-solid fa-calendar-days"></i>
+          <span>Astronomía</span>
+        </div>
         <div class="footerItem" data-section="marineCard">
           <i class="fa-solid fa-water"></i>
           <span>Marítimo</span>

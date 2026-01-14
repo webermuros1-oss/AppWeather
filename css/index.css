@@ -253,3 +253,44 @@ header {
 		max-width: 900px;
 	}
 }
+
+
+
+
+.navArrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.3);
+    border: none;
+    color: white;
+    font-size: 2rem;
+    padding: 15px 10px;
+    cursor: pointer;
+    z-index: 10;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
+
+.navArrow:hover { background: rgba(0, 0, 0, 0.6); }
+.prevArrow { left: 5px; }
+.nextArrow { right: 5px; }
+
+.favDots {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 5;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    background: rgba(255,255,255,0.4);
+    border-radius: 50%;
+}
+
+.dot.active { background: white; width: 12px; border-radius: 4px; }

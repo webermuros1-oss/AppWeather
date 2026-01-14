@@ -10,10 +10,10 @@ body {
 	font-family: "Barlow", sans-serif;
 	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 	min-height: 100vh;
-	padding-top: 170px; /* Espacio para el header fijo con icono grande */
-
+	padding-top: 140px; /* Ajustado para el nuevo header */
 }
 
+/* ================= HEADER MEJORADO ================= */
 .appHeader {
 	position: fixed;
 	top: 0;
@@ -23,45 +23,59 @@ body {
 	flex-direction: row;
 	align-items: center;
 	justify-content: space-between;
-	padding: 1.25rem 2rem;
+	padding: 1rem 2rem;
 	background: rgba(255, 255, 255, 0.1);
 	backdrop-filter: blur(10px);
 	border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 	z-index: 1000;
 	gap: 2rem;
+	min-height: 120px; /* Altura mínima para dar más espacio */
 }
 
 .title {
 	display: flex;
 	align-items: center;
 	height: 100%;
+	flex-shrink: 0; /* Evita que se comprima */
 }
 
 .weatherIcon {
-	height: 80px;
+	height: 120px; /* Aumentado significativamente */
 	width: auto;
-	transition: transform 0.3s ease;
-	filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+	transition: all 0.3s ease;
+	filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.3));
+	animation: floatIcon 3s ease-in-out infinite; /* Animación sutil */
 }
 
 .weatherIcon:hover {
-	transform: scale(1.1) rotate(5deg);
-	filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.3));
+	transform: scale(1.15) rotate(5deg);
+	filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
+}
+
+/* Animación flotante sutil */
+@keyframes floatIcon {
+	0%, 100% {
+		transform: translateY(0px);
+	}
+	50% {
+		transform: translateY(-5px);
+	}
 }
 
 #getCity {
 	flex: 1;
 	max-width: 500px;
-	padding: 0.75rem 1.25rem;
+	padding: 0.9rem 1.5rem;
 	border: 2px solid rgba(255, 255, 255, 0.3);
-	border-radius: 25px;
+	border-radius: 30px;
 	background: rgba(255, 255, 255, 0.15);
 	color: white;
-	font-size: 1rem;
+	font-size: 1.05rem;
 	font-family: "Barlow", sans-serif;
 	outline: none;
 	transition: all 0.3s ease;
+	height: 50px; /* Altura fija para mejor alineación */
 }
 
 #getCity::placeholder {
@@ -75,45 +89,56 @@ body {
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Responsive para tablets */
+/* ================= RESPONSIVE ================= */
+
+/* Tablets */
 @media (max-width: 768px) {
 	.appHeader {
-		padding: 1rem 1.5rem;
-		gap: 1rem;
+		padding: 0.75rem 1.5rem;
+		gap: 1.25rem;
+		min-height: 100px;
 	}
 
 	.weatherIcon {
-		height: 100px;
+		height: 90px;
+	}
+
+	#getCity {
+		font-size: 1rem;
+		padding: 0.75rem 1.25rem;
+		height: 45px;
+	}
+
+	body {
+		padding-top: 120px;
+	}
+}
+
+/* Móviles */
+@media (max-width: 480px) {
+	.appHeader {
+		padding: 0.5rem 1rem;
+		gap: 0.75rem;
+		min-height: 80px;
+	}
+
+	.weatherIcon {
+		height: 70px;
 	}
 
 	#getCity {
 		font-size: 0.95rem;
 		padding: 0.65rem 1rem;
-	}
-
-	body {
-		padding-top: 130px;
-	}
-}
-
-/* Responsive para móviles */
-@media (max-width: 480px) {
-	.appHeader {
-		padding: 0.75rem 1rem;
-		gap: 0.75rem;
-	}
-
-	.weatherIcon {
-		height: 60px;
-	}
-
-	#getCity {
-		font-size: 0.9rem;
-		padding: 0.6rem 0.9rem;
 		max-width: 100%;
+		height: 42px;
 	}
 
 	body {
-		padding-top: 90px;
+		padding-top: 100px;
+	}
+
+	/* Desactivar animación en móvil para mejor rendimiento */
+	.weatherIcon {
+		animation: none;
 	}
 }

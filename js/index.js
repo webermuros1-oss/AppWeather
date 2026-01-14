@@ -1,112 +1,245 @@
 /* =====================
-   ELEMENTOS BASE
+   ELEMENTOS DEL DOM
 ===================== */
-const cityInput = document.querySelector("#getCity");
-const cityName = document.querySelector(".cityName");
-const cityTemp = document.querySelector(".weatherDeg");
-const cityCondition = document.querySelector(".weatherCondition");
-const todayDate = document.querySelector(".date");
+const elements = {
+	cityInput: document.querySelector("#getCity"),
+	cityName: document.querySelector(".cityName"),
+	cityTemp: document.querySelector(".weatherDeg"),
+	cityCondition: document.querySelector(".weatherCondition"),
+	todayDate: document.querySelector(".date"),
+	weatherIcon: document.querySelector(".weatherIconDisplay"),
+	header: document.querySelector("header"),
+	mainCard: document.querySelector(".mainWeatherCard"),
+	
+	// Contenedores de información
+	atmosphere: document.querySelector(".atmosphereInfo"),
+	wind: document.querySelector(".windInfo"),
+	marine: document.querySelector(".marineInfo"),
+	forecast: document.querySelector(".forecastInfo"),
+	astro: document.querySelector(".astroInfo"),
+	air: document.querySelector(".airInfo"),
+	
+	// Navegación
+	prevArrow: document.querySelector(".prevArrow"),
+	nextArrow: document.querySelector(".nextArrow"),
+	favDots: document.getElementById("favDots")
+};
 
-const atmosphereContainer = document.querySelector(".atmosphereInfo");
-const windContainer = document.querySelector(".windInfo");
-const marineContainer = document.querySelector(".marineInfo");
-const forecastContainer = document.querySelector(".forecastInfo");
-const astroContainer = document.querySelector(".astroInfo");
-const airContainer = document.querySelector(".airInfo");
+/* =====================
+   CONSTANTES
+===================== */
+const API_URLS = {
+	geocoding: "https://geocoding-api.open-meteo.com/v1/search",
+	weather: "https://api.open-meteo.com/v1/forecast",
+	marine: "https://marine-api.open-meteo.com/v1/marine",
+	airQuality: "https://air-quality-api.open-meteo.com/v1/air-quality"
+};
+
+const MONTHS = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+const DAYS = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+
+const WEATHER_ICONS = {
+	0: "☀️", 1: "🌤️", 2: "⛅", 3: "☁️",
+	45: "🌫️", 48: "🌫️",
+	51: "🌦️", 53: "🌦️", 55: "🌧️",
+	61: "🌧️", 63: "🌧️", 65: "🌧️",
+	71: "❄️", 73: "❄️", 75: "❄️", 77: "🌨️",
+	80: "🌦️", 81: "🌧️", 82: "⛈️",
+	85: "🌨️", 86: "🌨️",
+	95: "⛈️", 96: "⛈️", 99: "⛈️"
+};
+
+const WEATHER_DESCRIPTIONS = {
+	0: "Despejado", 1: "Mayormente despejado",
+	2: "Parcialmente nublado", 3: "Nublado",
+	45: "Niebla", 48: "Niebla con escarcha",
+	51: "Llovizna ligera", 53: "Llovizna moderada", 55: "Llovizna intensa",
+	61: "Lluvia ligera", 63: "Lluvia moderada", 65: "Lluvia intensa",
+	71: "Nieve ligera", 73: "Nieve moderada", 75: "Nieve intensa", 77: "Granizo",
+	80: "Chubascos ligeros", 81: "Chubascos moderados", 82: "Chubascos intensos",
+	85: "Nevadas ligeras", 86: "Nevadas intensas",
+	95: "Tormenta", 96: "Tormenta con granizo", 99: "Tormenta severa"
+};
+
+const BACKGROUND_IMAGES = {
+	sunny: ["sunny1", "sunny2", "beach"],
+	cloudy: ["cloudy1", "cloudy2"],
+	rainy: ["rainy1", "rainy2", "rainy3"],
+	snowy: ["snowy1", "snowy2"],
+	stormy: ["stormy1", "stormy2"],
+	foggy: ["foggy1", "foggy2"],
+	default: ["bg1", "bg2", "bg3", "bg4", "bg5"]
+};
+
+/* =====================
+   GESTIÓN DE FAVORITOS
+===================== */
+class FavoritesManager {
+	constructor(maxFavorites = 3, defaultCity = "A Coruña") {
+		this.maxFavorites = maxFavorites;
+		this.defaultCity = defaultCity;
+		this.favorites = this.loadFavorites();
+		this.currentIndex = 0;
+	}
+
+	loadFavorites() {
+		const saved = localStorage.getItem("favCities");
+		return saved ? JSON.parse(saved) : [this.defaultCity];
+	}
+
+	saveFavorites() {
+		localStorage.setItem("favCities", JSON.stringify(this.favorites));
+	}
+
+	addCity(cityName) {
+		// Evitar duplicados
+		if (this.favorites.includes(cityName)) {
+			this.currentIndex = this.favorites.indexOf(cityName);
+			return false;
+		}
+
+		this.favorites.push(cityName);
+		
+		// Limitar número de favoritos
+		if (this.favorites.length > this.maxFavorites) {
+			this.favorites.shift();
+		}
+
+		this.currentIndex = this.favorites.length - 1;
+		this.saveFavorites();
+		return true;
+	}
+
+	getCurrentCity() {
+		return this.favorites[this.currentIndex];
+	}
+
+	goToPrevious() {
+		this.currentIndex = this.currentIndex > 0 
+			? this.currentIndex - 1 
+			: this.favorites.length - 1;
+		return this.getCurrentCity();
+	}
+
+	goToNext() {
+		this.currentIndex = this.currentIndex < this.favorites.length - 1 
+			? this.currentIndex + 1 
+			: 0;
+		return this.getCurrentCity();
+	}
+
+	goToIndex(index) {
+		if (index >= 0 && index < this.favorites.length) {
+			this.currentIndex = index;
+			return this.getCurrentCity();
+		}
+		return null;
+	}
+
+	getAllCities() {
+		return this.favorites;
+	}
+
+	getCount() {
+		return this.favorites.length;
+	}
+}
+
+const favoritesManager = new FavoritesManager();
 
 /* =====================
    EVENTOS
 ===================== */
-window.addEventListener("load", () => {
-	changeBackgroundImage();
-	// Cargar ciudad por defecto
-	setTimeout(() => {
-		cityInput.value = "A Coruña";
-		fetchDataFromApi();
-		cityInput.value = "";
-	}, 100);
-});
+function initializeEventListeners() {
+	// Cargar ciudad inicial
+	window.addEventListener("load", async () => {
+		changeBackgroundImage();
+		await loadCityByIndex(0);
+	});
 
-// Ocultar header al hacer scroll
-let lastScrollTop = 0;
-const header = document.querySelector("header");
-
-window.addEventListener("scroll", () => {
-	const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-	
-	if (scrollTop > lastScrollTop && scrollTop > 100) {
-		header.style.transform = "translateY(-100%)";
-	} else {
-		header.style.transform = "translateY(0)";
-	}
-	
-	lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-});
-
-cityInput.addEventListener("keypress", (event) => {
-	if (event.key === "Enter") {
-		fetchDataFromApi();
-	}
-});
-
-/* =====================
-   BACKGROUND DINÁMICO
-===================== */
-function changeBackgroundImage(weatherCode = null) {
-	let bgImages;
-	const mainCard = document.querySelector('.mainWeatherCard');
-	
-	if (!mainCard) return;
-
-	if (weatherCode !== null) {
-		if (weatherCode === 0 || weatherCode === 1) {
-			bgImages = ["sunny1", "sunny2", "beach"];
-		} else if (weatherCode === 2 || weatherCode === 3) {
-			bgImages = ["cloudy1", "cloudy2"];
-		} else if ((weatherCode >= 51 && weatherCode <= 67) || (weatherCode >= 80 && weatherCode <= 82)) {
-			bgImages = ["rainy1", "rainy2", "rainy3"];
-		} else if ((weatherCode >= 71 && weatherCode <= 77) || (weatherCode >= 85 && weatherCode <= 86)) {
-			bgImages = ["snowy1", "snowy2"];
-		} else if (weatherCode >= 95 && weatherCode <= 99) {
-			bgImages = ["stormy1", "stormy2"];
-		} else if (weatherCode === 45 || weatherCode === 48) {
-			bgImages = ["foggy1", "foggy2"];
+	// Ocultar header al hacer scroll
+	let lastScrollTop = 0;
+	window.addEventListener("scroll", () => {
+		const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+		
+		if (scrollTop > lastScrollTop && scrollTop > 100) {
+			elements.header.style.transform = "translateY(-100%)";
 		} else {
-			bgImages = [`bg${Math.ceil(Math.random() * 5)}`];
+			elements.header.style.transform = "translateY(0)";
 		}
-	} else {
-		bgImages = [`bg${Math.ceil(Math.random() * 5)}`];
-	}
+		
+		lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+	});
 
-	const selectedImage = bgImages[Math.floor(Math.random() * bgImages.length)];
-	mainCard.style.backgroundImage = `url('media/images/${selectedImage}.jpg')`;
+	// Buscar ciudad al presionar Enter
+	elements.cityInput.addEventListener("keypress", (event) => {
+		if (event.key === "Enter") {
+			fetchDataFromApi(true);
+		}
+	});
+
+	// Navegación con flechas
+	elements.prevArrow.addEventListener("click", () => {
+		const city = favoritesManager.goToPrevious();
+		loadCityByName(city);
+	});
+
+	elements.nextArrow.addEventListener("click", () => {
+		const city = favoritesManager.goToNext();
+		loadCityByName(city);
+	});
+
+	// Soporte para gestos táctiles
+	let touchStartX = 0;
+	let touchEndX = 0;
+
+	elements.mainCard.addEventListener("touchstart", e => {
+		touchStartX = e.changedTouches[0].screenX;
+	});
+
+	elements.mainCard.addEventListener("touchend", e => {
+		touchEndX = e.changedTouches[0].screenX;
+		const swipeDistance = 50;
+
+		if (touchStartX - touchEndX > swipeDistance) {
+			elements.nextArrow.click();
+		} else if (touchEndX - touchStartX > swipeDistance) {
+			elements.prevArrow.click();
+		}
+	});
 }
 
 /* =====================
-FETCH PRINCIPAL
+   API - FETCH DE DATOS
 ===================== */
-async function fetchDataFromApi() {
-	const insertedCity = cityInput.value.trim();
-	if (!insertedCity) return alert("Introduce una ciudad");
+async function fetchDataFromApi(saveToFavorites = false) {
+	const cityName = elements.cityInput.value.trim();
+	
+	if (!cityName) {
+		alert("Introduce una ciudad");
+		return;
+	}
 
 	try {
-		const geoResponse = await fetch(
-			`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(insertedCity)}&count=1&language=es&format=json`
-		);
-		const geoData = await geoResponse.json();
+		// 1. Obtener coordenadas
+		const geoData = await fetchGeoData(cityName);
+		if (!geoData) return;
 
-		if (!geoData.results?.length) {
-			return alert("Ciudad no encontrada");
+		const { latitude, longitude, name, country } = geoData;
+
+		// 2. Guardar en favoritos si es necesario
+		if (saveToFavorites) {
+			favoritesManager.addCity(name);
 		}
 
-		const { latitude, longitude, name, country } = geoData.results[0];
-
+		// 3. Obtener todos los datos meteorológicos
 		const [weatherData, marineData, airQualityData] = await Promise.all([
 			fetchWeatherData(latitude, longitude),
 			fetchMarineData(latitude, longitude),
 			fetchAirQuality(latitude, longitude)
 		]);
 
+		// 4. Combinar datos
 		const combinedData = {
 			name,
 			country,
@@ -115,29 +248,42 @@ async function fetchDataFromApi() {
 			...airQualityData
 		};
 
-		addDataToDom(combinedData);
-		changeBackgroundImage(combinedData.weatherCode);
-		cityInput.value = "";
+		// 5. Actualizar UI
+		updateUI(combinedData);
 		
-		// Scroll al inicio de la página
-		window.scrollTo({
-			top: 0,
-			behavior: 'smooth'
-		});
-		
+		// Limpiar input
+		elements.cityInput.value = "";
+
 	} catch (error) {
-		console.error(error);
-		alert("Error obteniendo datos");
+		console.error("Error fetching data:", error);
+		alert("Error obteniendo datos meteorológicos");
 	}
 }
 
-/* =====================
-   DATOS METEOROLÓGICOS
-===================== */
+async function fetchGeoData(cityName) {
+	const url = `${API_URLS.geocoding}?name=${encodeURIComponent(cityName)}&count=1&language=es&format=json`;
+	const response = await fetch(url);
+	const data = await response.json();
+
+	if (!data.results?.length) {
+		alert("Ciudad no encontrada");
+		return null;
+	}
+
+	return data.results[0];
+}
+
 async function fetchWeatherData(latitude, longitude) {
-	const response = await fetch(
-		`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m,apparent_temperature,precipitation,rain,showers,snowfall,pressure_msl,surface_pressure,cloud_cover,visibility,uv_index,is_day,cape,dew_point_2m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset,daylight_duration,sunshine_duration,uv_index_max&timezone=auto&forecast_days=3`
-	);
+	const params = new URLSearchParams({
+		latitude,
+		longitude,
+		current: "temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m,apparent_temperature,precipitation,rain,showers,snowfall,pressure_msl,surface_pressure,cloud_cover,visibility,uv_index,is_day,cape,dew_point_2m",
+		daily: "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset,daylight_duration,sunshine_duration,uv_index_max",
+		timezone: "auto",
+		forecast_days: 7
+	});
+
+	const response = await fetch(`${API_URLS.weather}?${params}`);
 	const data = await response.json();
 
 	return {
@@ -163,19 +309,22 @@ async function fetchWeatherData(latitude, longitude) {
 	};
 }
 
-/* =====================
-   DATOS MARÍTIMOS
-===================== */
 async function fetchMarineData(latitude, longitude) {
 	try {
-		const response = await fetch(
-			`https://marine-api.open-meteo.com/v1/marine?latitude=${latitude}&longitude=${longitude}&current=wave_height,wave_direction,wave_period,wind_wave_height,swell_wave_height,ocean_current_velocity,ocean_current_direction&timezone=auto`
-		);
+		const params = new URLSearchParams({
+			latitude,
+			longitude,
+			current: "wave_height,wave_direction,wave_period,wind_wave_height,swell_wave_height,ocean_current_velocity,ocean_current_direction",
+			timezone: "auto"
+		});
 
-		if (!response.ok) return { hasMarineData: false };
+		const response = await fetch(`${API_URLS.marine}?${params}`);
+		
+		if (!response.ok) {
+			return { hasMarineData: false };
+		}
 
 		const data = await response.json();
-
 		return {
 			hasMarineData: true,
 			marine: data.current
@@ -185,19 +334,22 @@ async function fetchMarineData(latitude, longitude) {
 	}
 }
 
-/* =====================
-   CALIDAD DEL AIRE
-===================== */
 async function fetchAirQuality(latitude, longitude) {
 	try {
-		const response = await fetch(
-			`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${latitude}&longitude=${longitude}&current=pm10,pm2_5,carbon_monoxide,nitrogen_dioxide,sulphur_dioxide,ozone,dust&timezone=auto`
-		);
+		const params = new URLSearchParams({
+			latitude,
+			longitude,
+			current: "pm10,pm2_5,carbon_monoxide,nitrogen_dioxide,sulphur_dioxide,ozone,dust",
+			timezone: "auto"
+		});
 
-		if (!response.ok) return { hasAirQuality: false };
+		const response = await fetch(`${API_URLS.airQuality}?${params}`);
+		
+		if (!response.ok) {
+			return { hasAirQuality: false };
+		}
 
 		const data = await response.json();
-
 		return {
 			hasAirQuality: true,
 			airQuality: data.current
@@ -208,147 +360,224 @@ async function fetchAirQuality(latitude, longitude) {
 }
 
 /* =====================
-   PINTAR DATOS EN DOM
+   NAVEGACIÓN DE CIUDADES
 ===================== */
-function addDataToDom(data) {
-	document.querySelector(".weatherIconDisplay").innerHTML = getWeatherIcon(data.weatherCode);
+async function loadCityByIndex(index) {
+	const city = favoritesManager.goToIndex(index);
+	if (city) {
+		await loadCityByName(city);
+	}
+}
 
-	cityName.innerHTML = `${data.name}, ${data.country}`;
-	cityTemp.innerHTML = `${Math.round(data.temperature)}°C`;
-	cityCondition.innerHTML = getWeatherDescription(data.weatherCode);
-	todayDate.innerHTML = getDate();
+async function loadCityByName(cityName) {
+	elements.cityInput.value = cityName;
+	await fetchDataFromApi(false);
+}
 
-	// CONDICIONES ATMOSFÉRICAS
-	atmosphereContainer.innerHTML = `
-		<p>💧 <strong>${data.humidity}%</strong> Humedad</p>
-		<p>🌡️ <strong>${Math.round(data.apparentTemperature)}°C</strong> Sensación térmica</p>
-		<p>💧 <strong>${data.dewPoint?.toFixed(1) || 0}°C</strong> Punto de rocío</p>
-		<p>🌧️ <strong>${data.precipitation || 0} mm</strong> Precipitación</p>
-		${data.rain > 0 ? `<p>🌧️ <strong>${data.rain} mm</strong> Lluvia</p>` : ''}
-		${data.showers > 0 ? `<p>🌦️ <strong>${data.showers} mm</strong> Chubascos</p>` : ''}
-		${data.snowfall > 0 ? `<p>❄️ <strong>${data.snowfall} cm</strong> Nieve</p>` : ''}
-		<p>📊 <strong>${Math.round(data.pressure)} hPa</strong> Presión atmosférica</p>
-		<p>📉 <strong>${Math.round(data.surfacePressure)} hPa</strong> Presión superficial</p>
-		<p>☁️ <strong>${data.cloudCover}%</strong> Nubosidad</p>
-		<p>👁️ <strong>${(data.visibility / 1000).toFixed(1)} km</strong> Visibilidad</p>
-		<p>☀️ <strong>${data.uvIndex || 0}</strong> Índice UV</p>
-		${data.cape ? `<p>⚡ <strong>${Math.round(data.cape)} J/kg</strong> CAPE</p>` : ''}
-	`;
+/* =====================
+   ACTUALIZACIÓN DE UI
+===================== */
+function updateUI(data) {
+	updateMainCard(data);
+	updateAtmosphere(data);
+	updateWind(data);
+	updateForecast(data);
+	updateAstro(data);
+	updateMarine(data);
+	updateAirQuality(data);
+	updateDots();
+	changeBackgroundImage(data.weatherCode);
+	scrollToTop();
+}
 
-	// INFORMACIÓN DEL VIENTO
-	windContainer.innerHTML = `
+function updateMainCard(data) {
+	elements.weatherIcon.innerHTML = getWeatherIcon(data.weatherCode);
+	elements.cityName.innerHTML = `${data.name}, ${data.country}`;
+	elements.cityTemp.innerHTML = `${Math.round(data.temperature)}°C`;
+	elements.cityCondition.innerHTML = getWeatherDescription(data.weatherCode);
+	elements.todayDate.innerHTML = getCurrentDate();
+}
+
+function updateAtmosphere(data) {
+	const items = [
+		`💧 <strong>${data.humidity}%</strong> Humedad`,
+		`🌡️ <strong>${Math.round(data.apparentTemperature)}°C</strong> Sensación térmica`,
+		`💧 <strong>${data.dewPoint?.toFixed(1) || 0}°C</strong> Punto de rocío`,
+		`🌧️ <strong>${data.precipitation || 0} mm</strong> Precipitación`,
+		data.rain > 0 ? `🌧️ <strong>${data.rain} mm</strong> Lluvia` : null,
+		data.showers > 0 ? `🌦️ <strong>${data.showers} mm</strong> Chubascos` : null,
+		data.snowfall > 0 ? `❄️ <strong>${data.snowfall} cm</strong> Nieve` : null,
+		`📊 <strong>${Math.round(data.pressure)} hPa</strong> Presión atmosférica`,
+		`📉 <strong>${Math.round(data.surfacePressure)} hPa</strong> Presión superficial`,
+		`☁️ <strong>${data.cloudCover}%</strong> Nubosidad`,
+		`👁️ <strong>${(data.visibility / 1000).toFixed(1)} km</strong> Visibilidad`,
+		`☀️ <strong>${data.uvIndex || 0}</strong> Índice UV`,
+		data.cape ? `⚡ <strong>${Math.round(data.cape)} J/kg</strong> CAPE` : null
+	].filter(Boolean);
+
+	elements.atmosphere.innerHTML = items.map(item => `<p>${item}</p>`).join("");
+}
+
+function updateWind(data) {
+	elements.wind.innerHTML = `
 		<p>💨 <strong>${Math.round(data.windSpeed)} km/h</strong> Velocidad ${getWindDirection(data.windDirection)}</p>
 		<p>💨 <strong>${Math.round(data.windGusts)} km/h</strong> Rachas de viento</p>
 		<p>🧭 <strong>${Math.round(data.windDirection)}°</strong> Dirección</p>
 	`;
+}
 
-	// DATOS MARÍTIMOS
-	if (data.hasMarineData && data.marine) {
-		marineContainer.innerHTML = `
-			<p>🌊 <strong>${data.marine.wave_height?.toFixed(2) || 0} m</strong> Altura de olas</p>
-			<p>🧭 <strong>${Math.round(data.marine.wave_direction || 0)}°</strong> Dirección olas</p>
-			<p>⏱️ <strong>${data.marine.wave_period?.toFixed(1) || 0} s</strong> Período de olas</p>
-			<p>💨 <strong>${data.marine.wind_wave_height?.toFixed(2) || 0} m</strong> Olas de viento</p>
-			<p>🌀 <strong>${data.marine.swell_wave_height?.toFixed(2) || 0} m</strong> Oleaje</p>
-			<p>🌊 <strong>${data.marine.ocean_current_velocity?.toFixed(2) || 0} m/s</strong> Corriente oceánica</p>
-			<p>🧭 <strong>${Math.round(data.marine.ocean_current_direction || 0)}°</strong> Dirección corriente</p>
-		`;
-	} else {
-		marineContainer.innerHTML = `<p class="notAvailable">Datos marítimos no disponibles</p>`;
-	}
+function updateForecast(data) {
+	const forecastHTML = data.dailyForecast.time.slice(0, 7).map((date, i) => {
+		const dayDate = new Date(date);
+		const maxTemp = data.dailyForecast.temperature_2m_max[i];
+		const minTemp = data.dailyForecast.temperature_2m_min[i];
+		const rainProb = data.dailyForecast.precipitation_probability_max?.[i] || 0;
+		const weatherCode = data.dailyForecast.weather_code[i];
 
-	// PRONÓSTICO 3 DÍAS
-	forecastContainer.innerHTML = "";
-	for (let i = 0; i < 3; i++) {
-		const date = new Date(data.dailyForecast.time[i]);
-		forecastContainer.innerHTML += `
+		return `
 			<div class="forecastDay">
-				<span class="forecastDayName">${i === 0 ? 'Hoy' : days[date.getDay()]}</span>
-				<span class="forecastIcon">${getWeatherIcon(data.dailyForecast.weather_code[i])}</span>
+				<span class="forecastDayName">${i === 0 ? 'Hoy' : DAYS[dayDate.getDay()]}</span>
+				<span class="forecastIcon">${getWeatherIcon(weatherCode)}</span>
 				<div class="forecastTemps">
-					<span class="forecastMax">${Math.round(data.dailyForecast.temperature_2m_max[i])}°</span>
-					<span class="forecastMin">${Math.round(data.dailyForecast.temperature_2m_min[i])}°</span>
+					<span class="forecastMax">${Math.round(maxTemp)}°</span>
+					<span class="forecastMin">${Math.round(minTemp)}°</span>
 				</div>
-				<span class="forecastRain">💧 ${data.dailyForecast.precipitation_probability_max[i] || 0}%</span>
+				<span class="forecastRain">💧 ${rainProb}%</span>
 			</div>
 		`;
-	}
+	}).join("");
 
-	// DATOS ASTRONÓMICOS
-	const sunrise = new Date(data.dailyForecast.sunrise[0]).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
-	const sunset = new Date(data.dailyForecast.sunset[0]).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+	elements.forecast.innerHTML = forecastHTML;
+}
+
+function updateAstro(data) {
+	const sunrise = new Date(data.dailyForecast.sunrise[0]).toLocaleTimeString('es-ES', { 
+		hour: '2-digit', 
+		minute: '2-digit' 
+	});
+	const sunset = new Date(data.dailyForecast.sunset[0]).toLocaleTimeString('es-ES', { 
+		hour: '2-digit', 
+		minute: '2-digit' 
+	});
 	const daylightHours = (data.dailyForecast.daylight_duration[0] / 3600).toFixed(1);
 	const sunshineHours = (data.dailyForecast.sunshine_duration[0] / 3600).toFixed(1);
+	const maxUV = data.dailyForecast.uv_index_max[0] || 0;
 
-	astroContainer.innerHTML = `
+	elements.astro.innerHTML = `
 		<p>🌅 <strong>${sunrise}</strong> Amanecer</p>
 		<p>🌇 <strong>${sunset}</strong> Atardecer</p>
 		<p>☀️ <strong>${daylightHours} h</strong> Luz del día</p>
 		<p>🌞 <strong>${sunshineHours} h</strong> Horas de sol</p>
-		<p>☀️ <strong>${data.dailyForecast.uv_index_max[0] || 0}</strong> UV máximo</p>
+		<p>☀️ <strong>${maxUV}</strong> UV máximo</p>
 	`;
+}
 
-	// CALIDAD DEL AIRE
-	if (data.hasAirQuality && data.airQuality) {
-		const aq = data.airQuality;
-		airContainer.innerHTML = `
-			<p>🌫️ <strong>${aq.pm10?.toFixed(1) || 0} µg/m³</strong> PM10</p>
-			<p>🌫️ <strong>${aq.pm2_5?.toFixed(1) || 0} µg/m³</strong> PM2.5</p>
-			<p>💨 <strong>${aq.carbon_monoxide?.toFixed(0) || 0} µg/m³</strong> CO</p>
-			<p>🏭 <strong>${aq.nitrogen_dioxide?.toFixed(1) || 0} µg/m³</strong> NO₂</p>
-			<p>🏭 <strong>${aq.sulphur_dioxide?.toFixed(1) || 0} µg/m³</strong> SO₂</p>
-			<p>🌍 <strong>${aq.ozone?.toFixed(1) || 0} µg/m³</strong> O₃</p>
-			${aq.dust ? `<p>🏜️ <strong>${aq.dust.toFixed(1)} µg/m³</strong> Polvo</p>` : ''}
-		`;
-	} else {
-		airContainer.innerHTML = `<p class="notAvailable">Datos de calidad del aire no disponibles</p>`;
+function updateMarine(data) {
+	if (!data.hasMarineData || !data.marine) {
+		elements.marine.innerHTML = `<p class="notAvailable">Datos marítimos no disponibles</p>`;
+		return;
 	}
+
+	const m = data.marine;
+	elements.marine.innerHTML = `
+		<p>🌊 <strong>${m.wave_height?.toFixed(2) || 0} m</strong> Altura de olas</p>
+		<p>🧭 <strong>${Math.round(m.wave_direction || 0)}°</strong> Dirección olas</p>
+		<p>⏱️ <strong>${m.wave_period?.toFixed(1) || 0} s</strong> Período de olas</p>
+		<p>💨 <strong>${m.wind_wave_height?.toFixed(2) || 0} m</strong> Olas de viento</p>
+		<p>🌀 <strong>${m.swell_wave_height?.toFixed(2) || 0} m</strong> Oleaje</p>
+		<p>🌊 <strong>${m.ocean_current_velocity?.toFixed(2) || 0} m/s</strong> Corriente oceánica</p>
+		<p>🧭 <strong>${Math.round(m.ocean_current_direction || 0)}°</strong> Dirección corriente</p>
+	`;
+}
+
+function updateAirQuality(data) {
+	if (!data.hasAirQuality || !data.airQuality) {
+		elements.air.innerHTML = `<p class="notAvailable">Datos de calidad del aire no disponibles</p>`;
+		return;
+	}
+
+	const aq = data.airQuality;
+	const items = [
+		`🌫️ <strong>${aq.pm10?.toFixed(1) || 0} µg/m³</strong> PM10`,
+		`🌫️ <strong>${aq.pm2_5?.toFixed(1) || 0} µg/m³</strong> PM2.5`,
+		`💨 <strong>${aq.carbon_monoxide?.toFixed(0) || 0} µg/m³</strong> CO`,
+		`🏭 <strong>${aq.nitrogen_dioxide?.toFixed(1) || 0} µg/m³</strong> NO₂`,
+		`🏭 <strong>${aq.sulphur_dioxide?.toFixed(1) || 0} µg/m³</strong> SO₂`,
+		`🌍 <strong>${aq.ozone?.toFixed(1) || 0} µg/m³</strong> O₃`,
+		aq.dust ? `🏜️ <strong>${aq.dust.toFixed(1)} µg/m³</strong> Polvo` : null
+	].filter(Boolean);
+
+	elements.air.innerHTML = items.map(item => `<p>${item}</p>`).join("");
+}
+
+function updateDots() {
+	const cities = favoritesManager.getAllCities();
+	const currentIndex = favoritesManager.currentIndex;
+
+	elements.favDots.innerHTML = cities
+		.map((_, i) => `<div class="dot ${i === currentIndex ? 'active' : ''}"></div>`)
+		.join("");
+}
+
+/* =====================
+   BACKGROUND DINÁMICO
+===================== */
+function changeBackgroundImage(weatherCode = null) {
+	if (!elements.mainCard) return;
+
+	let imageCategory = "default";
+
+	if (weatherCode !== null) {
+		if (weatherCode === 0 || weatherCode === 1) {
+			imageCategory = "sunny";
+		} else if (weatherCode === 2 || weatherCode === 3) {
+			imageCategory = "cloudy";
+		} else if ((weatherCode >= 51 && weatherCode <= 67) || (weatherCode >= 80 && weatherCode <= 82)) {
+			imageCategory = "rainy";
+		} else if ((weatherCode >= 71 && weatherCode <= 77) || (weatherCode >= 85 && weatherCode <= 86)) {
+			imageCategory = "snowy";
+		} else if (weatherCode >= 95 && weatherCode <= 99) {
+			imageCategory = "stormy";
+		} else if (weatherCode === 45 || weatherCode === 48) {
+			imageCategory = "foggy";
+		}
+	}
+
+	const images = BACKGROUND_IMAGES[imageCategory];
+	const selectedImage = images[Math.floor(Math.random() * images.length)];
+	
+	elements.mainCard.style.backgroundImage = `url('media/images/${selectedImage}.jpg')`;
 }
 
 /* =====================
    UTILIDADES
 ===================== */
-function getWindDirection(deg) {
-	const dirs = ["N", "NE", "E", "SE", "S", "SO", "O", "NO"];
-	return deg != null ? `(${dirs[Math.round(deg / 45) % 8]})` : "";
+function getWindDirection(degrees) {
+	const directions = ["N", "NE", "E", "SE", "S", "SO", "O", "NO"];
+	return degrees != null ? `(${directions[Math.round(degrees / 45) % 8]})` : "";
 }
 
 function getWeatherIcon(code) {
-	const icons = {
-		0: "☀️", 1: "🌤️", 2: "⛅", 3: "☁️",
-		45: "🌫️", 48: "🌫️",
-		51: "🌦️", 53: "🌦️", 55: "🌧️",
-		61: "🌧️", 63: "🌧️", 65: "🌧️",
-		71: "❄️", 73: "❄️", 75: "❄️", 77: "🌨️",
-		80: "🌦️", 81: "🌧️", 82: "⛈️",
-		85: "🌨️", 86: "🌨️",
-		95: "⛈️", 96: "⛈️", 99: "⛈️"
-	};
-	return icons[code] || "🌡️";
+	return WEATHER_ICONS[code] || "🌡️";
 }
 
 function getWeatherDescription(code) {
-	const desc = {
-		0: "Despejado", 1: "Mayormente despejado",
-		2: "Parcialmente nublado", 3: "Nublado",
-		45: "Niebla", 48: "Niebla con escarcha",
-		51: "Llovizna ligera", 53: "Llovizna moderada", 55: "Llovizna intensa",
-		61: "Lluvia ligera", 63: "Lluvia moderada", 65: "Lluvia intensa",
-		71: "Nieve ligera", 73: "Nieve moderada", 75: "Nieve intensa", 77: "Granizo",
-		80: "Chubascos ligeros", 81: "Chubascos moderados", 82: "Chubascos intensos",
-		85: "Nevadas ligeras", 86: "Nevadas intensas",
-		95: "Tormenta", 96: "Tormenta con granizo", 99: "Tormenta severa"
-	};
-	return desc[code] || "Desconocido";
+	return WEATHER_DESCRIPTIONS[code] || "Desconocido";
 }
 
-const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-const days = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
-
-function getDate() {
+function getCurrentDate() {
 	const d = new Date();
-	return `${days[d.getDay()]}, ${d.getDate()} de ${months[d.getMonth()]} de ${d.getFullYear()}`;
+	return `${DAYS[d.getDay()]}, ${d.getDate()} de ${MONTHS[d.getMonth()]} de ${d.getFullYear()}`;
 }
 
+function scrollToTop() {
+	window.scrollTo({
+		top: 0,
+		behavior: 'smooth'
+	});
+}
 
-    
+/* =====================
+   INICIALIZACIÓN
+===================== */
+initializeEventListeners();
