@@ -14,7 +14,7 @@ class MyFooter extends HTMLElement {
 
         <div class="footerItem" data-section="atmosphereCard">
           <i class="fa-solid fa-wind"></i>
-          <span>Atmosfera</span>
+          <span>Atmósfera</span>
         </div>
 
         <div class="footerItem" data-section="windCard">

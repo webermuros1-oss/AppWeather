@@ -14,7 +14,7 @@ body {
 	overflow-x: hidden;
 }
 
-/* ================= HEADER ================= */
+
 header {
 	display: flex;
 	flex-direction: column;
@@ -55,7 +55,7 @@ header {
 	box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
 }
 
-/* ================= DASHBOARD ================= */
+
 .dashboard {
 	display: flex;
 	flex-direction: column;
@@ -66,7 +66,7 @@ header {
 	padding: 20px 15px 40px;
 }
 
-/* ================= CARD BASE ================= */
+
 .card {
 	background: rgba(74, 119, 247, 0.95);
 	backdrop-filter: blur(10px);
@@ -92,7 +92,7 @@ header {
 	padding-bottom: 8px;
 }
 
-/* ================= CARD PRINCIPAL ================= */
+
 .mainWeatherCard {
 	background-image: url("../media/images/bg.jpg");
 	background-size: cover;
@@ -153,7 +153,7 @@ header {
 	opacity: 0.95;
 }
 
-/* ================= GRIDS DE INFORMACIÓN ================= */
+
 .gridInfo, .windInfo, .marineInfo, .astroInfo, .airInfo {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -178,7 +178,7 @@ header {
 	color: #fff;
 }
 
-/* ================= PRONÓSTICO ================= */
+
 .forecastInfo {
 	display: flex;
 	flex-direction: column;
@@ -225,7 +225,7 @@ header {
 	opacity: 0.9;
 }
 
-/* ================= MENSAJE DE NO DISPONIBLE ================= */
+
 .notAvailable {
 	text-align: center;
 	opacity: 0.7;
@@ -233,7 +233,7 @@ header {
 	padding: 20px;
 }
 
-/* ================= RESPONSIVE ================= */
+
 @media (min-width: 768px) {
 	.dashboard {
 		max-width: 800px;

@@ -51,8 +51,8 @@ body {
   align-items: center;
   justify-content: center;
   flex: 1;
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 11px;
+  color: white;
+  font-size: 13px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -84,7 +84,7 @@ body {
 
 
 .footerItem i {
-  font-size: 24px;
+  font-size: 26px;
   margin-bottom: 6px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
@@ -93,7 +93,7 @@ body {
 
 .footerItem.active {
   color: #ffffff;
-  font-weight: 600;
+  font-weight: 500;
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(10px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15),
