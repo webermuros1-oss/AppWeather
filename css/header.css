@@ -10,10 +10,10 @@ body {
 	font-family: "Barlow", sans-serif;
 	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 	min-height: 100vh;
-	padding-top: 140px; /* Ajustado para el nuevo header */
+	padding-top: 140px; 
 }
 
-/* ================= HEADER MEJORADO ================= */
+
 .appHeader {
 	position: fixed;
 	top: 0;
@@ -30,14 +30,14 @@ body {
 	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 	z-index: 1000;
 	gap: 2rem;
-	min-height: 120px; /* Altura mínima para dar más espacio */
+	min-height: 120px; 
 }
 
 .title {
 	display: flex;
 	align-items: center;
 	height: 100%;
-	flex-shrink: 0; /* Evita que se comprima */
+	flex-shrink: 0; 
 }
 
 .weatherIcon {

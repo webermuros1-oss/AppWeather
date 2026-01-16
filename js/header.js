@@ -4,7 +4,7 @@ class MyHeader extends HTMLElement {
 
     <header class="appHeader">
         
-        <h1 class="title"><img class="weatherIcon" src="media/images/logo.png" alt="weather logo"></h1>
+        <h1 class="title"><img class="weatherIcon" src="media/images/logoRemaster.png" alt="weather logo"></h1>
 	
         <input id="getCity" type="text" placeholder="Busca ciudad aquí" />
     </header>

@@ -11,7 +11,7 @@ body {
   min-height: 100vh;
 }
 
-/* Contenido de ejemplo */
+
 .content {
   padding: 20px;
   max-width: 600px;
@@ -27,7 +27,7 @@ body {
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-/* Footer fijo tipo app */
+
 .appFooter {
   position: fixed;
   bottom: 0;
@@ -44,7 +44,7 @@ body {
   box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.3);
 }
 
-/* Cada botón del footer */
+
 .footerItem {
   display: flex;
   flex-direction: column;
@@ -63,7 +63,7 @@ body {
   margin: 0 4px;
 }
 
-/* Efecto de fondo en hover */
+
 .footerItem::before {
   content: '';
   position: absolute;
@@ -82,7 +82,7 @@ body {
   transform: translate(-50%, -50%) scale(1);
 }
 
-/* Iconos */
+
 .footerItem i {
   font-size: 24px;
   margin-bottom: 6px;
@@ -90,7 +90,7 @@ body {
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
-/* Estado activo con efecto glassmorphism */
+
 .footerItem.active {
   color: #ffffff;
   font-weight: 600;
@@ -106,7 +106,7 @@ body {
   filter: drop-shadow(0 4px 8px rgba(255, 255, 255, 0.3));
 }
 
-/* Indicador activo - línea superior */
+
 .footerItem.active::after {
   content: '';
   position: absolute;
@@ -120,7 +120,7 @@ body {
   box-shadow: 0 2px 8px rgba(255, 255, 255, 0.5);
 }
 
-/* Hover effect */
+
 .footerItem:hover {
   color: rgba(255, 255, 255, 0.9);
   transform: translateY(-2px);
@@ -130,12 +130,12 @@ body {
   transform: translateY(-2px) scale(1.05);
 }
 
-/* Efecto de presión al hacer click */
+
 .footerItem:active {
   transform: translateY(0) scale(0.98);
 }
 
-/* Responsive */
+
 @media (max-width: 480px) {
   .footerItem {
     font-size: 10px;

@@ -1,6 +1,4 @@
-/* =====================
-   ELEMENTOS DEL DOM
-===================== */
+
 const elements = {
 	cityInput: document.querySelector("#getCity"),
 	cityName: document.querySelector(".cityName"),
@@ -11,7 +9,7 @@ const elements = {
 	header: document.querySelector("header"),
 	mainCard: document.querySelector(".mainWeatherCard"),
 	
-	// Contenedores de información
+
 	atmosphere: document.querySelector(".atmosphereInfo"),
 	wind: document.querySelector(".windInfo"),
 	marine: document.querySelector(".marineInfo"),
@@ -19,15 +17,13 @@ const elements = {
 	astro: document.querySelector(".astroInfo"),
 	air: document.querySelector(".airInfo"),
 	
-	// Navegación
+	
 	prevArrow: document.querySelector(".prevArrow"),
 	nextArrow: document.querySelector(".nextArrow"),
 	favDots: document.getElementById("favDots")
 };
 
-/* =====================
-   CONSTANTES
-===================== */
+
 const API_URLS = {
 	geocoding: "https://geocoding-api.open-meteo.com/v1/search",
 	weather: "https://api.open-meteo.com/v1/forecast",
@@ -71,9 +67,7 @@ const BACKGROUND_IMAGES = {
 	default: ["bg1", "bg2", "bg3", "bg4", "bg5"]
 };
 
-/* =====================
-   GESTIÓN DE FAVORITOS
-===================== */
+
 class FavoritesManager {
 	constructor(maxFavorites = 3, defaultCity = "A Coruña") {
 		this.maxFavorites = maxFavorites;
@@ -92,7 +86,7 @@ class FavoritesManager {
 	}
 
 	addCity(cityName) {
-		// Evitar duplicados
+		
 		if (this.favorites.includes(cityName)) {
 			this.currentIndex = this.favorites.indexOf(cityName);
 			return false;
@@ -100,7 +94,7 @@ class FavoritesManager {
 
 		this.favorites.push(cityName);
 		
-		// Limitar número de favoritos
+		
 		if (this.favorites.length > this.maxFavorites) {
 			this.favorites.shift();
 		}
@@ -147,17 +141,15 @@ class FavoritesManager {
 
 const favoritesManager = new FavoritesManager();
 
-/* =====================
-   EVENTOS
-===================== */
+
 function initializeEventListeners() {
-	// Cargar ciudad inicial
+	
 	window.addEventListener("load", async () => {
 		changeBackgroundImage();
 		await loadCityByIndex(0);
 	});
 
-	// Ocultar header al hacer scroll
+	
 	let lastScrollTop = 0;
 	window.addEventListener("scroll", () => {
 		const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
@@ -171,14 +163,14 @@ function initializeEventListeners() {
 		lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
 	});
 
-	// Buscar ciudad al presionar Enter
+	
 	elements.cityInput.addEventListener("keypress", (event) => {
 		if (event.key === "Enter") {
 			fetchDataFromApi(true);
 		}
 	});
 
-	// Navegación con flechas
+	
 	elements.prevArrow.addEventListener("click", () => {
 		const city = favoritesManager.goToPrevious();
 		loadCityByName(city);
@@ -189,7 +181,7 @@ function initializeEventListeners() {
 		loadCityByName(city);
 	});
 
-	// Soporte para gestos táctiles
+	
 	let touchStartX = 0;
 	let touchEndX = 0;
 
@@ -209,9 +201,7 @@ function initializeEventListeners() {
 	});
 }
 
-/* =====================
-   API - FETCH DE DATOS
-===================== */
+
 async function fetchDataFromApi(saveToFavorites = false) {
 	const cityName = elements.cityInput.value.trim();
 	
@@ -221,25 +211,25 @@ async function fetchDataFromApi(saveToFavorites = false) {
 	}
 
 	try {
-		// 1. Obtener coordenadas
+		
 		const geoData = await fetchGeoData(cityName);
 		if (!geoData) return;
 
 		const { latitude, longitude, name, country } = geoData;
 
-		// 2. Guardar en favoritos si es necesario
+		
 		if (saveToFavorites) {
 			favoritesManager.addCity(name);
 		}
 
-		// 3. Obtener todos los datos meteorológicos
+		
 		const [weatherData, marineData, airQualityData] = await Promise.all([
 			fetchWeatherData(latitude, longitude),
 			fetchMarineData(latitude, longitude),
 			fetchAirQuality(latitude, longitude)
 		]);
 
-		// 4. Combinar datos
+		
 		const combinedData = {
 			name,
 			country,
@@ -248,10 +238,10 @@ async function fetchDataFromApi(saveToFavorites = false) {
 			...airQualityData
 		};
 
-		// 5. Actualizar UI
+		
 		updateUI(combinedData);
 		
-		// Limpiar input
+		
 		elements.cityInput.value = "";
 
 	} catch (error) {
@@ -359,9 +349,7 @@ async function fetchAirQuality(latitude, longitude) {
 	}
 }
 
-/* =====================
-   NAVEGACIÓN DE CIUDADES
-===================== */
+
 async function loadCityByIndex(index) {
 	const city = favoritesManager.goToIndex(index);
 	if (city) {
@@ -374,9 +362,7 @@ async function loadCityByName(cityName) {
 	await fetchDataFromApi(false);
 }
 
-/* =====================
-   ACTUALIZACIÓN DE UI
-===================== */
+
 function updateUI(data) {
 	updateMainCard(data);
 	updateAtmosphere(data);
@@ -519,9 +505,7 @@ function updateDots() {
 		.join("");
 }
 
-/* =====================
-   BACKGROUND DINÁMICO
-===================== */
+
 function changeBackgroundImage(weatherCode = null) {
 	if (!elements.mainCard) return;
 
@@ -549,9 +533,7 @@ function changeBackgroundImage(weatherCode = null) {
 	elements.mainCard.style.backgroundImage = `url('media/images/${selectedImage}.jpg')`;
 }
 
-/* =====================
-   UTILIDADES
-===================== */
+
 function getWindDirection(degrees) {
 	const directions = ["N", "NE", "E", "SE", "S", "SO", "O", "NO"];
 	return degrees != null ? `(${directions[Math.round(degrees / 45) % 8]})` : "";
@@ -577,7 +559,5 @@ function scrollToTop() {
 	});
 }
 
-/* =====================
-   INICIALIZACIÓN
-===================== */
+
 initializeEventListeners();

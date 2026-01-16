@@ -36,16 +36,16 @@ class MyFooter extends HTMLElement {
         
         footerItems.forEach(item => {
             item.addEventListener('click', () => {
-                // Cambiar estado activo
+                
                 footerItems.forEach(i => i.classList.remove('active'));
                 item.classList.add('active');
                 
-                // Obtener la sección a la que navegar
+                
                 const sectionClass = item.getAttribute('data-section');
                 const targetElement = document.querySelector(`.${sectionClass}`);
                 
                 if (targetElement) {
-                    // Scroll suave a la sección
+                    
                     const headerHeight = document.querySelector('header')?.offsetHeight || 0;
                     const elementPosition = targetElement.getBoundingClientRect().top;
                     const offsetPosition = elementPosition + window.pageYOffset - headerHeight - 20;
