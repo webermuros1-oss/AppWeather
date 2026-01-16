@@ -18,7 +18,7 @@ class MyFooter extends HTMLElement {
         </div>
 
         <div class="footerItem" data-section="windCard">
-          <i class="fa-solid fa-calendar-days"></i>
+          <i class="fa-solid fa-wind"></i>
           <span>Viento</span>
         </div>
         <div class="footerItem" data-section="astroCard">
@@ -28,6 +28,10 @@ class MyFooter extends HTMLElement {
         <div class="footerItem" data-section="marineCard">
           <i class="fa-solid fa-water"></i>
           <span>Marítimo</span>
+        </div>
+        <div class="footerItem" data-section="airCard">
+          <i class="fa-solid fa-air"></i>
+          <span>Calidad del aire</span>
         </div>
       </footer>
         `;
