@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600&display=swap");
 
-/* NUEVA PALETA DE COLORES */
+
 :root {
 	--primary-dark: #1a0033;
 	--primary-mid: #3d1a5f;
@@ -22,11 +22,11 @@ body {
 	min-height: 100vh;
 	width: 100%;
 	overflow-x: hidden;
-	padding-top: 140px; /* Espacio para el header fijo */
-	padding-bottom: 100px; /* Espacio para el footer fijo */
+	padding-top: 140px; 
+	padding-bottom: 100px; 
 }
 
-/* HEADER */
+
 header {
 	display: flex;
 	flex-direction: column;
@@ -76,7 +76,7 @@ header {
 	box-shadow: 0 12px 40px rgba(157, 78, 221, 0.4);
 }
 
-/* DASHBOARD */
+
 .dashboard {
 	display: flex;
 	flex-direction: column;
@@ -87,7 +87,7 @@ header {
 	padding: 20px 15px 40px;
 }
 
-/* CARDS */
+
 .card {
 	background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-mid) 50%, var(--primary-light) 100%);
 	backdrop-filter: blur(10px);
@@ -114,7 +114,7 @@ header {
 	padding-bottom: 8px;
 }
 
-/* MAIN WEATHER CARD */
+
 .mainWeatherCard {
 	background-image: url("../media/images/bg.jpg");
 	background-size: cover;
@@ -175,7 +175,7 @@ header {
 	opacity: 0.95;
 }
 
-/* GRID INFO */
+
 .gridInfo, .windInfo, .marineInfo, .astroInfo, .airInfo {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -201,7 +201,7 @@ header {
 	color: var(--accent-light);
 }
 
-/* FORECAST */
+
 .forecastInfo {
 	display: flex;
 	flex-direction: column;
@@ -250,7 +250,7 @@ header {
 	opacity: 0.9;
 }
 
-/* NOT AVAILABLE */
+
 .notAvailable {
 	text-align: center;
 	opacity: 0.7;
@@ -258,7 +258,7 @@ header {
 	padding: 20px;
 }
 
-/* NAVIGATION ARROWS */
+
 .navArrow {
 	position: absolute;
 	top: 50%;
@@ -284,7 +284,7 @@ header {
 .prevArrow { left: 5px; }
 .nextArrow { right: 5px; }
 
-/* FAVORITE DOTS */
+
 .favDots {
 	position: absolute;
 	bottom: 15px;
@@ -310,7 +310,7 @@ header {
 	box-shadow: 0 0 10px rgba(199, 125, 255, 0.6);
 }
 
-/* RESPONSIVE */
+
 @media (min-width: 768px) {
 	.dashboard {
 		max-width: 800px;

@@ -87,7 +87,7 @@
 	box-shadow: 0 4px 20px rgba(157, 78, 221, 0.4);
 }
 
-/* RESPONSIVE */
+
 @media (max-width: 768px) {
 	.appHeader {
 		padding: 0.75rem 1.5rem;
