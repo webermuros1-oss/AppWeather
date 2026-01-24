@@ -1,12 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600&display=swap");
 
-
 :root {
-	--primary-dark: #1a0033;
-	--primary-mid: #3d1a5f;
-	--primary-light: #5e2a84;
-	--accent: #9d4edd;
-	--accent-light: #c77dff;
+	--metal-dark: #0a1628;
+	--metal-blue: #1a2f4a;
+	--metal-cyan: #2d4a5c;
+	--accent-teal: #00d9ff;
+	--accent-green: #00ff88;
 	--text-white: #ffffff;
 }
 
@@ -18,14 +17,13 @@
 
 body {
 	font-family: "Barlow", sans-serif;
-	background: linear-gradient(135deg, var(--primary-mid) 0%, var(--primary-light) 50%, var(--accent) 100%);
+	background: linear-gradient(135deg, var(--metal-blue) 0%, var(--metal-cyan) 50%, #3d5a6b 100%);
 	min-height: 100vh;
 	width: 100%;
 	overflow-x: hidden;
-	padding-top: 140px; 
-	padding-bottom: 100px; 
+	padding-top: 160px;
+	padding-bottom: 100px;
 }
-
 
 header {
 	display: flex;
@@ -33,18 +31,21 @@ header {
 	align-items: center;
 	gap: 15px;
 	padding: 20px 15px;
-	background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-mid) 50%, var(--primary-light) 100%);
+	background: linear-gradient(135deg, var(--metal-dark) 0%, var(--metal-blue) 50%, var(--metal-cyan) 100%);
 	position: sticky;
 	top: 0;
 	z-index: 1000;
 	transition: transform 0.3s ease;
-	box-shadow: 0 4px 20px rgba(157, 78, 221, 0.3);
+	box-shadow: 0 4px 20px rgba(0, 217, 255, 0.3);
+	border-bottom: 1px solid rgba(0, 217, 255, 0.2);
 }
 
 .title {
 	text-align: center;
-	text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
-	color: var(--accent-light);
+	text-shadow: 
+		2px 2px 10px rgba(0, 0, 0, 0.5),
+		0 0 20px rgba(0, 217, 255, 0.5);
+	color: var(--accent-teal);
 	font-size: clamp(1.8rem, 5vw, 2.5rem);
 }
 
@@ -52,7 +53,7 @@ header {
 	width: 100%;
 	max-width: 400px;
 	height: 50px;
-	border: 2px solid rgba(199, 125, 255, 0.3);
+	border: 2px solid rgba(0, 217, 255, 0.3);
 	border-radius: 25px;
 	padding: 0 20px;
 	outline: none;
@@ -72,10 +73,9 @@ header {
 #getCity:focus {
 	transform: scale(1.02);
 	background: rgba(255, 255, 255, 0.15);
-	border-color: var(--accent-light);
-	box-shadow: 0 12px 40px rgba(157, 78, 221, 0.4);
+	border-color: var(--accent-green);
+	box-shadow: 0 12px 40px rgba(0, 217, 255, 0.4);
 }
-
 
 .dashboard {
 	display: flex;
@@ -84,36 +84,35 @@ header {
 	width: 100%;
 	max-width: 700px;
 	margin: 0 auto;
-	padding: 20px 15px 40px;
+	padding: 30px 15px 40px;
 }
 
-
 .card {
-	background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-mid) 50%, var(--primary-light) 100%);
+	background: linear-gradient(135deg, var(--metal-dark) 0%, var(--metal-blue) 50%, var(--metal-cyan) 100%);
 	backdrop-filter: blur(10px);
 	border-radius: 24px;
 	padding: 24px;
 	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 	color: white;
 	transition: transform 0.3s ease, box-shadow 0.3s ease;
-	border: 1px solid rgba(157, 78, 221, 0.2);
+	border: 1px solid rgba(0, 217, 255, 0.2);
 }
 
 .card:hover {
 	transform: translateY(-4px);
-	box-shadow: 0 12px 40px rgba(157, 78, 221, 0.4);
+	box-shadow: 0 12px 40px rgba(0, 217, 255, 0.4);
 }
 
 .card h4 {
 	margin-bottom: 16px;
 	font-size: 1.2rem;
-	color: var(--accent-light);
+	color: var(--accent-green);
 	font-weight: 600;
 	text-align: left;
-	border-bottom: 2px solid rgba(199, 125, 255, 0.3);
+	border-bottom: 2px solid rgba(0, 255, 136, 0.3);
 	padding-bottom: 8px;
+	text-shadow: 0 0 10px rgba(0, 217, 255, 0.3);
 }
-
 
 .mainWeatherCard {
 	background-image: url("../media/images/bg.jpg");
@@ -175,7 +174,6 @@ header {
 	opacity: 0.95;
 }
 
-
 .gridInfo, .windInfo, .marineInfo, .astroInfo, .airInfo {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -184,7 +182,7 @@ header {
 }
 
 .gridInfo p, .windInfo p, .marineInfo p, .astroInfo p, .airInfo p {
-	background: rgba(157, 78, 221, 0.2);
+	background: rgba(0, 217, 255, 0.15);
 	padding: 12px;
 	border-radius: 12px;
 	font-size: 0.95rem;
@@ -192,15 +190,15 @@ header {
 	display: flex;
 	flex-direction: column;
 	gap: 4px;
-	border: 1px solid rgba(199, 125, 255, 0.2);
+	border: 1px solid rgba(0, 255, 136, 0.2);
 }
 
 .gridInfo p strong, .windInfo p strong, .marineInfo p strong, 
 .astroInfo p strong, .airInfo p strong {
 	font-size: 1.1rem;
-	color: var(--accent-light);
+	color: var(--accent-green);
+	text-shadow: 0 0 8px rgba(0, 217, 255, 0.3);
 }
-
 
 .forecastInfo {
 	display: flex;
@@ -209,7 +207,7 @@ header {
 }
 
 .forecastDay {
-	background: rgba(157, 78, 221, 0.2);
+	background: rgba(0, 217, 255, 0.15);
 	padding: 16px;
 	border-radius: 16px;
 	display: flex;
@@ -217,14 +215,15 @@ header {
 	justify-content: space-between;
 	gap: 12px;
 	flex-wrap: wrap;
-	border: 1px solid rgba(199, 125, 255, 0.2);
+	border: 1px solid rgba(0, 255, 136, 0.2);
 }
 
 .forecastDayName {
 	font-size: 1.1rem;
 	font-weight: 600;
 	min-width: 100px;
-	color: var(--accent-light);
+	color: var(--accent-teal);
+	text-shadow: 0 0 8px rgba(0, 217, 255, 0.3);
 }
 
 .forecastIcon {
@@ -250,7 +249,6 @@ header {
 	opacity: 0.9;
 }
 
-
 .notAvailable {
 	text-align: center;
 	opacity: 0.7;
@@ -258,13 +256,12 @@ header {
 	padding: 20px;
 }
 
-
 .navArrow {
 	position: absolute;
 	top: 50%;
 	transform: translateY(-50%);
-	background: rgba(26, 0, 51, 0.6);
-	border: 2px solid rgba(157, 78, 221, 0.5);
+	background: rgba(10, 22, 40, 0.7);
+	border: 2px solid rgba(0, 217, 255, 0.5);
 	color: white;
 	font-size: 2rem;
 	padding: 15px 10px;
@@ -276,14 +273,13 @@ header {
 }
 
 .navArrow:hover { 
-	background: rgba(61, 26, 95, 0.8);
-	border-color: var(--accent-light);
-	box-shadow: 0 0 20px rgba(157, 78, 221, 0.5);
+	background: rgba(26, 47, 74, 0.9);
+	border-color: var(--accent-green);
+	box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
 }
 
 .prevArrow { left: 5px; }
 .nextArrow { right: 5px; }
-
 
 .favDots {
 	position: absolute;
@@ -304,12 +300,11 @@ header {
 }
 
 .dot.active { 
-	background: var(--accent-light);
+	background: var(--accent-green);
 	width: 12px;
 	border-radius: 4px;
-	box-shadow: 0 0 10px rgba(199, 125, 255, 0.6);
+	box-shadow: 0 0 10px rgba(0, 255, 136, 0.6);
 }
-
 
 @media (min-width: 768px) {
 	.dashboard {
@@ -333,14 +328,14 @@ header {
 
 @media (max-width: 768px) {
 	body {
-		padding-top: 120px;
+		padding-top: 135px;
 		padding-bottom: 100px;
 	}
 }
 
 @media (max-width: 480px) {
 	body {
-		padding-top: 100px;
+		padding-top: 110px;
 		padding-bottom: 90px;
 	}
 }

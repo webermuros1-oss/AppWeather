@@ -1,11 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500&display=swap");
 
 :root {
-	--primary-dark: #1a0033;
-	--primary-mid: #3d1a5f;
-	--primary-light: #5e2a84;
-	--accent: #9d4edd;
-	--accent-light: #c77dff;
+	--metal-dark: #0a1628;
+	--metal-blue: #1a2f4a;
+	--metal-cyan: #2d4a5c;
+	--accent-teal: #00d9ff;
+	--accent-green: #00ff88;
 }
 
 * {
@@ -15,7 +15,7 @@
 }
 
 .appHeader {
-	background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-mid) 100%);
+	background: linear-gradient(135deg, var(--metal-dark) 0%, var(--metal-blue) 100%);
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -26,11 +26,11 @@
 	justify-content: space-between;
 	padding: 1rem 2rem;
 	backdrop-filter: blur(10px);
-	border-bottom: 2px solid rgba(157, 78, 221, 0.3);
-	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+	border-bottom: 2px solid rgba(0, 217, 255, 0.3);
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 	z-index: 1000;
 	gap: 2rem;
-	min-height: 120px; 
+	min-height: 140px; 
 }
 
 .title {
@@ -41,15 +41,15 @@
 }
 
 .weatherIcon {
-	height: 120px; 
+	height: 150px; 
 	width: auto;
 	transition: all 0.3s ease;
-	filter: drop-shadow(0 6px 12px rgba(157, 78, 221, 0.4));
+	filter: drop-shadow(0 6px 12px rgba(0, 217, 255, 0.4));
 }
 
 .weatherIcon:hover {
 	transform: scale(1.15) rotate(5deg);
-	filter: drop-shadow(0 8px 16px rgba(199, 125, 255, 0.6));
+	filter: drop-shadow(0 8px 16px rgba(0, 255, 136, 0.6));
 }
 
 @keyframes floatIcon {
@@ -65,7 +65,7 @@
 	flex: 1;
 	max-width: 500px;
 	padding: 0.9rem 1.5rem;
-	border: 2px solid rgba(199, 125, 255, 0.3);
+	border: 2px solid rgba(0, 217, 255, 0.3);
 	border-radius: 30px;
 	background: rgba(255, 255, 255, 0.15);
 	color: white;
@@ -82,21 +82,20 @@
 
 #getCity:focus {
 	background: rgba(255, 255, 255, 0.25);
-	border-color: var(--accent-light);
+	border-color: var(--accent-green);
 	transform: translateY(-2px);
-	box-shadow: 0 4px 20px rgba(157, 78, 221, 0.4);
+	box-shadow: 0 4px 20px rgba(0, 217, 255, 0.4);
 }
-
 
 @media (max-width: 768px) {
 	.appHeader {
 		padding: 0.75rem 1.5rem;
 		gap: 1.25rem;
-		min-height: 100px;
+		min-height: 115px;
 	}
 
 	.weatherIcon {
-		height: 90px;
+		height: 105px;
 	}
 
 	#getCity {
@@ -106,7 +105,7 @@
 	}
 
 	body {
-		padding-top: 120px;
+		padding-top: 135px;
 	}
 }
 
@@ -114,11 +113,11 @@
 	.appHeader {
 		padding: 0.5rem 1rem;
 		gap: 0.75rem;
-		min-height: 80px;
+		min-height: 90px;
 	}
 
 	.weatherIcon {
-		height: 70px;
+		height: 80px;
 	}
 
 	#getCity {
@@ -129,7 +128,7 @@
 	}
 
 	body {
-		padding-top: 100px;
+		padding-top: 110px;
 	}
 
 	.weatherIcon {
