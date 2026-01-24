@@ -1,5 +1,15 @@
 @import url("https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600&display=swap");
 
+/* NUEVA PALETA DE COLORES */
+:root {
+	--primary-dark: #1a0033;
+	--primary-mid: #3d1a5f;
+	--primary-light: #5e2a84;
+	--accent: #9d4edd;
+	--accent-light: #c77dff;
+	--text-white: #ffffff;
+}
+
 * {
 	padding: 0;
 	margin: 0;
@@ -8,30 +18,33 @@
 
 body {
 	font-family: "Barlow", sans-serif;
-	background-color: #51d9f5;
+	background: linear-gradient(135deg, var(--primary-mid) 0%, var(--primary-light) 50%, var(--accent) 100%);
 	min-height: 100vh;
 	width: 100%;
 	overflow-x: hidden;
+	padding-top: 140px; /* Espacio para el header fijo */
+	padding-bottom: 100px; /* Espacio para el footer fijo */
 }
 
-
+/* HEADER */
 header {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	gap: 15px;
 	padding: 20px 15px;
-	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-mid) 50%, var(--primary-light) 100%);
 	position: sticky;
 	top: 0;
 	z-index: 1000;
 	transition: transform 0.3s ease;
+	box-shadow: 0 4px 20px rgba(157, 78, 221, 0.3);
 }
 
 .title {
 	text-align: center;
 	text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
-	color: #ff0000;
+	color: var(--accent-light);
 	font-size: clamp(1.8rem, 5vw, 2.5rem);
 }
 
@@ -39,10 +52,12 @@ header {
 	width: 100%;
 	max-width: 400px;
 	height: 50px;
-	border: none;
+	border: 2px solid rgba(199, 125, 255, 0.3);
 	border-radius: 25px;
 	padding: 0 20px;
 	outline: none;
+	background: rgba(255, 255, 255, 0.1);
+	color: white;
 	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 	text-align: center;
 	font-size: 16px;
@@ -50,12 +65,18 @@ header {
 	transition: all 0.3s ease;
 }
 
-#getCity:focus {
-	transform: scale(1.02);
-	box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+#getCity::placeholder {
+	color: rgba(255, 255, 255, 0.6);
 }
 
+#getCity:focus {
+	transform: scale(1.02);
+	background: rgba(255, 255, 255, 0.15);
+	border-color: var(--accent-light);
+	box-shadow: 0 12px 40px rgba(157, 78, 221, 0.4);
+}
 
+/* DASHBOARD */
 .dashboard {
 	display: flex;
 	flex-direction: column;
@@ -66,33 +87,34 @@ header {
 	padding: 20px 15px 40px;
 }
 
-
+/* CARDS */
 .card {
-	background: rgba(74, 119, 247, 0.95);
+	background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-mid) 50%, var(--primary-light) 100%);
 	backdrop-filter: blur(10px);
 	border-radius: 24px;
 	padding: 24px;
 	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 	color: white;
 	transition: transform 0.3s ease, box-shadow 0.3s ease;
+	border: 1px solid rgba(157, 78, 221, 0.2);
 }
 
 .card:hover {
 	transform: translateY(-4px);
-	box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+	box-shadow: 0 12px 40px rgba(157, 78, 221, 0.4);
 }
 
 .card h4 {
 	margin-bottom: 16px;
 	font-size: 1.2rem;
-	color: #ffffff;
+	color: var(--accent-light);
 	font-weight: 600;
 	text-align: left;
-	border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+	border-bottom: 2px solid rgba(199, 125, 255, 0.3);
 	padding-bottom: 8px;
 }
 
-
+/* MAIN WEATHER CARD */
 .mainWeatherCard {
 	background-image: url("../media/images/bg.jpg");
 	background-size: cover;
@@ -153,7 +175,7 @@ header {
 	opacity: 0.95;
 }
 
-
+/* GRID INFO */
 .gridInfo, .windInfo, .marineInfo, .astroInfo, .airInfo {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -162,7 +184,7 @@ header {
 }
 
 .gridInfo p, .windInfo p, .marineInfo p, .astroInfo p, .airInfo p {
-	background: rgba(255, 255, 255, 0.15);
+	background: rgba(157, 78, 221, 0.2);
 	padding: 12px;
 	border-radius: 12px;
 	font-size: 0.95rem;
@@ -170,15 +192,16 @@ header {
 	display: flex;
 	flex-direction: column;
 	gap: 4px;
+	border: 1px solid rgba(199, 125, 255, 0.2);
 }
 
 .gridInfo p strong, .windInfo p strong, .marineInfo p strong, 
 .astroInfo p strong, .airInfo p strong {
 	font-size: 1.1rem;
-	color: #fff;
+	color: var(--accent-light);
 }
 
-
+/* FORECAST */
 .forecastInfo {
 	display: flex;
 	flex-direction: column;
@@ -186,7 +209,7 @@ header {
 }
 
 .forecastDay {
-	background: rgba(255, 255, 255, 0.15);
+	background: rgba(157, 78, 221, 0.2);
 	padding: 16px;
 	border-radius: 16px;
 	display: flex;
@@ -194,12 +217,14 @@ header {
 	justify-content: space-between;
 	gap: 12px;
 	flex-wrap: wrap;
+	border: 1px solid rgba(199, 125, 255, 0.2);
 }
 
 .forecastDayName {
 	font-size: 1.1rem;
 	font-weight: 600;
 	min-width: 100px;
+	color: var(--accent-light);
 }
 
 .forecastIcon {
@@ -225,7 +250,7 @@ header {
 	opacity: 0.9;
 }
 
-
+/* NOT AVAILABLE */
 .notAvailable {
 	text-align: center;
 	opacity: 0.7;
@@ -233,7 +258,59 @@ header {
 	padding: 20px;
 }
 
+/* NAVIGATION ARROWS */
+.navArrow {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	background: rgba(26, 0, 51, 0.6);
+	border: 2px solid rgba(157, 78, 221, 0.5);
+	color: white;
+	font-size: 2rem;
+	padding: 15px 10px;
+	cursor: pointer;
+	z-index: 10;
+	border-radius: 5px;
+	transition: all 0.3s;
+	backdrop-filter: blur(10px);
+}
 
+.navArrow:hover { 
+	background: rgba(61, 26, 95, 0.8);
+	border-color: var(--accent-light);
+	box-shadow: 0 0 20px rgba(157, 78, 221, 0.5);
+}
+
+.prevArrow { left: 5px; }
+.nextArrow { right: 5px; }
+
+/* FAVORITE DOTS */
+.favDots {
+	position: absolute;
+	bottom: 15px;
+	left: 50%;
+	transform: translateX(-50%);
+	display: flex;
+	gap: 8px;
+	z-index: 5;
+}
+
+.dot {
+	width: 8px;
+	height: 8px;
+	background: rgba(255, 255, 255, 0.4);
+	border-radius: 50%;
+	transition: all 0.3s;
+}
+
+.dot.active { 
+	background: var(--accent-light);
+	width: 12px;
+	border-radius: 4px;
+	box-shadow: 0 0 10px rgba(199, 125, 255, 0.6);
+}
+
+/* RESPONSIVE */
 @media (min-width: 768px) {
 	.dashboard {
 		max-width: 800px;
@@ -254,43 +331,16 @@ header {
 	}
 }
 
-
-
-
-.navArrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(0, 0, 0, 0.3);
-    border: none;
-    color: white;
-    font-size: 2rem;
-    padding: 15px 10px;
-    cursor: pointer;
-    z-index: 10;
-    border-radius: 5px;
-    transition: background 0.3s;
+@media (max-width: 768px) {
+	body {
+		padding-top: 120px;
+		padding-bottom: 100px;
+	}
 }
 
-.navArrow:hover { background: rgba(0, 0, 0, 0.6); }
-.prevArrow { left: 5px; }
-.nextArrow { right: 5px; }
-
-.favDots {
-    position: absolute;
-    bottom: 15px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 8px;
-    z-index: 5;
+@media (max-width: 480px) {
+	body {
+		padding-top: 100px;
+		padding-bottom: 90px;
+	}
 }
-
-.dot {
-    width: 8px;
-    height: 8px;
-    background: rgba(255,255,255,0.4);
-    border-radius: 50%;
-}
-
-.dot.active { background: white; width: 12px; border-radius: 4px; }

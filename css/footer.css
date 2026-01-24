@@ -1,3 +1,14 @@
+/* NUEVA PALETA DE COLORES - Púrpura moderno */
+:root {
+  --primary-dark: #1a0033;
+  --primary-mid: #3d1a5f;
+  --primary-light: #5e2a84;
+  --accent: #9d4edd;
+  --accent-light: #c77dff;
+  --text-white: #ffffff;
+  --shadow: rgba(157, 78, 221, 0.3);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -7,10 +18,9 @@
 body {
   font-family: Arial, sans-serif;
   padding-bottom: 90px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #3d1a5f 0%, #5e2a84 50%, #9d4edd 100%);
   min-height: 100vh;
 }
-
 
 .content {
   padding: 20px;
@@ -27,33 +37,53 @@ body {
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-
+/* ===================================
+   FOOTER MEJORADO - MÁS VISIBLE
+   =================================== */
 .appFooter {
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
-  background: rgba(74, 119, 247, 0.98);
-  backdrop-filter: blur(20px);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  /* Fondo más sólido y visible */
+  background: linear-gradient(180deg, 
+    rgba(26, 0, 51, 0.98) 0%, 
+    rgba(61, 26, 95, 0.98) 100%);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  
+  /* Borde superior más prominente */
+  border-top: 2px solid rgba(157, 78, 221, 0.5);
+  
   display: flex;
   justify-content: space-around;
   align-items: center;
-  padding: 8px 0;
+  padding: 10px 0;
   z-index: 1000;
-  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.3);
+  
+  /* Sombra más fuerte para mejor contraste */
+  box-shadow: 
+    0 -4px 20px rgba(0, 0, 0, 0.5),
+    0 -2px 10px rgba(157, 78, 221, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
-
+/* Items del footer con mejor contraste */
 .footerItem {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   flex: 1;
-  color: white;
+  
+  /* Texto más brillante y con sombra para legibilidad */
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.8),
+    0 0 8px rgba(157, 78, 221, 0.4);
+  
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
@@ -61,9 +91,12 @@ body {
   position: relative;
   border-radius: 16px;
   margin: 0 4px;
+  
+  /* Fondo sutil por defecto */
+  background: rgba(255, 255, 255, 0.05);
 }
 
-
+/* Efecto hover más visible */
 .footerItem::before {
   content: '';
   position: absolute;
@@ -72,7 +105,9 @@ body {
   transform: translate(-50%, -50%) scale(0);
   width: 100%;
   height: 100%;
-  background: rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, 
+    rgba(157, 78, 221, 0.3) 0%, 
+    rgba(199, 125, 255, 0.2) 100%);
   border-radius: 16px;
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: -1;
@@ -82,87 +117,154 @@ body {
   transform: translate(-50%, -50%) scale(1);
 }
 
-
+/* Iconos más visibles */
 .footerItem i {
   font-size: 26px;
   margin-bottom: 6px;
+  
+  /* Múltiples sombras para máxima visibilidad */
+  filter: 
+    drop-shadow(0 2px 4px rgba(0, 0, 0, 0.9))
+    drop-shadow(0 0 8px rgba(157, 78, 221, 0.6));
+  
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  color: #ffffff;
 }
 
-
+/* Estado activo MUY visible */
 .footerItem.active {
   color: #ffffff;
-  font-weight: 500;
-  background: rgba(255, 255, 255, 0.2);
+  font-weight: 700;
+  
+  /* Fondo gradiente llamativo */
+  background: linear-gradient(135deg, 
+    rgba(157, 78, 221, 0.6) 0%, 
+    rgba(199, 125, 255, 0.4) 100%);
+  
   backdrop-filter: blur(10px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15),
-              inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  -webkit-backdrop-filter: blur(10px);
+  
+  /* Sombras múltiples para destacar */
+  box-shadow: 
+    0 4px 16px rgba(157, 78, 221, 0.4),
+    0 2px 8px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+  
+  /* Borde luminoso */
+  border: 1px solid rgba(199, 125, 255, 0.5);
+  
+  text-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.8),
+    0 0 12px rgba(157, 78, 221, 0.8);
 }
 
 .footerItem.active i {
   color: #ffffff;
   transform: translateY(-2px) scale(1.1);
-  filter: drop-shadow(0 4px 8px rgba(255, 255, 255, 0.3));
+  
+  /* Sombra muy brillante para el icono activo */
+  filter: 
+    drop-shadow(0 4px 8px rgba(0, 0, 0, 0.9))
+    drop-shadow(0 0 12px rgba(199, 125, 255, 1))
+    drop-shadow(0 0 20px rgba(157, 78, 221, 0.6));
 }
 
-
+/* Indicador superior más brillante */
 .footerItem.active::after {
   content: '';
   position: absolute;
   top: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 40%;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, #ffffff, transparent);
-  border-radius: 0 0 3px 3px;
-  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.5);
+  width: 50%;
+  height: 4px;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(199, 125, 255, 1), 
+    transparent);
+  border-radius: 0 0 4px 4px;
+  box-shadow: 
+    0 2px 12px rgba(199, 125, 255, 0.8),
+    0 0 20px rgba(157, 78, 221, 0.6);
 }
 
-
+/* Hover mejorado */
 .footerItem:hover {
-  color: rgba(255, 255, 255, 0.9);
+  color: #ffffff;
   transform: translateY(-2px);
+  background: rgba(157, 78, 221, 0.2);
+  
+  text-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.8),
+    0 0 10px rgba(199, 125, 255, 0.6);
 }
 
 .footerItem:hover i {
   transform: translateY(-2px) scale(1.05);
+  filter: 
+    drop-shadow(0 4px 8px rgba(0, 0, 0, 0.9))
+    drop-shadow(0 0 10px rgba(199, 125, 255, 0.8));
 }
 
-
+/* Feedback táctil */
 .footerItem:active {
   transform: translateY(0) scale(0.98);
 }
 
-
+/* ===================================
+   RESPONSIVE - MÓVILES PEQUEÑOS
+   =================================== */
 @media (max-width: 480px) {
+  .appFooter {
+    padding: 8px 0;
+    /* Fondo aún más sólido en móviles */
+    background: linear-gradient(180deg, 
+      rgba(26, 0, 51, 0.99) 0%, 
+      rgba(61, 26, 95, 0.99) 100%);
+  }
+  
   .footerItem {
-    font-size: 10px;
+    font-size: 11px;
     padding: 10px 4px;
     margin: 0 2px;
+    font-weight: 700;
   }
   
   .footerItem i {
-    font-size: 22px;
+    font-size: 24px;
     margin-bottom: 4px;
   }
 }
 
 @media (max-width: 360px) {
   .footerItem {
+    font-size: 10px;
+    padding: 8px 2px;
+  }
+  
+  .footerItem i {
+    font-size: 22px;
+  }
+  
+  /* Mantener texto en pantallas muy pequeñas pero más pequeño */
+  .footerItem span {
     font-size: 9px;
   }
-  
-  .footerItem i {
-    font-size: 20px;
-  }
-  
+}
+
+/* Fix para Samsung y Xiaomi - forzar renderizado */
+@supports (-webkit-touch-callout: none) {
+  .footerItem,
+  .footerItem i,
   .footerItem span {
-    display: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    will-change: transform;
   }
   
-  .footerItem i {
-    margin-bottom: 0;
+  .appFooter {
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
   }
 }

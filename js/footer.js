@@ -31,7 +31,7 @@ class MyFooter extends HTMLElement {
         </div>
         <div class="footerItem" data-section="airCard">
           <i class="fa-solid fa-air"></i>
-          <span>Calidad del aire</span>
+          <span>Calidad aire</span>
         </div>
       </footer>
         `;

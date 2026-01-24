@@ -1,20 +1,21 @@
 @import url("https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500&display=swap");
 
+:root {
+	--primary-dark: #1a0033;
+	--primary-mid: #3d1a5f;
+	--primary-light: #5e2a84;
+	--accent: #9d4edd;
+	--accent-light: #c77dff;
+}
+
 * {
 	padding: 0;
 	margin: 0;
 	box-sizing: border-box;
 }
 
-body {
-	font-family: "Barlow", sans-serif;
-	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-	min-height: 100vh;
-	padding-top: 140px; 
-}
-
-
 .appHeader {
+	background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-mid) 100%);
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -24,10 +25,9 @@ body {
 	align-items: center;
 	justify-content: space-between;
 	padding: 1rem 2rem;
-	background: rgba(255, 255, 255, 0.1);
 	backdrop-filter: blur(10px);
-	border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	border-bottom: 2px solid rgba(157, 78, 221, 0.3);
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 	z-index: 1000;
 	gap: 2rem;
 	min-height: 120px; 
@@ -44,15 +44,13 @@ body {
 	height: 120px; 
 	width: auto;
 	transition: all 0.3s ease;
-	filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.3));
-	
+	filter: drop-shadow(0 6px 12px rgba(157, 78, 221, 0.4));
 }
 
 .weatherIcon:hover {
 	transform: scale(1.15) rotate(5deg);
-	filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
+	filter: drop-shadow(0 8px 16px rgba(199, 125, 255, 0.6));
 }
-
 
 @keyframes floatIcon {
 	0%, 100% {
@@ -67,7 +65,7 @@ body {
 	flex: 1;
 	max-width: 500px;
 	padding: 0.9rem 1.5rem;
-	border: 2px solid rgba(255, 255, 255, 0.3);
+	border: 2px solid rgba(199, 125, 255, 0.3);
 	border-radius: 30px;
 	background: rgba(255, 255, 255, 0.15);
 	color: white;
@@ -84,12 +82,12 @@ body {
 
 #getCity:focus {
 	background: rgba(255, 255, 255, 0.25);
-	border-color: rgba(255, 255, 255, 0.5);
+	border-color: var(--accent-light);
 	transform: translateY(-2px);
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	box-shadow: 0 4px 20px rgba(157, 78, 221, 0.4);
 }
 
-
+/* RESPONSIVE */
 @media (max-width: 768px) {
 	.appHeader {
 		padding: 0.75rem 1.5rem;
@@ -111,7 +109,6 @@ body {
 		padding-top: 120px;
 	}
 }
-
 
 @media (max-width: 480px) {
 	.appHeader {
@@ -135,7 +132,6 @@ body {
 		padding-top: 100px;
 	}
 
-	
 	.weatherIcon {
 		animation: none;
 	}
