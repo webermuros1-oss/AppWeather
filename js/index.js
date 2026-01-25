@@ -1,4 +1,18 @@
+// =====================
+// PWA: Service Worker
+// =====================
+if ("serviceWorker" in navigator) {
+	window.addEventListener("load", () => {
+		navigator.serviceWorker
+			.register("./serviceWorker.js")
+			.then(reg => console.log("Service Worker registrado:", reg.scope))
+			.catch(err => console.error("Error registrando Service Worker:", err));
+	});
+}
 
+// =====================
+// TU CÓDIGO ORIGINAL
+// =====================
 const elements = {
 	cityInput: document.querySelector("#getCity"),
 	cityName: document.querySelector(".cityName"),
@@ -8,7 +22,6 @@ const elements = {
 	weatherIcon: document.querySelector(".weatherIconDisplay"),
 	header: document.querySelector("header"),
 	mainCard: document.querySelector(".mainWeatherCard"),
-	
 
 	atmosphere: document.querySelector(".atmosphereInfo"),
 	wind: document.querySelector(".windInfo"),
@@ -16,13 +29,11 @@ const elements = {
 	forecast: document.querySelector(".forecastInfo"),
 	astro: document.querySelector(".astroInfo"),
 	air: document.querySelector(".airInfo"),
-	
-	
+
 	prevArrow: document.querySelector(".prevArrow"),
 	nextArrow: document.querySelector(".nextArrow"),
 	favDots: document.getElementById("favDots")
 };
-
 
 const API_URLS = {
 	geocoding: "https://geocoding-api.open-meteo.com/v1/search",
@@ -35,10 +46,8 @@ const MONTHS = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", 
 const DAYS = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 
 const WEATHER_ICONS = {
-	0: "☀️", 1: "🌤️", 2: "⛅", 3: "☁️",
-	45: "🌫️", 48: "🌫️",
-	51: "🌦️", 53: "🌦️", 55: "🌧️",
-	61: "🌧️", 63: "🌧️", 65: "🌧️",
+	0: "☀️", 1: "🌤️", 2: "⛅", 3: "☁️", 45: "🌫️", 48: "🌫️",
+	51: "🌦️", 53: "🌦️", 55: "🌧️", 61: "🌧️", 63: "🌧️", 65: "🌧️",
 	71: "❄️", 73: "❄️", 75: "❄️", 77: "🌨️",
 	80: "🌦️", 81: "🌧️", 82: "⛈️",
 	85: "🌨️", 86: "🌨️",
@@ -67,7 +76,6 @@ const BACKGROUND_IMAGES = {
 	default: ["bg1", "bg2", "bg3", "bg4", "bg5"]
 };
 
-
 class FavoritesManager {
 	constructor(maxFavorites = 3, defaultCity = "A Coruña") {
 		this.maxFavorites = maxFavorites;
@@ -86,15 +94,13 @@ class FavoritesManager {
 	}
 
 	addCity(cityName) {
-		
 		if (this.favorites.includes(cityName)) {
 			this.currentIndex = this.favorites.indexOf(cityName);
 			return false;
 		}
 
 		this.favorites.push(cityName);
-		
-		
+
 		if (this.favorites.length > this.maxFavorites) {
 			this.favorites.shift();
 		}
@@ -109,15 +115,15 @@ class FavoritesManager {
 	}
 
 	goToPrevious() {
-		this.currentIndex = this.currentIndex > 0 
-			? this.currentIndex - 1 
+		this.currentIndex = this.currentIndex > 0
+			? this.currentIndex - 1
 			: this.favorites.length - 1;
 		return this.getCurrentCity();
 	}
 
 	goToNext() {
-		this.currentIndex = this.currentIndex < this.favorites.length - 1 
-			? this.currentIndex + 1 
+		this.currentIndex = this.currentIndex < this.favorites.length - 1
+			? this.currentIndex + 1
 			: 0;
 		return this.getCurrentCity();
 	}
@@ -141,36 +147,31 @@ class FavoritesManager {
 
 const favoritesManager = new FavoritesManager();
 
-
 function initializeEventListeners() {
-	
 	window.addEventListener("load", async () => {
 		changeBackgroundImage();
 		await loadCityByIndex(0);
 	});
 
-	
 	let lastScrollTop = 0;
 	window.addEventListener("scroll", () => {
 		const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-		
+
 		if (scrollTop > lastScrollTop && scrollTop > 100) {
 			elements.header.style.transform = "translateY(-100%)";
 		} else {
 			elements.header.style.transform = "translateY(0)";
 		}
-		
+
 		lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
 	});
 
-	
 	elements.cityInput.addEventListener("keypress", (event) => {
 		if (event.key === "Enter") {
 			fetchDataFromApi(true);
 		}
 	});
 
-	
 	elements.prevArrow.addEventListener("click", () => {
 		const city = favoritesManager.goToPrevious();
 		loadCityByName(city);
@@ -181,7 +182,6 @@ function initializeEventListeners() {
 		loadCityByName(city);
 	});
 
-	
 	let touchStartX = 0;
 	let touchEndX = 0;
 
@@ -201,35 +201,30 @@ function initializeEventListeners() {
 	});
 }
 
-
 async function fetchDataFromApi(saveToFavorites = false) {
 	const cityName = elements.cityInput.value.trim();
-	
+
 	if (!cityName) {
 		alert("Introduce una ciudad");
 		return;
 	}
 
 	try {
-		
 		const geoData = await fetchGeoData(cityName);
 		if (!geoData) return;
 
 		const { latitude, longitude, name, country } = geoData;
 
-		
 		if (saveToFavorites) {
 			favoritesManager.addCity(name);
 		}
 
-		
 		const [weatherData, marineData, airQualityData] = await Promise.all([
 			fetchWeatherData(latitude, longitude),
 			fetchMarineData(latitude, longitude),
 			fetchAirQuality(latitude, longitude)
 		]);
 
-		
 		const combinedData = {
 			name,
 			country,
@@ -238,10 +233,8 @@ async function fetchDataFromApi(saveToFavorites = false) {
 			...airQualityData
 		};
 
-		
 		updateUI(combinedData);
-		
-		
+
 		elements.cityInput.value = "";
 
 	} catch (error) {
@@ -309,7 +302,7 @@ async function fetchMarineData(latitude, longitude) {
 		});
 
 		const response = await fetch(`${API_URLS.marine}?${params}`);
-		
+
 		if (!response.ok) {
 			return { hasMarineData: false };
 		}
@@ -334,7 +327,7 @@ async function fetchAirQuality(latitude, longitude) {
 		});
 
 		const response = await fetch(`${API_URLS.airQuality}?${params}`);
-		
+
 		if (!response.ok) {
 			return { hasAirQuality: false };
 		}
@@ -349,7 +342,6 @@ async function fetchAirQuality(latitude, longitude) {
 	}
 }
 
-
 async function loadCityByIndex(index) {
 	const city = favoritesManager.goToIndex(index);
 	if (city) {
@@ -361,7 +353,6 @@ async function loadCityByName(cityName) {
 	elements.cityInput.value = cityName;
 	await fetchDataFromApi(false);
 }
-
 
 function updateUI(data) {
 	updateMainCard(data);
@@ -406,10 +397,10 @@ function updateAtmosphere(data) {
 
 function updateWind(data) {
 	elements.wind.innerHTML = `
-		<p>💨 <strong>${Math.round(data.windSpeed)} km/h</strong> Velocidad ${getWindDirection(data.windDirection)}</p>
-		<p>💨 <strong>${Math.round(data.windGusts)} km/h</strong> Rachas de viento</p>
-		<p>🧭 <strong>${Math.round(data.windDirection)}°</strong> Dirección</p>
-	`;
+    <p>💨 <strong>${Math.round(data.windSpeed)} km/h</strong> Velocidad ${getWindDirection(data.windDirection)}</p>
+    <p>💨 <strong>${Math.round(data.windGusts)} km/h</strong> Rachas de viento</p>
+    <p>🧭 <strong>${Math.round(data.windDirection)}°</strong> Dirección</p>
+`;
 }
 
 function updateForecast(data) {
@@ -421,41 +412,35 @@ function updateForecast(data) {
 		const weatherCode = data.dailyForecast.weather_code[i];
 
 		return `
-			<div class="forecastDay">
-				<span class="forecastDayName">${i === 0 ? 'Hoy' : DAYS[dayDate.getDay()]}</span>
-				<span class="forecastIcon">${getWeatherIcon(weatherCode)}</span>
-				<div class="forecastTemps">
-					<span class="forecastMax">${Math.round(maxTemp)}°</span>
-					<span class="forecastMin">${Math.round(minTemp)}°</span>
-				</div>
-				<span class="forecastRain">💧 ${rainProb}%</span>
-			</div>
-		`;
+        <div class="forecastDay">
+        <span class="forecastDayName">${i === 0 ? "Hoy" : DAYS[dayDate.getDay()]}</span>
+        <span class="forecastIcon">${getWeatherIcon(weatherCode)}</span>
+        <div class="forecastTemps">
+            <span class="forecastMax">${Math.round(maxTemp)}°</span>
+            <span class="forecastMin">${Math.round(minTemp)}°</span>
+        </div>
+        <span class="forecastRain">💧 ${rainProb}%</span>
+    </div>
+    `;
 	}).join("");
 
 	elements.forecast.innerHTML = forecastHTML;
 }
 
 function updateAstro(data) {
-	const sunrise = new Date(data.dailyForecast.sunrise[0]).toLocaleTimeString('es-ES', { 
-		hour: '2-digit', 
-		minute: '2-digit' 
-	});
-	const sunset = new Date(data.dailyForecast.sunset[0]).toLocaleTimeString('es-ES', { 
-		hour: '2-digit', 
-		minute: '2-digit' 
-	});
+	const sunrise = new Date(data.dailyForecast.sunrise[0]).toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
+	const sunset = new Date(data.dailyForecast.sunset[0]).toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
 	const daylightHours = (data.dailyForecast.daylight_duration[0] / 3600).toFixed(1);
 	const sunshineHours = (data.dailyForecast.sunshine_duration[0] / 3600).toFixed(1);
 	const maxUV = data.dailyForecast.uv_index_max[0] || 0;
 
 	elements.astro.innerHTML = `
-		<p>🌅 <strong>${sunrise}</strong> Amanecer</p>
-		<p>🌇 <strong>${sunset}</strong> Atardecer</p>
-		<p>☀️ <strong>${daylightHours} h</strong> Luz del día</p>
-		<p>🌞 <strong>${sunshineHours} h</strong> Horas de sol</p>
-		<p>☀️ <strong>${maxUV}</strong> UV máximo</p>
-	`;
+    <p>🌅 <strong>${sunrise}</strong> Amanecer</p>
+    <p>🌇 <strong>${sunset}</strong> Atardecer</p>
+    <p>☀️ <strong>${daylightHours} h</strong> Luz del día</p>
+    <p>🌞 <strong>${sunshineHours} h</strong> Horas de sol</p>
+    <p>☀️ <strong>${maxUV}</strong> UV máximo</p>
+`;
 }
 
 function updateMarine(data) {
@@ -466,14 +451,14 @@ function updateMarine(data) {
 
 	const m = data.marine;
 	elements.marine.innerHTML = `
-		<p>🌊 <strong>${m.wave_height?.toFixed(2) || 0} m</strong> Altura de olas</p>
-		<p>🧭 <strong>${Math.round(m.wave_direction || 0)}°</strong> Dirección olas</p>
-		<p>⏱️ <strong>${m.wave_period?.toFixed(1) || 0} s</strong> Período de olas</p>
-		<p>💨 <strong>${m.wind_wave_height?.toFixed(2) || 0} m</strong> Olas de viento</p>
-		<p>🌀 <strong>${m.swell_wave_height?.toFixed(2) || 0} m</strong> Oleaje</p>
-		<p>🌊 <strong>${m.ocean_current_velocity?.toFixed(2) || 0} m/s</strong> Corriente oceánica</p>
-		<p>🧭 <strong>${Math.round(m.ocean_current_direction || 0)}°</strong> Dirección corriente</p>
-	`;
+    <p>🌊 <strong>${m.wave_height?.toFixed(2) || 0} m</strong> Altura de olas</p>
+    <p>🧭 <strong>${Math.round(m.wave_direction || 0)}°</strong> Dirección olas</p>
+    <p>⏱️ <strong>${m.wave_period?.toFixed(1) || 0} s</strong> Período de olas</p>
+    <p>💨 <strong>${m.wind_wave_height?.toFixed(2) || 0} m</strong> Olas de viento</p>
+    <p>🌀 <strong>${m.swell_wave_height?.toFixed(2) || 0} m</strong> Oleaje</p>
+    <p>🌊 <strong>${m.ocean_current_velocity?.toFixed(2) || 0} m/s</strong> Corriente oceánica</p>
+    <p>🧭 <strong>${Math.round(m.ocean_current_direction || 0)}°</strong> Dirección corriente</p>
+`;
 }
 
 function updateAirQuality(data) {
@@ -501,10 +486,9 @@ function updateDots() {
 	const currentIndex = favoritesManager.currentIndex;
 
 	elements.favDots.innerHTML = cities
-		.map((_, i) => `<div class="dot ${i === currentIndex ? 'active' : ''}"></div>`)
+		.map((_, i) => `<div class="dot ${i === currentIndex ? "active" : ""}"></div>`)
 		.join("");
 }
-
 
 function changeBackgroundImage(weatherCode = null) {
 	if (!elements.mainCard) return;
@@ -512,27 +496,18 @@ function changeBackgroundImage(weatherCode = null) {
 	let imageCategory = "default";
 
 	if (weatherCode !== null) {
-		if (weatherCode === 0 || weatherCode === 1) {
-			imageCategory = "sunny";
-		} else if (weatherCode === 2 || weatherCode === 3) {
-			imageCategory = "cloudy";
-		} else if ((weatherCode >= 51 && weatherCode <= 67) || (weatherCode >= 80 && weatherCode <= 82)) {
-			imageCategory = "rainy";
-		} else if ((weatherCode >= 71 && weatherCode <= 77) || (weatherCode >= 85 && weatherCode <= 86)) {
-			imageCategory = "snowy";
-		} else if (weatherCode >= 95 && weatherCode <= 99) {
-			imageCategory = "stormy";
-		} else if (weatherCode === 45 || weatherCode === 48) {
-			imageCategory = "foggy";
-		}
+		if (weatherCode === 0 || weatherCode === 1) imageCategory = "sunny";
+		else if (weatherCode === 2 || weatherCode === 3) imageCategory = "cloudy";
+		else if ((weatherCode >= 51 && weatherCode <= 67) || (weatherCode >= 80 && weatherCode <= 82)) imageCategory = "rainy";
+		else if ((weatherCode >= 71 && weatherCode <= 77) || (weatherCode >= 85 && weatherCode <= 86)) imageCategory = "snowy";
+		else if (weatherCode >= 95 && weatherCode <= 99) imageCategory = "stormy";
+		else if (weatherCode === 45 || weatherCode === 48) imageCategory = "foggy";
 	}
 
 	const images = BACKGROUND_IMAGES[imageCategory];
 	const selectedImage = images[Math.floor(Math.random() * images.length)];
-	
 	elements.mainCard.style.backgroundImage = `url('media/images/${selectedImage}.jpg')`;
 }
-
 
 function getWindDirection(degrees) {
 	const directions = ["N", "NE", "E", "SE", "S", "SO", "O", "NO"];
@@ -553,11 +528,7 @@ function getCurrentDate() {
 }
 
 function scrollToTop() {
-	window.scrollTo({
-		top: 0,
-		behavior: 'smooth'
-	});
+	window.scrollTo({ top: 0, behavior: "smooth" });
 }
-
 
 initializeEventListeners();
