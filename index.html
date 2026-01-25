@@ -1,87 +1,35 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-	<meta charset="UTF-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>PlusWeather</title>
-	<link rel="stylesheet" href="css/index.css" />
-	<link rel="stylesheet" href="css/header.css" />
-	<link rel="stylesheet" href="css/footer.css" />
-	<link rel="manifest" href="json/manifest.json">
-	<meta name="theme-color" content="#0f172a">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PlusWeather</title>
 
+    <link rel="stylesheet" href="css/index.css" />
+    <link rel="stylesheet" href="css/header.css" />
+    <link rel="stylesheet" href="css/footer.css" />
 
-	<link rel="preconnect" href="https://fonts.googleapis.com" />
-	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- manifest: está en /json/manifest.json -->
+    <link rel="manifest" href="json/manifest.json">
+
+    <meta name="theme-color" content="#0f172a">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
-	<header-plus-weather></header-plus-weather>
+    <header-plus-weather></header-plus-weather>
 
-	<main class="dashboard">
+    <main class="dashboard">
+        <!-- ... aquí va tu HTML de las cards tal cual lo tenías ... -->
+    </main>
 
-		
-		<div class="card mainWeatherCard">
-			<button class="navArrow prevArrow">❮</button>
-    		<button class="navArrow nextArrow">❯</button>
+    <script src="js/header.js"></script>
+    <script src="js/footer.js"></script>
+    <script src="js/index.js" defer></script>
 
-			<div class="locationInfo">
-				<h2 class="cityName">Ciudad</h2>
-				<p class="date">Fecha</p>
-			</div>
-			<div class="currentWeather">
-				<div class="weatherIconDisplay">☀️</div>
-				<div class="tempInfo">
-					<h1 class="weatherDeg">--°C</h1>
-					<p class="weatherCondition">Cargando...</p>
-				</div>
-			</div>
-			<div class="favDots" id="favDots"></div>
-		</div>
-
-        
-		<div class="card forecastCard">
-			<h4>📅 Pronóstico 7 días</h4>
-			<div class="forecastInfo"></div>
-		</div>
-		
-		<div class="card atmosphereCard">
-			<h4>☁️ Condiciones atmosféricas</h4>
-			<div class="gridInfo atmosphereInfo"></div>
-		</div>
-
-		
-		<div class="card windCard">
-			<h4>💨 Viento</h4>
-			<div class="windInfo"></div>
-		</div>
-		
-		
-		<div class="card astroCard">
-			<h4>🌅 Datos astronómicos</h4>
-			<div class="astroInfo"></div>
-		</div>
-
-		
-		<div class="card marineCard">
-			<h4>🌊 Datos marítimos</h4>
-			<div class="marineInfo"></div>
-		</div>
-
-		
-		<div class="card airCard">
-			<h4>🌫️ Calidad aire</h4>
-			<div class="airInfo"></div>
-		</div>
-
-	</main>
-	
-	<script src="js/header.js"></script>
-	<script src="js/footer.js"></script>
-	<script src="js/index.js" defer></script>
-	<footer-plus-weather></footer-plus-weather>
+    <footer-plus-weather></footer-plus-weather>
 </body>
-
 </html>

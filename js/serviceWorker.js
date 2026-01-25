@@ -3,7 +3,7 @@ const CACHE_NAME = "meteo-cache-v2";
 const FILES_TO_CACHE = [
     "./",
     "./index.html",
-    "./manifest.json",
+    "./json/manifest.json",
     "./css/index.css",
     "./css/header.css",
     "./css/footer.css",
@@ -12,6 +12,10 @@ const FILES_TO_CACHE = [
     "./js/footer.js",
     "./media/images/logoRemaster192.png",
     "./media/images/logoRemaster512.png"
+    // Añade aquí más fondos si quieres cachearlos:
+    // "./media/images/sunny1.jpg",
+    // "./media/images/sunny2.jpg",
+    // etc.
 ];
 
 self.addEventListener("install", event => {
