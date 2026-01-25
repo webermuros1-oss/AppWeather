@@ -1,18 +1,14 @@
-// =====================
-// PWA: Service Worker
-// =====================
+
 if ("serviceWorker" in navigator) {
 	window.addEventListener("load", () => {
 		navigator.serviceWorker
-			.register("./serviceWorker.js")
+			.register("./js/serviceWorker.js")
 			.then(reg => console.log("Service Worker registrado:", reg.scope))
 			.catch(err => console.error("Error registrando Service Worker:", err));
 	});
 }
 
-// =====================
-// TU CÓDIGO ORIGINAL
-// =====================
+
 const elements = {
 	cityInput: document.querySelector("#getCity"),
 	cityName: document.querySelector(".cityName"),

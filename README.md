@@ -1,172 +1,130 @@
-# 🌤️ PlusWeather – Aplicación Meteorológica PWA
+[PlusWeather 🌤️]
 
-**PlusWeather** es una aplicación web progresiva (PWA) que muestra información meteorológica en tiempo real usando la API de Open-Meteo.  
-Permite consultar el clima por ciudad, ver previsiones a 7 días, datos atmosféricos, viento, calidad del aire y datos marítimos.  
-Funciona tanto en PC como en móvil y puede instalarse como app.
 
----
+Aplicación meteorológica progresiva (PWA) con pronóstico completo, datos marítimos, calidad del aire y favoritos. Funciona 100% offline una vez instalada.
 
-## 🚀 Características
+✨ Características
+Característica	✅ Estado
+Datos meteorológicos en tiempo real	Open-Meteo API
+Pronóstico 7 días	☀️🌧️❄️
+Condiciones atmosféricas completas	Humedad, presión, UV, visibilidad
+Datos de viento detallados	Velocidad, ráfagas, dirección
+Datos astronómicos	Amanecer, atardecer, horas de sol
+Datos marítimos	Altura de olas, corrientes
+Calidad del aire	PM2.5, PM10, NO₂, O₃
+Sistema de favoritos (máx. 3 ciudades)	💾 Persistente
+Navegación por swipe y flechas	📱👆
+Fondos dinámicos según clima	🌤️🌧️⛄
+PWA instalable	Icono personalizado
+Offline-first	Service Worker
+Responsive	Móvil + Desktop
 
-- 🌍 Búsqueda por ciudad  
-- 📅 Pronóstico de 7 días  
-- ☁️ Condiciones atmosféricas  
-- 💨 Viento y rachas  
-- 🌅 Datos astronómicos (amanecer, atardecer, UV…)  
-- 🌊 Datos marítimos (si están disponibles)  
-- 🌫️ Calidad del aire  
-- ⭐ Ciudades favoritas con navegación por gestos  
-- 📱 Instalación como app (PWA)  
-- 📴 Soporte básico offline con Service Worker  
 
----
+📱 Demo en vivo
+🔗 https://webermuros1-oss.github.io/AppWeather/
 
-## 🗂️ Estructura del proyecto
+Para instalar:
 
-APPWEATHER/
-│
-├── css/
-│ ├── index.css
-│ ├── header.css
-│ └── footer.css
-│
-├── js/
-│ ├── index.js
-│ ├── header.js
-│ ├── footer.js
-│ └── serviceWorker.js
-│
+Abre en Chrome/Safari móvil
+
+Menú → "Añadir a pantalla de inicio"
+
+¡Listo! Funciona sin internet
+
+
+
+🏗️ Estructura del proyecto
+
+AppWeather/
+├── index.html          # Página principal
 ├── json/
-│ └── manifest.json
-│
-├── media/
-│ └── images/
-│ ├── logoRemaster.png
-│ ├── sunny1.jpg
-│ ├── rainy1.jpg
-│ └── ...
-│
-├── pages/
-│
-├── index.html
-└── README.md
+│   └── manifest.json   # Configuración PWA
+├── css/
+│   ├── index.css       # Estilos principales
+│   ├── header.css      # Header
+│   └── footer.css      # Footer
+├── js/
+│   ├── index.js        # Lógica principal + APIs
+│   ├── header.js       # Web Component Header
+│   ├── footer.js       # Web Component Footer
+│   └── serviceWorker.js # Cache offline
+└── media/images/
+    ├── logoRemaster192.png  # Icono PWA 192px
+    ├── logoRemaster512.png  # Icono PWA 512px
+    ├── fondos climáticos... # Imágenes dinámicas
 
 
-
----
-
-## 💻 Instalación y uso en PC
-
-### Opción 1: Abrir directamente (modo simple)
-
-1. Descarga o clona el repositorio:
-   ```bash
-   git clone https://github.com/tu-usuario/plusweather.git
-Entra en la carpeta del proyecto:
-
+🚀 Instalación local
 bash
+# 1. Clona el repositorio
+git clone https://github.com/webermuros1-oss/AppWeather.git
+cd AppWeather
 
-cd plusweather
-Abre index.html con tu navegador
-(doble clic o arrastrándolo a Chrome / Edge / Firefox)
+# 2. Servidor local (importante para PWA)
+# Opción A: Live Server (VSCode)
 
-⚠️ Nota:
-El Service Worker y el modo PWA no funcionan bien si abres el archivo directamente (file://).
-Para probar la PWA correctamente, usa la opción 2.
+# 3. Abre http://localhost:8000
+🔧 APIs utilizadas
 
-Opción 2: Usar un servidor local (recomendado)
-Método A – Con Node.js
-Instala Node.js:
-https://nodejs.org
+https://open-meteo.com/
 
-En la carpeta del proyecto:
+🎨 Personalización
 
-bash
-
-npx serve .
-Abre en el navegador la URL que aparece, por ejemplo:
-
-
-http://localhost:3000
-Método B – Con Python
-Si tienes Python instalado:
-
-
-
-Abre la web en Chrome móvil.
-
-Pulsa el menú ⋮
-→ Añadir a pantalla de inicio
-
-Se instalará como una app independiente.
-
-iPhone (Safari)
-Abre la web en Safari.
-
-Pulsa el botón Compartir.
-
-Selecciona Añadir a pantalla de inicio.
-
-⚠️ Nota:
-iOS tiene soporte PWA limitado y no usa Service Workers igual que Android.
-
-⚙️ Configuración PWA
-El archivo manifest.json define el nombre, icono y comportamiento de la app:
-
+Cambiar ciudad por defecto
+js
+// js/index.js línea ~140
+const favoritesManager = new FavoritesManager(3, "Madrid"); // ← Cambia aquí
+Añadir más ciudades favoritas
+js
+// js/index.js línea ~90
+constructor(maxFavorites = 5, defaultCity = "Valencia") // ← Cambia el 3 por 5
+Iconos personalizados
 json
-Copiar código
-{
-  "name": "Meteo App",
-  "short_name": "Meteo",
-  "start_url": "./index.html",
-  "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#0f172a",
-  "icons": [
-    {
-      "src": "media/images/logoRemaster.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "media/images/logoRemaster.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ]
-}
-🔌 APIs utilizadas
-Geocoding: https://geocoding-api.open-meteo.com
+// json/manifest.json
+"src": "/AppWeather/media/images/logoRemaster.png",
 
-Weather: https://api.open-meteo.com
+🛠️ Tecnologías
+xml
+HTML5 | CSS3 | Vanilla JavaScript | PWA | Service Workers | Web Components | LocalStorage | Fetch API | Open-Meteo
+🔄 Service Worker (Offline)
+Cachea: HTML, CSS, JS, iconos
 
-Marine: https://marine-api.open-meteo.com
+Excluye: APIs meteorológicas (siempre frescas)
 
-Air Quality: https://air-quality-api.open-meteo.com
+Estrategia: Cache-first (assets) + Network-first (APIs)
 
-🛠️ Requisitos
-Navegador moderno (Chrome, Edge, Firefox, Safari)
+📱 Funcionalidades móviles
+✅ Swipe izquierda/derecha → Cambiar ciudades
 
-Conexión a Internet para obtener datos meteorológicos
+✅ Input predictivo → Buscar cualquier ciudad
 
-Opcional: Node.js o Python para servidor local
+✅ Persistencia → Favoritos guardados
 
-📌 Notas importantes
-El icono PWA puede tardar en actualizarse por caché del navegador.
+✅ Modo oscuro → Automático
 
-Si no aparece tu icono personalizado:
+✅ Splash screen → Personalizado
 
-Borra la app instalada
+⚠️ Posibles problemas y soluciones
+Problema	Solución
+Icono gris "G"	Verificar rutas en manifest.json
+No carga datos	Unregister Service Worker en DevTools
+No funciona offline	Esperar instalación SW completa
+GitHub Pages lento	Esperar 2-5 min tras push
+🤝 Contribuir
+Fork el proyecto
 
-Limpia caché del navegador
+Crea tu feature branch (git checkout -b feature/nueva-ciudad)
 
-Vuelve a instalarla desde Chrome
+Commit tus cambios (git commit -m 'Añade X')
 
-📜 Licencia
-Este proyecto es de uso libre para fines educativos y personales.
-Puedes modificarlo y adaptarlo a tus necesidades.
+Push al branch (git push origin feature/nueva-ciudad)
 
-👨‍💻 Autor
-Desarrollado por: [Tu Nombre]
-Proyecto: PlusWeather
-Año: 2026
+Abre un Pull Request
+
+📄 Licencia
+Este proyecto está bajo la Licencia MIT - ver el archivo LICENSE para más detalles.
+
+
+Made with ❤️ por webermuros1-oss
+¡Instala PlusWeather en tu móvil hoy! 🌟
+
