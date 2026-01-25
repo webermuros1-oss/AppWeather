@@ -9,10 +9,10 @@
         {
             "src": "media/images/logoRemaster.png",
             "sizes": "192x192",
-            "type": "image/png"
+            "type": "image/images/logoRemaster.png"
         },
         {
-            "src": "media/icons/icon-512.png",
+            "src": "media/.png",
             "sizes": "512x512",
             "type": "image/png"
         }
