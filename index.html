@@ -9,27 +9,92 @@
     <link rel="stylesheet" href="css/index.css" />
     <link rel="stylesheet" href="css/header.css" />
     <link rel="stylesheet" href="css/footer.css" />
-
-    <!-- manifest: está en /json/manifest.json -->
+    
+    <!-- Manifest PWA -->
     <link rel="manifest" href="json/manifest.json">
-
     <meta name="theme-color" content="#0f172a">
 
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
+    <!-- HEADER CUSTOM WEB COMPONENT -->
     <header-plus-weather></header-plus-weather>
 
+    <!-- MAIN CONTENT -->
     <main class="dashboard">
-        <!-- ... aquí va tu HTML de las cards tal cual lo tenías ... -->
+        
+        <!-- BUSCADOR DE CIUDAD -->
+        <div class="searchContainer">
+            <input type="text" id="getCity" placeholder="🔍 Buscar ciudad (ej: Madrid, Valencia)...">
+        </div>
+
+        <!-- TARJETA PRINCIPAL DEL CLIMA ACTUAL -->
+        <div class="card mainWeatherCard">
+            <button class="navArrow prevArrow">❮</button>
+            <button class="navArrow nextArrow">❯</button>
+
+            <div class="locationInfo">
+                <h2 class="cityName">Ciudad</h2>
+                <p class="date">Fecha</p>
+            </div>
+            
+            <div class="currentWeather">
+                <div class="weatherIconDisplay">🌤️</div>
+                <div class="tempInfo">
+                    <h1 class="weatherDeg">--°C</h1>
+                    <p class="weatherCondition">Cargando...</p>
+                </div>
+            </div>
+            
+            <div class="favDots" id="favDots"></div>
+        </div>
+
+        <!-- PRONÓSTICO 7 DÍAS -->
+        <div class="card forecastCard">
+            <h4>📅 Pronóstico 7 días</h4>
+            <div class="forecastInfo"></div>
+        </div>
+
+        <!-- CONDICIONES ATMOSFÉRICAS -->
+        <div class="card atmosphereCard">
+            <h4>☁️ Condiciones atmosféricas</h4>
+            <div class="gridInfo atmosphereInfo"></div>
+        </div>
+
+        <!-- VIENTO -->
+        <div class="card windCard">
+            <h4>💨 Viento</h4>
+            <div class="windInfo"></div>
+        </div>
+
+        <!-- DATOS ASTRONÓMICOS -->
+        <div class="card astroCard">
+            <h4>🌅 Datos astronómicos</h4>
+            <div class="astroInfo"></div>
+        </div>
+
+        <!-- DATOS MARÍTIMOS -->
+        <div class="card marineCard">
+            <h4>🌊 Datos marítimos</h4>
+            <div class="marineInfo"></div>
+        </div>
+
+        <!-- CALIDAD DEL AIRE -->
+        <div class="card airCard">
+            <h4>🌫️ Calidad aire</h4>
+            <div class="airInfo"></div>
+        </div>
     </main>
 
+    <!-- SCRIPTS -->
     <script src="js/header.js"></script>
     <script src="js/footer.js"></script>
     <script src="js/index.js" defer></script>
-
+    
+    <!-- FOOTER CUSTOM WEB COMPONENT -->
     <footer-plus-weather></footer-plus-weather>
 </body>
 </html>
