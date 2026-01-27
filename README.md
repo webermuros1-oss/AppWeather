@@ -1,66 +1,87 @@
-[PlusWeather 🌤️]
+# 🌤️ PlusWeather — PWA Meteorológica Inteligente  
 
+> Aplicación meteorológica progresiva (PWA) con pronóstico completo, datos marítimos, calidad del aire y sistema de favoritos.  
+> Funciona **100% offline** una vez instalada y ofrece una experiencia rápida, moderna y personalizable.
 
-Aplicación meteorológica progresiva (PWA) con pronóstico completo, datos marítimos, calidad del aire y favoritos. Funciona 100% offline una vez instalada.
+---
 
-✨ Características
-Característica	✅ Estado
-Datos meteorológicos en tiempo real	Open-Meteo API
-Pronóstico 7 días	☀️🌧️❄️
-Condiciones atmosféricas completas	Humedad, presión, UV, visibilidad
-Datos de viento detallados	Velocidad, ráfagas, dirección
-Datos astronómicos	Amanecer, atardecer, horas de sol
-Datos marítimos	Altura de olas, corrientes
-Calidad del aire	PM2.5, PM10, NO₂, O₃
-Sistema de favoritos (máx. 3 ciudades)	💾 Persistente
-Navegación por swipe y flechas	📱👆
-Fondos dinámicos según clima	🌤️🌧️⛄
-PWA instalable	Icono personalizado
-Offline-first	Service Worker
-Responsive	Móvil + Desktop
+## ✨ Características principales
 
-🤖 Uso de Inteligencia Artificial
-Para el desarrollo de este proyecto se contó con el apoyo de ChatGPT/Claude en las siguientes tareas:
-Refactorización: Optimización de la lógica del Service Worker para el modo offline.
-Depuración: Resolución de errores en la persistencia de datos con LocalStorage.
-Documentación: Generación de la estructura base del pojecto y traducción de términos técnicos.
+| Característica | Descripción / Fuente |
+|----------------|----------------------|
+| 🌦️ Datos meteorológicos en tiempo real | Open-Meteo API |
+| 🗓️ Pronóstico 7 días | ☀️🌧️❄️ Extendido |
+| 🌡️ Condiciones atmosféricas | Humedad, presión, UV, visibilidad |
+| 🌬️ Datos de viento | Velocidad, ráfagas, dirección |
+| 🌅 Datos astronómicos | Amanecer, atardecer, horas de sol |
+| 🌊 Datos marítimos | Altura de olas, corrientes |
+| 🫧 Calidad del aire | PM2.5, PM10, NO₂, O₃ |
+| ❤️ Sistema de favoritos (3 ciudades) | Persistente con LocalStorage |
+| 👆 Navegación intuitiva | Swipe + flechas |
+| 🖼️ Fondos dinámicos | Cambian según condiciones |
+| 📲 Instalación PWA | Icono y splash personalizados |
+| ⚡ Offline-first | Cache adaptable con Service Worker |
+| 💻 Responsive | Compatible en móvil y desktop |
 
+---
 
-Captura de pantalla :![alt text](media/images/CapturaFinal.jpg)
+## 🤖 Inteligencia Artificial en el desarrollo
 
+**PlusWeather** fue desarrollado con asistencia de **ChatGPT / Claude**, integrando IA en distintos puntos del proceso de construcción.  
+La IA sirvió como herramienta de apoyo humano, no como sistema autónomo.  
 
-📱 Demo en vivo
-🔗 https://webermuros1-oss.github.io/AppWeather/
+### 🔧 Roles de la IA
 
-Para instalar:
+- **Refactorización inteligente** — optimización del `Service Worker` para un cacheo más eficiente.  
+- **Depuración asistida** — corrección de errores en la persistencia y restauración de datos desde `LocalStorage`.  
+- **Documentación estructurada** — generación de una base multilingüe de documentación técnica.  
+- **Revisión UX/UI** — sugerencias para colores, contraste y comportamiento de fondos dinámicos.
 
-Abre en Chrome/Safari móvil
+### 🚀 Futuras integraciones con IA
+- Predicción meteorológica híbrida con análisis histórico.  
+- Asistente por voz para consultas locales.  
+- Notificaciones contextuales (por tipo de actividad: surf, senderismo, etc).  
 
-Menú → "Añadir a pantalla de inicio"
+---
 
-¡Listo! Funciona sin internet
+## 🖼️ Captura de pantalla
 
+![Vista final de PlusWeather](media/images/CapturaFinal.jpg)
 
+---
 
-🏗️ Estructura del proyecto
+## 📱 Demo en vivo
 
+👉 [[**https://webermuros1-oss.github.io/AppWeather/**](https://webermuros1-oss.github.io/AppWeather/)](https://webermuros1-oss/AppWeather/)
+
+### Instalar como PWA
+
+1. Abre el enlace en **Chrome o Safari móvil**  
+2. Toca el menú → **“Añadir a pantalla de inicio”**  
+3. ¡Listo! La aplicación funcionará **sin conexión** 🌍  
+
+---
+
+## 🏗️ Estructura del proyecto
+
+```bash
 AppWeather/
-├── index.html          # Página principal
+├── index.html                # Página principal
 ├── json/
-│   └── manifest.json   # Configuración PWA
+│   └── manifest.json         # Configuración PWA
 ├── css/
-│   ├── index.css       # Estilos principales
-│   ├── header.css      # Header
-│   └── footer.css      # Footer
+│   ├── index.css             # Estilos principales
+│   ├── header.css            # Header
+│   └── footer.css            # Footer
 ├── js/
-│   ├── index.js        # Lógica principal + APIs
-│   ├── header.js       # Web Component Header
-│   ├── footer.js       # Web Component Footer
-│   └── serviceWorker.js # Cache offline
+│   ├── index.js              # Lógica principal + APIs
+│   ├── header.js             # Componente Header
+│   ├── footer.js             # Componente Footer
+│   └── serviceWorker.js      # Lógica offline
 └── media/images/
-    ├── logoRemaster192.png  # Icono PWA 192px
-    ├── logoRemaster512.png  # Icono PWA 512px
-    ├── fondos climáticos... # Imágenes dinámicas
+    ├── logoRemaster192.png   # Icono PWA (192px)
+    ├── logoRemaster512.png   # Icono PWA (512px)
+    └── fondos_climaticos/    # Fondos dinámicos según clima
 
 
 🚀 Instalación local
@@ -69,10 +90,12 @@ bash
 git clone https://github.com/webermuros1-oss/AppWeather.git
 cd AppWeather
 
-# 2. Servidor local (importante para PWA)
-# Opción A: Live Server (VSCode)
+# 2. Ejecuta un servidor local (requerido para PWA)
+# Opción fácil: usar "Live Server" en VSCode
 
-# 3. Abre http://localhost:8000
+# 3. Abre en navegador
+http://localhost:8000
+
 🔧 APIs utilizadas
 
 https://open-meteo.com/
@@ -121,16 +144,15 @@ Estrategia: Cache-first (assets) + Network-first (APIs)
 
 ✅ Splash screen → Personalizado
 
-⚠️ Posibles problemas y soluciones
-Problema	Solución
-Icono gris "G"	Verifica las rutas definidas en el archivo manifest.json.
-No carga datos	Abre DevTools → Application → Service Workers y selecciona Unregister, luego recarga la página.
-No funciona offline	Espera unos segundos tras la primera instalación para que el Service Worker complete su registro.
-GitHub Pages lento	Espera de 2 a 5 minutos después del último push hasta que se refresque el servicio.
-🤝 Cómo contribuir
-¿Quieres apoyar el proyecto o mejorar alguna funcionalidad? ¡Aquí tienes cómo hacerlo! 🚀
+### ⚠️ Posibles problemas y soluciones
 
-Haz un Fork del repositorio:
+| 🧩 Problema                                         | 💡 Solución |
+|-----------------------------|--------------------------------------------------------------------------------|
+| **Icono gris "G"**          | Verifica las rutas definidas en el archivo `manifest.json`. |
+| **No carga datos**          | Abre **DevTools → Application → Service Workers** y selecciona **Unregister**, luego recarga la página. |
+| **No funciona offline**     | Espera unos segundos tras la primera instalación para que el *Service Worker* complete su registro. |
+| **GitHub Pages lento**      | Espera de **2 a 5 minutos** después del último *push* hasta que se refresque el servicio. |
+
 
 bash
 git clone https://github.com/webermuros1-oss/AppWeather.git
@@ -148,7 +170,7 @@ bash
 git push origin feature/nueva-ciudad
 Abre un Pull Request desde GitHub para revisión y merge.
 
-💡 Consejo: antes de enviar tu PR, revisa que el modo offline y las rutas del manifest funcionen correctamente.
+
 
 📄 Licencia
 Este proyecto está bajo la Licencia MIT - ver el archivo LICENSE para más detalles.
