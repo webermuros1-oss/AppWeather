@@ -8,12 +8,12 @@ class MyFooter extends HTMLElement {
         </div>
         <div class="footerItem" data-section="hourlyCard">
         <i class="fa-solid fa-clock"></i>
-        <span>Cada hora</span>
+        <span>Horas</span>
         </div>
 
         <div class="footerItem" data-section="forecastCard">
           <i class="fa-solid fa-cloud"></i>
-          <span>Pronóstico</span>
+          <span>Dias</span>
         </div>
 
         <div class="footerItem" data-section="atmosphereCard">
