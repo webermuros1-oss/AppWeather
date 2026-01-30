@@ -199,6 +199,87 @@ header {
 	color: var(--accent-green);
 	text-shadow: 0 0 8px rgba(0, 217, 255, 0.3);
 }
+/* ⭐ NUEVA CARD HORARIA */
+.hourlyCard {
+    /* Hereda estilos de .card existente */
+}
+
+.hourlyInfo {
+    display: flex;
+    overflow-x: auto;
+    gap: 12px;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 10px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0,217,255,0.5) transparent;
+}
+
+.hourlyInfo::-webkit-scrollbar {
+    height: 6px;
+}
+
+.hourlyInfo::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.1);
+    border-radius: 3px;
+}
+
+.hourlyInfo::-webkit-scrollbar-thumb {
+    background: rgba(0,217,255,0.5);
+    border-radius: 3px;
+}
+
+.hourItem {
+    flex: 0 0 90px;
+    background: rgba(0, 217, 255, 0.15);
+    border-radius: 16px;
+    text-align: center;
+    padding: 16px 8px;
+    scroll-snap-align: start;
+    border: 1px solid rgba(0, 255, 136, 0.3);
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s ease;
+}
+
+.hourItem:hover {
+    transform: scale(1.05);
+}
+
+.hour {
+    font-weight: 600;
+    color: var(--accent-teal);
+    font-size: 0.85rem;
+    text-shadow: 0 0 8px rgba(0, 217, 255, 0.3);
+}
+
+.hourIcon {
+    font-size: 2.2rem;
+    display: block;
+    margin: 4px 0;
+}
+
+.hourTemp {
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: var(--accent-green);
+    text-shadow: 0 0 8px rgba(0, 255, 136, 0.3);
+}
+
+.hourRain {
+    font-size: 0.8rem;
+    opacity: 0.9;
+}
+
+/* Ajuste para input de búsqueda */
+.searchContainer {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto 20px;
+}
+
+
 
 .forecastInfo {
 	display: flex;
