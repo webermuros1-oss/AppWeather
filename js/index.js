@@ -22,7 +22,7 @@ const elements = {
     marine: document.querySelector(".marineInfo"),
     forecast: document.querySelector(".forecastInfo"),
     astro: document.querySelector(".astroInfo"),
-    hourly: document.querySelector(".hourlyInfo"), // ⭐ NUEVO
+    hourly: document.querySelector(".hourlyInfo"),
 
     prevArrow: document.querySelector(".prevArrow"),
     nextArrow: document.querySelector(".nextArrow"),
@@ -33,7 +33,6 @@ const API_URLS = {
     geocoding: "https://geocoding-api.open-meteo.com/v1/search",
     weather: "https://api.open-meteo.com/v1/forecast",
     marine: "https://marine-api.open-meteo.com/v1/marine"
-    // ⭐ Eliminamos airQuality
 };
 
 const MONTHS = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
@@ -70,12 +69,19 @@ const BACKGROUND_IMAGES = {
     default: ["bg1", "bg2", "bg3", "bg4", "bg5"]
 };
 
+// ⭐ FAVORITES MANAGER CON ÚLTIMA CIUDAD
 class FavoritesManager {
     constructor(maxFavorites = 3, defaultCity = "A Coruña") {
         this.maxFavorites = maxFavorites;
         this.defaultCity = defaultCity;
         this.favorites = this.loadFavorites();
-        this.currentIndex = 0;
+        
+        // ⭐ Cargar última ciudad buscada
+        const lastCity = localStorage.getItem("lastCity") || defaultCity;
+        this.currentIndex = this.favorites.indexOf(lastCity);
+        if (this.currentIndex === -1) {
+            this.currentIndex = 0;
+        }
     }
 
     loadFavorites() {
@@ -87,19 +93,24 @@ class FavoritesManager {
         localStorage.setItem("favCities", JSON.stringify(this.favorites));
     }
 
+    saveLastCity(cityName) {
+        localStorage.setItem("lastCity", cityName);
+    }
+
     addCity(cityName) {
         if (this.favorites.includes(cityName)) {
             this.currentIndex = this.favorites.indexOf(cityName);
+            this.saveLastCity(cityName);
             return false;
         }
 
         this.favorites.push(cityName);
-
         if (this.favorites.length > this.maxFavorites) {
             this.favorites.shift();
         }
 
         this.currentIndex = this.favorites.length - 1;
+        this.saveLastCity(cityName);
         this.saveFavorites();
         return true;
     }
@@ -144,7 +155,28 @@ const favoritesManager = new FavoritesManager();
 function initializeEventListeners() {
     window.addEventListener("load", async () => {
         changeBackgroundImage();
-        await loadCityByIndex(0);
+        
+        // ⭐ HÍBRIDO: GPS → Última ciudad → A Coruña
+        try {
+            // 1️⃣ PRIMERO GPS
+            const gpsCity = await getCurrentLocation();
+            elements.cityInput.value = gpsCity.name;
+            await fetchDataFromApi(false);
+            favoritesManager.addCity(gpsCity.name);
+            
+        } catch (error) {
+            console.log("GPS falló, probando última ciudad...");
+            try {
+                // 2️⃣ ÚLTIMA CIUDAD
+                const lastCity = localStorage.getItem("lastCity") || "A Coruña";
+                elements.cityInput.value = lastCity;
+                await fetchDataFromApi(false);
+                
+            } catch (error2) {
+                // 3️⃣ A CORUÑA POR DEFECTO
+                await loadCityByIndex(0);
+            }
+        }
     });
 
     let lastScrollTop = 0;
@@ -192,6 +224,44 @@ function initializeEventListeners() {
         } else if (touchEndX - touchStartX > swipeDistance) {
             elements.prevArrow.click();
         }
+    });
+}
+
+// ⭐ GEOLOCALIZACIÓN GPS
+async function getCurrentLocation() {
+    return new Promise((resolve, reject) => {
+        if (!navigator.geolocation) {
+            reject("Geolocalización no soportada");
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            async (position) => {
+                try {
+                    const { latitude, longitude } = position.coords;
+                    
+                    const url = `${API_URLS.geocoding}?latitude=${latitude}&longitude=${longitude}&count=1&language=es&format=json`;
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    
+                    if (data.results?.[0]) {
+                        resolve(data.results[0]);
+                    } else {
+                        reject("No se pudo obtener la ciudad");
+                    }
+                } catch (error) {
+                    reject(error);
+                }
+            },
+            (error) => {
+                reject("GPS denegado o no disponible");
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 600000
+            }
+        );
     });
 }
 
@@ -252,7 +322,7 @@ async function fetchWeatherData(latitude, longitude) {
         latitude,
         longitude,
         current: "temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m,apparent_temperature,precipitation,rain,showers,snowfall,pressure_msl,surface_pressure,cloud_cover,visibility,uv_index,is_day,cape,dew_point_2m",
-        hourly: "temperature_2m,precipitation_probability,weather_code,relative_humidity_2m,precipitation", // ⭐ NUEVO: hourly forecast
+        hourly: "temperature_2m,precipitation_probability,weather_code,relative_humidity_2m,precipitation",
         daily: "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset,daylight_duration,sunshine_duration,uv_index_max",
         timezone: "auto",
         forecast_days: 7
@@ -281,7 +351,7 @@ async function fetchWeatherData(latitude, longitude) {
         uvIndex: data.current.uv_index,
         cape: data.current.cape,
         dailyForecast: data.daily,
-        hourlyForecast: data.hourly // ⭐ NUEVO
+        hourlyForecast: data.hourly
     };
 }
 
@@ -329,13 +399,12 @@ function updateUI(data) {
     updateForecast(data);
     updateAstro(data);
     updateMarine(data);
-    updateHourly(data); // ⭐ NUEVO: reemplaza updateAirQuality
+    updateHourly(data);
     updateDots();
     changeBackgroundImage(data.weatherCode);
     scrollToTop();
 }
 
-// ⭐ NUEVA FUNCIÓN: Pronóstico por horas
 function updateHourly(data) {
     if (!data.hourlyForecast) {
         elements.hourly.innerHTML = `<p class="notAvailable">Pronóstico horario no disponible</p>`;
