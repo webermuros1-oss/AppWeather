@@ -13,7 +13,7 @@ class MyFooter extends HTMLElement {
 
         <div class="footerItem" data-section="forecastCard">
           <i class="fa-solid fa-cloud"></i>
-          <span>Dias</span>
+          <span>Días</span>
         </div>
 
         <div class="footerItem" data-section="atmosphereCard">
