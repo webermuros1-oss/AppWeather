@@ -30,17 +30,36 @@
 **PlusWeather** fue desarrollado con asistencia de **ChatGPT / Claude**, integrando IA en distintos puntos del proceso de construcción.  
 La IA sirvió como herramienta de apoyo humano, no como sistema autónomo.  
 
-### 🔧 Roles de la IA
+🔧 Rol de la IA en el desarrollo
 
-- **Refactorización inteligente** — optimización del `Service Worker` para un cacheo más eficiente.  
-- **Depuración asistida** — corrección de errores en la persistencia y restauración de datos desde `LocalStorage`.  
-- **Documentación estructurada** — generación de una base multilingüe de documentación técnica.  
-- **Revisión UX/UI** — sugerencias para colores, contraste y comportamiento de fondos dinámicos.
+Este proyecto fue desarrollado con asistencia intensiva de IA. La IA participó activamente en la generación inicial del código y en propuestas de arquitectura, mientras que el desarrollador humano se encargó de revisar, comprender, corregir y ajustar las soluciones generadas para asegurar su correcto funcionamiento y coherencia con los objetivos del proyecto.
 
-### 🚀 Futuras integraciones con IA
-- Predicción meteorológica híbrida con análisis histórico.  
-- Asistente por voz para consultas locales.  
-- Notificaciones contextuales (por tipo de actividad: surf, senderismo, etc).  
+Las principales contribuciones de la IA fueron:
+
+**Factorización y estructuración del código**
+Propuesta y creación de funciones reutilizables para mejorar la legibilidad y el mantenimiento del proyecto.
+
+**Refactorización del Service Worker**
+Optimización de la estrategia de cacheo para mejorar el rendimiento offline y reducir accesos innecesarios a red.
+
+**Depuración asistida**
+Identificación y corrección de errores relacionados con la persistencia y restauración de datos usando LocalStorage, siempre validados manualmente.
+
+**Generación de documentación técnica**
+Creación de una base inicial de documentación estructurada y preparada para soporte multilingüe.
+
+**Sugerencias UX/UI**
+Recomendaciones sobre paleta de colores, contraste visual y comportamiento de fondos dinámicos, posteriormente ajustadas según criterio humano.
+
+En todos los casos, el código generado por la IA fue revisado, comprendido y adaptado manualmente antes de integrarse al proyecto.
+
+## 🚀 Posibles futuras integraciones con IA
+
+Predicción meteorológica híbrida combinando datos en tiempo real y análisis histórico.
+
+Asistente por voz para consultas locales.
+
+Notificaciones contextuales basadas en el tipo de actividad (surf, senderismo, etc.).
 
 ---
 
