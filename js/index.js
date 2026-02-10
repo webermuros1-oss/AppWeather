@@ -69,14 +69,14 @@ const BACKGROUND_IMAGES = {
     default: ["bg1", "bg2", "bg3", "bg4", "bg5"]
 };
 
-// ⭐ FAVORITES MANAGER CON ÚLTIMA CIUDAD
+
 class FavoritesManager {
     constructor(maxFavorites = 3, defaultCity = "A Coruña") {
         this.maxFavorites = maxFavorites;
         this.defaultCity = defaultCity;
         this.favorites = this.loadFavorites();
         
-        // ⭐ Cargar última ciudad buscada
+        
         const lastCity = localStorage.getItem("lastCity") || defaultCity;
         this.currentIndex = this.favorites.indexOf(lastCity);
         if (this.currentIndex === -1) {
@@ -156,9 +156,9 @@ function initializeEventListeners() {
     window.addEventListener("load", async () => {
         changeBackgroundImage();
         
-        // ⭐ HÍBRIDO: GPS → Última ciudad → A Coruña
+        
         try {
-            // 1️⃣ PRIMERO GPS
+            
             const gpsCity = await getCurrentLocation();
             elements.cityInput.value = gpsCity.name;
             await fetchDataFromApi(false);
@@ -167,13 +167,13 @@ function initializeEventListeners() {
         } catch (error) {
             console.log("GPS falló, probando última ciudad...");
             try {
-                // 2️⃣ ÚLTIMA CIUDAD
+                
                 const lastCity = localStorage.getItem("lastCity") || "A Coruña";
                 elements.cityInput.value = lastCity;
                 await fetchDataFromApi(false);
                 
             } catch (error2) {
-                // 3️⃣ A CORUÑA POR DEFECTO
+                
                 await loadCityByIndex(0);
             }
         }
@@ -227,7 +227,7 @@ function initializeEventListeners() {
     });
 }
 
-// ⭐ GEOLOCALIZACIÓN GPS
+
 async function getCurrentLocation() {
     return new Promise((resolve, reject) => {
         if (!navigator.geolocation) {
