@@ -71,22 +71,32 @@ const BACKGROUND_IMAGES = {
 
 
 class FavoritesManager {
-    constructor(maxFavorites = 3, defaultCity = "A Coruña") {
+    constructor(maxFavorites = 4) {
         this.maxFavorites = maxFavorites;
-        this.defaultCity = defaultCity;
         this.favorites = this.loadFavorites();
         
-        
-        const lastCity = localStorage.getItem("lastCity") || defaultCity;
-        this.currentIndex = this.favorites.indexOf(lastCity);
-        if (this.currentIndex === -1) {
+        const lastCity = localStorage.getItem("lastCity");
+        if (lastCity && this.favorites.length > 0) {
+            const index = this.favorites.findIndex(city => city.name === lastCity);
+            this.currentIndex = index !== -1 ? index : 0;
+        } else {
             this.currentIndex = 0;
         }
     }
 
     loadFavorites() {
         const saved = localStorage.getItem("favCities");
-        return saved ? JSON.parse(saved) : [this.defaultCity];
+        if (saved) {
+            try {
+                const parsed = JSON.parse(saved);
+                // Asegurarse de que sean objetos con coordenadas
+                return Array.isArray(parsed) && parsed.length > 0 ? parsed : [];
+            } catch (e) {
+                console.error("Error al cargar favoritos:", e);
+                return [];
+            }
+        }
+        return [];
     }
 
     saveFavorites() {
@@ -97,29 +107,46 @@ class FavoritesManager {
         localStorage.setItem("lastCity", cityName);
     }
 
-    addCity(cityName) {
-        if (this.favorites.includes(cityName)) {
-            this.currentIndex = this.favorites.indexOf(cityName);
-            this.saveLastCity(cityName);
+    // Ahora recibe un objeto completo con nombre, país y coordenadas
+    addCity(cityData) {
+        if (!cityData || !cityData.name || !cityData.latitude || !cityData.longitude) {
+            console.error("Datos de ciudad incompletos:", cityData);
             return false;
         }
 
-        this.favorites.push(cityName);
+        // Buscar si ya existe
+        const existingIndex = this.favorites.findIndex(city => city.name === cityData.name);
+        if (existingIndex !== -1) {
+            // Actualizar datos y mover al final
+            this.favorites.splice(existingIndex, 1);
+        }
+
+        // Agregar ciudad al final (más reciente)
+        this.favorites.push({
+            name: cityData.name,
+            country: cityData.country,
+            latitude: cityData.latitude,
+            longitude: cityData.longitude
+        });
+        
+        // Mantener solo las últimas 4
         if (this.favorites.length > this.maxFavorites) {
             this.favorites.shift();
         }
 
         this.currentIndex = this.favorites.length - 1;
-        this.saveLastCity(cityName);
+        this.saveLastCity(cityData.name);
         this.saveFavorites();
         return true;
     }
 
     getCurrentCity() {
+        if (this.favorites.length === 0) return null;
         return this.favorites[this.currentIndex];
     }
 
     goToPrevious() {
+        if (this.favorites.length === 0) return null;
         this.currentIndex = this.currentIndex > 0
             ? this.currentIndex - 1
             : this.favorites.length - 1;
@@ -127,6 +154,7 @@ class FavoritesManager {
     }
 
     goToNext() {
+        if (this.favorites.length === 0) return null;
         this.currentIndex = this.currentIndex < this.favorites.length - 1
             ? this.currentIndex + 1
             : 0;
@@ -156,25 +184,33 @@ function initializeEventListeners() {
     window.addEventListener("load", async () => {
         changeBackgroundImage();
         
-        
+        // Siempre intentar GPS primero
         try {
-            
+            console.log("Obteniendo ubicación GPS...");
             const gpsCity = await getCurrentLocation();
-            elements.cityInput.value = gpsCity.name;
-            await fetchDataFromApi(false);
-            favoritesManager.addCity(gpsCity.name);
+            console.log("GPS exitoso:", gpsCity.name);
+            
+            // Cargar datos del tiempo con GPS
+            await fetchDataFromCoordinates(gpsCity.latitude, gpsCity.longitude, gpsCity.name, gpsCity.country);
+            
+            // Guardar en favoritos con datos completos
+            favoritesManager.addCity({
+                name: gpsCity.name,
+                country: gpsCity.country,
+                latitude: gpsCity.latitude,
+                longitude: gpsCity.longitude
+            });
             
         } catch (error) {
-            console.log("GPS falló, probando última ciudad...");
-            try {
-                
-                const lastCity = localStorage.getItem("lastCity") || "A Coruña";
-                elements.cityInput.value = lastCity;
-                await fetchDataFromApi(false);
-                
-            } catch (error2) {
-                
-                await loadCityByIndex(0);
+            console.log("GPS no disponible:", error);
+            
+            // Si GPS falla, intentar cargar la última ciudad guardada
+            if (favoritesManager.getCount() > 0) {
+                console.log("Cargando última ciudad guardada");
+                await loadCityByIndex(favoritesManager.currentIndex);
+            } else {
+                console.log("No hay ubicación disponible. Busca una ciudad.");
+                alert("No se pudo obtener tu ubicación. Por favor, busca una ciudad manualmente.");
             }
         }
     });
@@ -198,14 +234,18 @@ function initializeEventListeners() {
         }
     });
 
-    elements.prevArrow.addEventListener("click", () => {
-        const city = favoritesManager.goToPrevious();
-        loadCityByName(city);
+    elements.prevArrow.addEventListener("click", async () => {
+        const cityData = favoritesManager.goToPrevious();
+        if (cityData) {
+            await loadCityByName(cityData);
+        }
     });
 
-    elements.nextArrow.addEventListener("click", () => {
-        const city = favoritesManager.goToNext();
-        loadCityByName(city);
+    elements.nextArrow.addEventListener("click", async () => {
+        const cityData = favoritesManager.goToNext();
+        if (cityData) {
+            await loadCityByName(cityData);
+        }
     });
 
     let touchStartX = 0;
@@ -239,30 +279,67 @@ async function getCurrentLocation() {
             async (position) => {
                 try {
                     const { latitude, longitude } = position.coords;
+                    console.log("📍 Coordenadas GPS obtenidas:", { latitude, longitude });
                     
-                    const url = `${API_URLS.geocoding}?latitude=${latitude}&longitude=${longitude}&count=1&language=es&format=json`;
+                    // API CORRECTA para geocoding inverso
+                    const url = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=es`;
+                    console.log("🔍 Consultando geocoding:", url);
+                    
                     const response = await fetch(url);
                     const data = await response.json();
+                    console.log("🌍 Respuesta geocoding:", data);
                     
-                    if (data.results?.[0]) {
-                        resolve(data.results[0]);
+                    if (data.city || data.locality) {
+                        const cityData = {
+                            name: data.city || data.locality,
+                            country: data.countryCode || data.countryName,
+                            latitude: latitude,
+                            longitude: longitude
+                        };
+                        console.log("✅ Ciudad detectada:", cityData);
+                        resolve(cityData);
                     } else {
                         reject("No se pudo obtener la ciudad");
                     }
                 } catch (error) {
+                    console.error("❌ Error en geocoding:", error);
                     reject(error);
                 }
             },
             (error) => {
+                console.error("❌ Error GPS:", error.code, error.message);
                 reject("GPS denegado o no disponible");
             },
             {
                 enableHighAccuracy: true,
                 timeout: 10000,
-                maximumAge: 600000
+                maximumAge: 30000  // Permite usar posición reciente (30 segundos)
             }
         );
     });
+}
+
+// Nueva función para cargar datos directamente desde coordenadas
+async function fetchDataFromCoordinates(latitude, longitude, name, country) {
+    try {
+        const [weatherData, marineData] = await Promise.all([
+            fetchWeatherData(latitude, longitude),
+            fetchMarineData(latitude, longitude)
+        ]);
+
+        const combinedData = {
+            name,
+            country,
+            ...weatherData,
+            ...marineData
+        };
+
+        updateUI(combinedData);
+
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        throw error;
+    }
 }
 
 async function fetchDataFromApi(saveToFavorites = false) {
@@ -280,7 +357,14 @@ async function fetchDataFromApi(saveToFavorites = false) {
         const { latitude, longitude, name, country } = geoData;
 
         if (saveToFavorites) {
-            favoritesManager.addCity(name);
+            favoritesManager.addCity({
+                name,
+                country,
+                latitude,
+                longitude
+            });
+        } else {
+            favoritesManager.saveLastCity(name);
         }
 
         const [weatherData, marineData] = await Promise.all([
@@ -381,15 +465,36 @@ async function fetchMarineData(latitude, longitude) {
 }
 
 async function loadCityByIndex(index) {
-    const city = favoritesManager.goToIndex(index);
-    if (city) {
-        await loadCityByName(city);
+    const cityData = favoritesManager.goToIndex(index);
+    if (cityData) {
+        await loadCityByCoordinates(cityData);
     }
 }
 
-async function loadCityByName(cityName) {
-    elements.cityInput.value = cityName;
-    await fetchDataFromApi(false);
+async function loadCityByName(cityData) {
+    await loadCityByCoordinates(cityData);
+}
+
+async function loadCityByCoordinates(cityData) {
+    if (!cityData || !cityData.latitude || !cityData.longitude) {
+        console.error("Datos de ciudad incompletos:", cityData);
+        return;
+    }
+    
+    try {
+        console.log("🔄 Cargando ciudad desde coordenadas:", cityData.name);
+        await fetchDataFromCoordinates(
+            cityData.latitude,
+            cityData.longitude,
+            cityData.name,
+            cityData.country
+        );
+        favoritesManager.saveLastCity(cityData.name);
+        console.log("✅ Ciudad cargada exitosamente:", cityData.name);
+    } catch (error) {
+        console.error("❌ Error cargando ciudad:", cityData.name, error);
+        alert(`No se pudo cargar ${cityData.name}. Por favor, intenta con otra ciudad.`);
+    }
 }
 
 function updateUI(data) {
