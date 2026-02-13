@@ -199,33 +199,27 @@ header {
 	color: var(--accent-green);
 	text-shadow: 0 0 8px rgba(0, 217, 255, 0.3);
 }
-/* ⭐ NUEVA CARD HORARIA */
+
+/* ⭐ CARRUSEL HORARIO CORREGIDO */
 .hourlyCard {
-    /* Hereda estilos de .card existente */
+    overflow: hidden; /* Evita que se escape contenido */
 }
 
 .hourlyInfo {
     display: flex;
-    overflow-x: auto;
+    overflow-x: auto; /* Permite scroll horizontal */
+    overflow-y: hidden;
     gap: 12px;
     scroll-snap-type: x mandatory;
     padding-bottom: 10px;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(0,217,255,0.5) transparent;
+    /* Por defecto oculta la barra en móvil */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
+/* Ocultar scrollbar en móvil/tablet (Chrome/Safari/Opera) */
 .hourlyInfo::-webkit-scrollbar {
-    height: 6px;
-}
-
-.hourlyInfo::-webkit-scrollbar-track {
-    background: rgba(255,255,255,0.1);
-    border-radius: 3px;
-}
-
-.hourlyInfo::-webkit-scrollbar-thumb {
-    background: rgba(0,217,255,0.5);
-    border-radius: 3px;
+    display: none;
 }
 
 .hourItem {
@@ -278,8 +272,6 @@ header {
     max-width: 400px;
     margin: 0 auto 20px;
 }
-
-
 
 .forecastInfo {
 	display: flex;
@@ -399,6 +391,31 @@ header {
 	.gridInfo, .windInfo, .marineInfo, .astroInfo, .airInfo {
 		grid-template-columns: repeat(2, 1fr);
 	}
+	
+	/* Mostrar barra de scroll SOLO en PC/Tablet */
+	.hourlyInfo {
+		scrollbar-width: thin;
+		scrollbar-color: rgba(0,217,255,0.5) rgba(255,255,255,0.1);
+	}
+	
+	.hourlyInfo::-webkit-scrollbar {
+		display: block;
+		height: 8px;
+	}
+	
+	.hourlyInfo::-webkit-scrollbar-track {
+		background: rgba(255,255,255,0.1);
+		border-radius: 4px;
+	}
+	
+	.hourlyInfo::-webkit-scrollbar-thumb {
+		background: rgba(0,217,255,0.5);
+		border-radius: 4px;
+	}
+	
+	.hourlyInfo::-webkit-scrollbar-thumb:hover {
+		background: rgba(0,217,255,0.7);
+	}
 }
 
 @media (min-width: 1024px) {
@@ -418,5 +435,11 @@ header {
 	body {
 		padding-top: 110px;
 		padding-bottom: 90px;
+	}
+	
+	/* En móvil: solo mostrar 3 tarjetas completas */
+	.hourlyInfo {
+		max-width: 306px; /* 3 tarjetas de 90px + 2 gaps de 12px */
+		margin: 0 auto;
 	}
 }
