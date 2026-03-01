@@ -9,39 +9,33 @@
     <link rel="stylesheet" href="css/index.css" />
     <link rel="stylesheet" href="css/header.css" />
     <link rel="stylesheet" href="css/footer.css" />
-    
-    
+
     <link rel="manifest" href="json/manifest.json">
     <meta name="theme-color" content="#0f172a">
 
-    <link rel="icon" type="image/png" sizes="32x32" href="media/images/logoRemaster.png">
+    <link rel="icon" type="image/png" sizes="32x32"  href="media/images/logoRemaster.png">
     <link rel="icon" type="image/png" sizes="192x192" href="media/images/logoRemaster192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="media/images/logoRemaster512.png">
     <link rel="apple-touch-icon" href="media/images/logoRemaster192.png">
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-</head>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
 <body>
-    
+
     <header-plus-weather></header-plus-weather>
 
-    
     <main class="dashboard">
-        
-        
 
-        
+        <!-- ── Main Weather Card ── -->
         <div class="card mainWeatherCard">
             <button class="navArrow prevArrow">❮</button>
             <button class="navArrow nextArrow">❯</button>
-
             <div class="locationInfo">
                 <h2 class="cityName">Ciudad</h2>
                 <p class="date">Fecha</p>
             </div>
-            
             <div class="currentWeather">
                 <div class="weatherIconDisplay">🌤️</div>
                 <div class="tempInfo">
@@ -49,54 +43,93 @@
                     <p class="weatherCondition">Cargando...</p>
                 </div>
             </div>
-            
             <div class="favDots" id="favDots"></div>
         </div>
 
+        <!-- ── Hourly: 24h, tap for detail ── -->
         <div class="card hourlyCard">
-    <h4>🕒 Pronóstico por horas</h4>
-    <div class="hourlyInfo"></div>
-</div>
-        
+            <h4>
+                🕒 Próximas 24 horas
+                <i class="fa-solid fa-chevron-down card-toggle-icon"></i>
+            </h4>
+            <div class="card-body">
+                <div class="hourlyInfo"></div>
+            </div>
+        </div>
+
+        <!-- ── 7-Day Forecast ── -->
         <div class="card forecastCard">
-            <h4>📅 Pronóstico 7 días</h4>
-            <div class="forecastInfo"></div>
+            <h4>
+                📅 Pronóstico 7 días
+                <i class="fa-solid fa-chevron-down card-toggle-icon"></i>
+            </h4>
+            <div class="card-body">
+                <div class="forecastInfo"></div>
+            </div>
         </div>
 
-        
+        <!-- ── Atmosphere ── -->
         <div class="card atmosphereCard">
-            <h4>☁️ Condiciones atmosféricas</h4>
-            <div class="gridInfo atmosphereInfo"></div>
+            <h4>
+                ☁️ Condiciones atmosféricas
+                <i class="fa-solid fa-chevron-down card-toggle-icon"></i>
+            </h4>
+            <div class="card-body">
+                <div class="gridInfo atmosphereInfo"></div>
+            </div>
         </div>
 
-        
+        <!-- ── Wind (stats only, link to charts) ── -->
         <div class="card windCard">
-            <h4>💨 Viento</h4>
-            <div class="windInfo"></div>
+            <h4>
+                💨 Viento
+                <i class="fa-solid fa-chevron-down card-toggle-icon"></i>
+            </h4>
+            <div class="card-body">
+                <div class="windInfo"></div>
+                <div class="analytics-cta">
+                    <a href="pages/charts.html" class="analytics-btn">
+                        <i class="fa-solid fa-chart-line"></i>
+                        Ver gráficas detalladas
+                    </a>
+                </div>
+            </div>
         </div>
 
-        
+        <!-- ── Astronomy ── -->
         <div class="card astroCard">
-            <h4>🌅 Datos astronómicos</h4>
-            <div class="astroInfo"></div>
+            <h4>
+                🌅 Datos astronómicos
+                <i class="fa-solid fa-chevron-down card-toggle-icon"></i>
+            </h4>
+            <div class="card-body">
+                <div class="astroInfo"></div>
+            </div>
         </div>
 
-        
+        <!-- ── Marine (stats only, link to radar) ── -->
         <div class="card marineCard">
-            <h4>🌊 Datos marítimos</h4>
-            <div class="marineInfo"></div>
+            <h4>
+                🌊 Datos marítimos
+                <i class="fa-solid fa-chevron-down card-toggle-icon"></i>
+            </h4>
+            <div class="card-body">
+                <div class="marineInfo"></div>
+                <div class="analytics-cta">
+                    <a href="pages/radar.html" class="analytics-btn">
+                        <i class="fa-solid fa-satellite-dish"></i>
+                        Ver radar de precipitaciones
+                    </a>
+                </div>
+            </div>
         </div>
 
-        
-        
     </main>
 
-    
     <script src="js/header.js"></script>
     <script src="js/footer.js"></script>
     <script src="js/index.js" defer></script>
-    
-    
+
     <footer-plus-weather></footer-plus-weather>
 </body>
 </html>

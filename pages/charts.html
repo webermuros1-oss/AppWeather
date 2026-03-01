@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gráficas - PlusWeather</title>
+
+    <link rel="stylesheet" href="../css/charts.css" />
+    <link rel="stylesheet" href="../css/header.css" />
+    <link rel="stylesheet" href="../css/footer.css" />
+
+    <link rel="manifest" href="../json/manifest.json">
+    <meta name="theme-color" content="#0f172a">
+
+    <link rel="icon" type="image/png" href="../media/images/logoRemaster.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+
+<body>
+    <header-plus-weather></header-plus-weather>
+
+    <main>
+        <div class="pageTitle">
+            <h2><i class="fa-solid fa-chart-line"></i> Gráficas Meteorológicas</h2>
+            <p>Análisis detallado del viento, mar y calidad del aire</p>
+            <div id="currentCityBadge" class="cityBadge" style="display:none">
+                <i class="fa-solid fa-location-dot"></i>
+                <span id="cityBadgeText">—</span>
+            </div>
+        </div>
+
+        <div class="chartsGrid">
+
+            <!-- AQI Card -->
+            <div class="chartCard">
+                <div class="chartCardHeader">
+                    <div class="chartCardTitle">
+                        <i class="fa-solid fa-lungs"></i>
+                        <h3>Calidad del Aire</h3>
+                    </div>
+                    <span class="chartCardBadge badge-orange" id="aqiBadgeLabel">AQI</span>
+                </div>
+
+                <div id="aqiContent">
+                    <div class="loadingState">
+                        <div class="loadingSpinner"></div>
+                        <span>Cargando calidad del aire...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Wind Chart Card -->
+            <div class="chartCard">
+                <div class="chartCardHeader">
+                    <div class="chartCardTitle">
+                        <i class="fa-solid fa-wind"></i>
+                        <h3>Velocidad del Viento (24h)</h3>
+                    </div>
+                    <span class="chartCardBadge badge-teal">km/h</span>
+                </div>
+                <div class="chartWrapper">
+                    <canvas id="windChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Wind Direction Card -->
+            <div class="chartCard">
+                <div class="chartCardHeader">
+                    <div class="chartCardTitle">
+                        <i class="fa-solid fa-compass"></i>
+                        <h3>Viento Actual</h3>
+                    </div>
+                    <span class="chartCardBadge badge-teal">Dirección y fuerza</span>
+                </div>
+                <div id="windCompassContent">
+                    <div class="loadingState">
+                        <div class="loadingSpinner"></div>
+                        <span>Cargando datos de viento...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Precipitation Chart -->
+            <div class="chartCard">
+                <div class="chartCardHeader">
+                    <div class="chartCardTitle">
+                        <i class="fa-solid fa-cloud-rain"></i>
+                        <h3>Probabilidad de Lluvia (7 días)</h3>
+                    </div>
+                    <span class="chartCardBadge badge-green">%</span>
+                </div>
+                <div class="chartWrapper">
+                    <canvas id="rainChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Temperature Chart -->
+            <div class="chartCard">
+                <div class="chartCardHeader">
+                    <div class="chartCardTitle">
+                        <i class="fa-solid fa-temperature-half"></i>
+                        <h3>Temperatura 24h</h3>
+                    </div>
+                    <span class="chartCardBadge badge-orange">°C</span>
+                </div>
+                <div class="chartWrapper">
+                    <canvas id="tempChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Marine Card -->
+            <div class="chartCard" id="marineCard">
+                <div class="chartCardHeader">
+                    <div class="chartCardTitle">
+                        <i class="fa-solid fa-water"></i>
+                        <h3>Datos Marítimos</h3>
+                    </div>
+                    <span class="chartCardBadge badge-teal">Mar</span>
+                </div>
+                <div id="marineContent">
+                    <div class="loadingState">
+                        <div class="loadingSpinner"></div>
+                        <span>Cargando datos marítimos...</span>
+                    </div>
+                </div>
+                <div class="chartWrapper" style="margin-top:16px">
+                    <canvas id="waveChart"></canvas>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer-plus-weather></footer-plus-weather>
+
+    <script src="../js/header.js"></script>
+    <script src="../js/footer.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+    <script src="../js/charts.js" defer></script>
+</body>
+</html>
