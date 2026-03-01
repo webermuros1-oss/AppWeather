@@ -6,7 +6,6 @@
     --metal-cyan: #2d4a5c;
     --accent-teal: #00d9ff;
     --accent-green: #00ff88;
-    --text-white: #ffffff;
 }
 
 * { padding: 0; margin: 0; box-sizing: border-box; }
@@ -15,7 +14,6 @@ body {
     font-family: "Barlow", sans-serif;
     background: linear-gradient(135deg, var(--metal-blue) 0%, var(--metal-cyan) 50%, #3d5a6b 100%);
     min-height: 100vh;
-    width: 100%;
     overflow-x: hidden;
     padding-top: 160px;
     padding-bottom: 100px;
@@ -26,7 +24,6 @@ body {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    width: 100%;
     max-width: 700px;
     margin: 0 auto;
     padding: 30px 15px 40px;
@@ -35,7 +32,6 @@ body {
 /* ─── Base Card ─── */
 .card {
     background: linear-gradient(135deg, var(--metal-dark) 0%, var(--metal-blue) 50%, var(--metal-cyan) 100%);
-    backdrop-filter: blur(10px);
     border-radius: 24px;
     padding: 24px;
     box-shadow: 0 8px 32px rgba(0,0,0,0.3);
@@ -47,19 +43,17 @@ body {
 
 .card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 12px 40px rgba(0,217,255,0.4);
+    box-shadow: 0 12px 40px rgba(0,217,255,0.35);
 }
 
-/* ─── Collapsible card header ─── */
+/* ─── Collapsible header ─── */
 .card h4 {
     margin-bottom: 16px;
     font-size: 1.1rem;
     color: var(--accent-green);
     font-weight: 600;
-    text-align: left;
     border-bottom: 2px solid rgba(0,255,136,0.3);
     padding-bottom: 8px;
-    text-shadow: 0 0 10px rgba(0,217,255,0.3);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -68,7 +62,6 @@ body {
     user-select: none;
     transition: color 0.2s;
 }
-
 .card h4:hover { color: var(--accent-teal); }
 
 .card-toggle-icon {
@@ -77,7 +70,6 @@ body {
     transition: transform 0.3s ease;
     flex-shrink: 0;
 }
-
 .card.collapsed .card-toggle-icon { transform: rotate(-90deg); }
 
 .card-body {
@@ -86,12 +78,10 @@ body {
     max-height: 2000px;
     opacity: 1;
 }
-
 .card.collapsed .card-body { max-height: 0; opacity: 0; }
 
-/* ─── Main Weather Card ─── */
+/* ─── Main weather card ─── */
 .mainWeatherCard {
-    background-image: url("../media/images/bg.jpg");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -99,22 +89,19 @@ body {
     text-align: center;
     overflow: hidden;
     min-height: 400px;
+    transition: background-image 0.5s ease;
 }
-
 .mainWeatherCard > * {
     position: relative;
     z-index: 1;
     text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
 }
-
 .locationInfo { margin-bottom: 20px; }
-
 .cityName {
     font-size: clamp(1.8rem, 5vw, 2.2rem);
     margin-bottom: 8px;
     font-weight: 600;
 }
-
 .date { font-size: 1rem; opacity: 0.9; }
 
 .currentWeather {
@@ -125,31 +112,34 @@ body {
     flex-wrap: wrap;
 }
 
-.weatherIconDisplay { font-size: clamp(5rem, 15vw, 7rem); }
-.tempInfo { text-align: left; }
+/* Meteocon main icon — drop shadow for visibility */
+.weatherIconDisplay img {
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.7));
+    width: clamp(70px, 18vw, 100px) !important;
+    height: auto !important;
+}
 
+.tempInfo { text-align: left; }
 .weatherDeg {
     font-size: clamp(3.5rem, 12vw, 5rem);
     font-weight: 600;
     line-height: 1;
 }
-
 .weatherCondition {
-    font-size: clamp(1.3rem, 4vw, 1.6rem);
+    font-size: clamp(1.2rem, 4vw, 1.5rem);
     margin-top: 8px;
     opacity: 0.95;
 }
 
-/* ─── Grid info ─── */
-.gridInfo, .windInfo, .marineInfo, .astroInfo, .airInfo {
+/* ─── Grid stats ─── */
+.gridInfo, .windInfo, .marineInfo, .astroInfo {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 12px;
     text-align: left;
 }
-
-.gridInfo p, .windInfo p, .marineInfo p, .astroInfo p, .airInfo p {
-    background: rgba(0,217,255,0.12);
+.gridInfo p, .windInfo p, .marineInfo p, .astroInfo p {
+    background: rgba(0,217,255,0.10);
     padding: 12px;
     border-radius: 12px;
     font-size: 0.95rem;
@@ -157,33 +147,26 @@ body {
     display: flex;
     flex-direction: column;
     gap: 4px;
-    border: 1px solid rgba(0,255,136,0.15);
+    border: 1px solid rgba(0,255,136,0.12);
     transition: background 0.2s, border-color 0.2s;
 }
-
-.gridInfo p:hover, .windInfo p:hover,
-.marineInfo p:hover, .astroInfo p:hover, .airInfo p:hover {
-    background: rgba(0,217,255,0.2);
-    border-color: rgba(0,255,136,0.35);
+.gridInfo p:hover, .windInfo p:hover, .marineInfo p:hover, .astroInfo p:hover {
+    background: rgba(0,217,255,0.18);
+    border-color: rgba(0,255,136,0.3);
 }
-
-.gridInfo p strong, .windInfo p strong, .marineInfo p strong,
-.astroInfo p strong, .airInfo p strong {
-    font-size: 1.1rem;
+.gridInfo p strong, .windInfo p strong, .marineInfo p strong, .astroInfo p strong {
+    font-size: 1.05rem;
     color: var(--accent-green);
-    text-shadow: 0 0 8px rgba(0,217,255,0.3);
 }
 
 /* ─── Analytics CTA ─── */
 .analytics-cta {
     display: flex;
-    align-items: center;
     justify-content: center;
     margin-top: 16px;
     padding-top: 14px;
     border-top: 1px solid rgba(0,217,255,0.15);
 }
-
 .analytics-btn {
     display: inline-flex;
     align-items: center;
@@ -197,22 +180,17 @@ body {
     font-weight: 600;
     padding: 8px 18px;
     text-decoration: none;
-    cursor: pointer;
     transition: all 0.25s ease;
-    box-shadow: 0 2px 10px rgba(0,217,255,0.12);
 }
-
 .analytics-btn:hover {
     background: linear-gradient(135deg, rgba(0,217,255,0.32), rgba(0,255,136,0.22));
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(0,255,136,0.28);
 }
-
-.analytics-btn i { font-size: 0.95rem; color: var(--accent-green); }
+.analytics-btn i { color: var(--accent-green); }
 
 /* ─── Hourly scroll ─── */
 .hourlyCard { overflow: hidden; }
-
 .hourlyInfo {
     display: flex;
     overflow-x: auto;
@@ -221,102 +199,108 @@ body {
     scroll-snap-type: x mandatory;
     padding-bottom: 10px;
     scrollbar-width: none;
-    -ms-overflow-style: none;
 }
-
 .hourlyInfo::-webkit-scrollbar { display: none; }
 
-/* ─── Hourly item ─── */
+/* ─── Hour item ─── */
 .hourItem {
     flex: 0 0 84px;
-    background: rgba(0,217,255,0.13);
+    background: rgba(0,217,255,0.12);
     border-radius: 16px;
     text-align: center;
-    padding: 14px 8px 10px;
+    padding: 12px 8px 10px;
     scroll-snap-align: start;
-    border: 1px solid rgba(0,255,136,0.25);
-    min-height: 130px;
+    border: 1px solid rgba(0,255,136,0.22);
+    min-height: 140px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
     transition: transform 0.2s ease, background 0.2s, border-color 0.2s, box-shadow 0.2s;
-    position: relative;
 }
-
 .hourItem:hover {
     transform: scale(1.06) translateY(-2px);
     background: rgba(0,217,255,0.22);
     border-color: rgba(0,255,136,0.5);
     box-shadow: 0 6px 20px rgba(0,217,255,0.25);
 }
-
-.hourItem:active { transform: scale(0.98); }
+.hourItem:active { transform: scale(0.97); }
 
 .hour {
     font-weight: 600;
     color: var(--accent-teal);
     font-size: 0.82rem;
-    text-shadow: 0 0 8px rgba(0,217,255,0.3);
 }
 
-.hourIcon { font-size: 2rem; display: block; margin: 3px 0; }
+/* Meteocon inside hour item */
+.hourIcon img {
+    width: 40px !important;
+    height: 40px !important;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+}
 
 .hourTemp {
     font-weight: 700;
-    font-size: 1.2rem;
+    font-size: 1.15rem;
     color: var(--accent-green);
-    text-shadow: 0 0 8px rgba(0,255,136,0.3);
 }
-
-.hourRain { font-size: 0.76rem; opacity: 0.85; }
-
-/* ─── Tap hint ─── */
+.hourRain { font-size: 0.74rem; opacity: 0.85; }
 .hourTapHint {
-    font-size: 0.62rem;
-    color: rgba(0,217,255,0.5);
-    letter-spacing: 0.3px;
-    border-top: 1px solid rgba(0,217,255,0.15);
+    font-size: 0.6rem;
+    color: rgba(0,217,255,0.45);
+    border-top: 1px solid rgba(0,217,255,0.12);
     padding-top: 5px;
     width: 100%;
     text-align: center;
     transition: color 0.2s;
 }
-
-.hourItem:hover .hourTapHint { color: rgba(0,255,136,0.7); }
+.hourItem:hover .hourTapHint { color: rgba(0,255,136,0.65); }
 
 /* ─── Forecast ─── */
 .forecastInfo { display: flex; flex-direction: column; gap: 12px; }
-
 .forecastDay {
-    background: rgba(0,217,255,0.12);
-    padding: 14px 16px;
+    background: rgba(0,217,255,0.10);
+    padding: 12px 16px;
     border-radius: 16px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
-    flex-wrap: nowrap;
-    border: 1px solid rgba(0,255,136,0.15);
-    transition: background 0.2s;
+    gap: 10px;
+    border: 1px solid rgba(0,255,136,0.12);
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, transform 0.2s;
 }
-
-.forecastDay:hover { background: rgba(0,217,255,0.2); }
-
+.forecastDay:hover {
+    background: rgba(0,217,255,0.2);
+    border-color: rgba(0,255,136,0.35);
+    transform: translateX(3px);
+}
 .forecastDayName {
     font-size: 1rem;
     font-weight: 600;
-    min-width: 90px;
+    min-width: 80px;
     color: var(--accent-teal);
-    text-shadow: 0 0 8px rgba(0,217,255,0.3);
 }
 
-.forecastIcon { font-size: 2.2rem; }
-.forecastTemps { display: flex; gap: 12px; font-size: 1rem; }
+/* Meteocon inside forecast */
+.forecastIcon img {
+    width: 38px !important;
+    height: 38px !important;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+}
+
+.forecastTemps { display: flex; gap: 10px; font-size: 1rem; }
 .forecastMax { font-weight: 700; color: #ffb347; }
-.forecastMin { opacity: 0.7; }
-.forecastRain { font-size: 0.9rem; opacity: 0.85; }
+.forecastMin { opacity: 0.65; }
+.forecastRain { font-size: 0.85rem; opacity: 0.85; }
+.forecastTapHint {
+    font-size: 0.62rem;
+    color: rgba(0,217,255,0.45);
+    flex-shrink: 0;
+    transition: color 0.2s;
+}
+.forecastDay:hover .forecastTapHint { color: rgba(0,255,136,0.65); }
 
 /* ─── Nav arrows ─── */
 .navArrow {
@@ -334,50 +318,39 @@ body {
     transition: all 0.3s;
     backdrop-filter: blur(10px);
 }
-
 .navArrow:hover {
     background: rgba(26,47,74,0.9);
     border-color: var(--accent-green);
     box-shadow: 0 0 20px rgba(0,255,136,0.5);
 }
-
 .prevArrow { left: 5px; }
 .nextArrow { right: 5px; }
 
 .favDots {
     position: absolute;
-    bottom: 15px;
-    left: 50%;
+    bottom: 15px; left: 50%;
     transform: translateX(-50%);
-    display: flex;
-    gap: 8px;
-    z-index: 5;
+    display: flex; gap: 8px; z-index: 5;
 }
-
 .dot {
     width: 8px; height: 8px;
     background: rgba(255,255,255,0.4);
     border-radius: 50%;
     transition: all 0.3s;
 }
-
 .dot.active {
     background: var(--accent-green);
-    width: 12px;
-    border-radius: 4px;
+    width: 12px; border-radius: 4px;
     box-shadow: 0 0 10px rgba(0,255,136,0.6);
 }
 
-/* ─── Not available ─── */
 .notAvailable { text-align: center; opacity: 0.7; font-style: italic; padding: 20px; }
 
 /* ─── Responsive ─── */
 @media (min-width: 768px) {
     .dashboard { max-width: 800px; }
     .currentWeather { gap: 30px; }
-    .gridInfo, .windInfo, .marineInfo, .astroInfo, .airInfo {
-        grid-template-columns: repeat(2, 1fr);
-    }
+    .gridInfo, .windInfo, .marineInfo, .astroInfo { grid-template-columns: repeat(2,1fr); }
     .hourlyInfo {
         scrollbar-width: thin;
         scrollbar-color: rgba(0,217,255,0.5) rgba(255,255,255,0.1);
@@ -385,16 +358,10 @@ body {
     .hourlyInfo::-webkit-scrollbar { display: block; height: 8px; }
     .hourlyInfo::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); border-radius: 4px; }
     .hourlyInfo::-webkit-scrollbar-thumb { background: rgba(0,217,255,0.5); border-radius: 4px; }
-    .hourlyInfo::-webkit-scrollbar-thumb:hover { background: rgba(0,217,255,0.7); }
 }
-
 @media (min-width: 1024px) { .dashboard { max-width: 900px; } }
-
-@media (max-width: 768px) {
-    body { padding-top: 135px; padding-bottom: 100px; }
-}
-
-@media (max-width: 480px) {
+@media (max-width: 768px)  { body { padding-top: 135px; padding-bottom: 100px; } }
+@media (max-width: 480px)  {
     body { padding-top: 110px; padding-bottom: 90px; }
     .hourItem { flex: 0 0 78px; }
 }
