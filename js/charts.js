@@ -193,10 +193,6 @@ async function loadWeatherCharts() {
     const res = await fetch(`${API.weather}?${params}`);
     const data = await res.json();
 
-<<<<<<< HEAD
-    
-=======
->>>>>>> feat/reat
     renderWindCompass(data.current);
 
     

@@ -1,19 +1,10 @@
 class MyFooter extends HTMLElement {
     connectedCallback() {
-<<<<<<< HEAD
-        
-=======
->>>>>>> feat/reat
         const inSubfolder = window.location.pathname.includes('/pages/');
         const root  = inSubfolder ? '../' : '';
         const pages = inSubfolder ? ''    : 'pages/';
 
-<<<<<<< HEAD
-        
-        const path = window.location.pathname;
-=======
         const path     = window.location.pathname;
->>>>>>> feat/reat
         const isHome   = !path.includes('charts') && !path.includes('radar');
         const isCharts = path.includes('charts');
         const isRadar  = path.includes('radar');
@@ -51,27 +42,6 @@ class MyFooter extends HTMLElement {
         </footer>
         `;
 
-<<<<<<< HEAD
-
-        this.querySelectorAll('.footerItem[data-section]').forEach(item => {
-            item.addEventListener('click', (e) => {
-                const sectionClass = item.getAttribute('data-section');
-                const target = document.querySelector(`.${sectionClass}`);
-
-                if (target) {
-                    
-                    e.preventDefault();
-
-                    
-                    this.querySelectorAll('.footerItem').forEach(i => i.classList.remove('active'));
-                    item.classList.add('active');
-
-                    const headerHeight = document.querySelector('header')?.offsetHeight || 0;
-                    const offsetPosition = target.getBoundingClientRect().top + window.pageYOffset - headerHeight - 20;
-                    window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
-                }
-                
-=======
         
         if (isHome) {
             this.querySelectorAll('.footerItem[data-section]').forEach(item => {
@@ -89,7 +59,6 @@ class MyFooter extends HTMLElement {
                         });
                     }
                 });
->>>>>>> feat/reat
             });
         }
         
