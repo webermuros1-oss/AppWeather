@@ -22,8 +22,8 @@
 
     <main>
         <div class="pageTitle">
-            <h2><i class="fa-solid fa-chart-line"></i> Gráficas Meteorológicas</h2>
-            <p>Análisis detallado del viento, mar y calidad del aire</p>
+            <h2><i class="fa-solid fa-chart-line"></i> <span data-i18n="chartsTitle">Gráficas Meteorológicas</span></h2>
+            <p data-i18n="chartsSubtitle">Análisis detallado del viento, mar y calidad del aire</p>
             <div id="currentCityBadge" class="cityBadge" style="display:none">
                 <i class="fa-solid fa-location-dot"></i>
                 <span id="cityBadgeText">—</span>
@@ -37,7 +37,7 @@
                 <div class="chartCardHeader">
                     <div class="chartCardTitle">
                         <i class="fa-solid fa-lungs"></i>
-                        <h3>Calidad del Aire</h3>
+                        <h3 data-i18n="chartAirQuality">Calidad del Aire</h3>
                     </div>
                     <span class="chartCardBadge badge-orange" id="aqiBadgeLabel">AQI</span>
                 </div>
@@ -55,7 +55,7 @@
                 <div class="chartCardHeader">
                     <div class="chartCardTitle">
                         <i class="fa-solid fa-wind"></i>
-                        <h3>Velocidad del Viento (24h)</h3>
+                        <h3 data-i18n="chartWindSpeed24h">Velocidad del Viento (24h)</h3>
                     </div>
                     <span class="chartCardBadge badge-teal">km/h</span>
                 </div>
@@ -69,7 +69,7 @@
                 <div class="chartCardHeader">
                     <div class="chartCardTitle">
                         <i class="fa-solid fa-compass"></i>
-                        <h3>Viento Actual</h3>
+                        <h3 data-i18n="chartWindCurrent">Viento Actual</h3>
                     </div>
                     <span class="chartCardBadge badge-teal">Dirección y fuerza</span>
                 </div>
@@ -86,7 +86,7 @@
                 <div class="chartCardHeader">
                     <div class="chartCardTitle">
                         <i class="fa-solid fa-cloud-rain"></i>
-                        <h3>Probabilidad de Lluvia (7 días)</h3>
+                        <h3 data-i18n="chartRainProb7d">Probabilidad de Lluvia (7 días)</h3>
                     </div>
                     <span class="chartCardBadge badge-green">%</span>
                 </div>
@@ -100,7 +100,7 @@
                 <div class="chartCardHeader">
                     <div class="chartCardTitle">
                         <i class="fa-solid fa-temperature-half"></i>
-                        <h3>Temperatura 24h</h3>
+                        <h3 data-i18n="chartTemp24h">Temperatura 24h</h3>
                     </div>
                     <span class="chartCardBadge badge-orange">°C</span>
                 </div>
@@ -114,7 +114,7 @@
                 <div class="chartCardHeader">
                     <div class="chartCardTitle">
                         <i class="fa-solid fa-water"></i>
-                        <h3>Datos Marítimos</h3>
+                        <h3 data-i18n="chartMarine">Datos Marítimos</h3>
                     </div>
                     <span class="chartCardBadge badge-teal">Mar</span>
                 </div>
@@ -134,6 +134,7 @@
 
     <footer-plus-weather></footer-plus-weather>
 
+    <script src="../js/i18n.js"></script>
     <script src="../js/header.js"></script>
     <script src="../js/footer.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>

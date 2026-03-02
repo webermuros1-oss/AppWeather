@@ -13,34 +13,42 @@ class MyFooter extends HTMLElement {
         <footer class="appFooter">
             <a href="${root}index.html" class="footerItem ${isHome && !window.location.hash ? 'active' : ''}" data-section="mainWeatherCard">
                 <i class="fa-solid fa-house"></i>
-                <span>Ciudad</span>
+                <span data-i18n="footerCity">Ciudad</span>
             </a>
             <a href="${root}index.html#hourlyCard" class="footerItem" data-section="hourlyCard">
                 <i class="fa-solid fa-clock"></i>
-                <span>Horas</span>
+                <span data-i18n="footerHours">Horas</span>
             </a>
             <a href="${root}index.html#forecastCard" class="footerItem" data-section="forecastCard">
                 <i class="fa-solid fa-cloud"></i>
-                <span>Días</span>
+                <span data-i18n="footerDays">Días</span>
             </a>
             <a href="${pages}charts.html" class="footerItem ${isCharts ? 'active' : ''}">
                 <i class="fa-solid fa-chart-line"></i>
-                <span>Gráficas</span>
+                <span data-i18n="navCharts">Gráficas</span>
             </a>
             <a href="${pages}radar.html" class="footerItem ${isRadar ? 'active' : ''}">
                 <i class="fa-solid fa-satellite-dish"></i>
-                <span>Radar</span>
+                <span data-i18n="navRadar">Radar</span>
             </a>
             <a href="${root}index.html#atmosphereCard" class="footerItem" data-section="atmosphereCard">
                 <i class="fa-solid fa-wind"></i>
-                <span>Atmósfera</span>
+                <span data-i18n="footerAtmo">Atmósfera</span>
             </a>
             <a href="${root}index.html#marineCard" class="footerItem" data-section="marineCard">
                 <i class="fa-solid fa-water"></i>
-                <span>Marítimo</span>
+                <span data-i18n="footerMarine">Marítimo</span>
             </a>
         </footer>
         `;
+
+        const applyI18n = () => {
+            if (!window.I18N) return;
+            this.querySelectorAll("[data-i18n]").forEach(el => { el.textContent = I18N.t(el.getAttribute("data-i18n")); });
+        };
+
+        if (window.I18N) applyI18n();
+        document.addEventListener("langChanged", applyI18n);
 
         
         if (isHome) {

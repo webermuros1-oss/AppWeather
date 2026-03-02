@@ -189,13 +189,15 @@ function makeAQIItem(label, value, unit) {
 }
 
 function getAQIInfo(aqi) {
-    if (aqi <= 20)  return { cls: "aqi-good",                label: "Muy buena",           desc: "Calidad del aire excelente. Ideal para actividades al aire libre.",    emoji: "😊" };
-    if (aqi <= 40)  return { cls: "aqi-good",                label: "Buena",               desc: "La calidad del aire es satisfactoria.",                                emoji: "🙂" };
-    if (aqi <= 60)  return { cls: "aqi-moderate",            label: "Moderada",            desc: "Acceptable, pero puede haber problemas para personas sensibles.",       emoji: "😐" };
-    if (aqi <= 80)  return { cls: "aqi-unhealthy-sensitive", label: "Mala para sensibles", desc: "Personas con enfermedades respiratorias deben reducir exposición.",     emoji: "😷" };
-    if (aqi <= 100) return { cls: "aqi-unhealthy",           label: "Mala",                desc: "Toda la población puede notar efectos. Evita salir mucho al exterior.", emoji: "🤢" };
-    if (aqi <= 150) return { cls: "aqi-very-unhealthy",      label: "Muy mala",            desc: "Alerta sanitaria. Reduce actividades al aire libre.",                   emoji: "🚨" };
-    return              { cls: "aqi-hazardous",              label: "Peligrosa",           desc: "Emergencia sanitaria. Permanece en interiores.",                        emoji: "☠️" };
+    const labels = window.I18N ? I18N.t("aqiLabels") : ["Muy buena","Buena","Moderada","Mala para sensibles","Mala","Muy mala","Peligrosa"];
+    const descs  = window.I18N ? I18N.t("aqiDescs")  : ["Calidad del aire excelente.","La calidad del aire es satisfactoria.","Acceptable, pero puede haber problemas para personas sensibles.","Personas con enfermedades respiratorias deben reducir exposición.","Toda la población puede notar efectos.","Alerta sanitaria.","Emergencia sanitaria."];
+    if (aqi <= 20)  return { cls: "aqi-good",                label: labels[0], desc: descs[0], emoji: "😊" };
+    if (aqi <= 40)  return { cls: "aqi-good",                label: labels[1], desc: descs[1], emoji: "🙂" };
+    if (aqi <= 60)  return { cls: "aqi-moderate",            label: labels[2], desc: descs[2], emoji: "😐" };
+    if (aqi <= 80)  return { cls: "aqi-unhealthy-sensitive", label: labels[3], desc: descs[3], emoji: "😷" };
+    if (aqi <= 100) return { cls: "aqi-unhealthy",           label: labels[4], desc: descs[4], emoji: "🤢" };
+    if (aqi <= 150) return { cls: "aqi-very-unhealthy",      label: labels[5], desc: descs[5], emoji: "🚨" };
+    return              { cls: "aqi-hazardous",              label: labels[6], desc: descs[6], emoji: "☠️" };
 }
 
 
@@ -246,19 +248,19 @@ function renderWindCompass(current) {
             </div>
             <div class="windStats">
                 <div class="windStatItem">
-                    <span class="statLabel">💨 Velocidad</span>
+                    <span class="statLabel">💨 ${window.I18N ? I18N.t("windSpeed") : "Velocidad"}</span>
                     <span class="statValue">${Math.round(speed)} km/h</span>
                 </div>
                 <div class="windStatItem">
-                    <span class="statLabel">💥 Rachas</span>
+                    <span class="statLabel">💥 ${window.I18N ? I18N.t("windGusts") : "Rachas"}</span>
                     <span class="statValue">${Math.round(gusts)} km/h</span>
                 </div>
                 <div class="windStatItem">
-                    <span class="statLabel">🧭 Dirección</span>
+                    <span class="statLabel">🧭 ${window.I18N ? I18N.t("windDir") : "Dirección"}</span>
                     <span class="statValue">${dirLabel} (${Math.round(dir)}°)</span>
                 </div>
                 <div class="windStatItem">
-                    <span class="statLabel">⚡ Beaufort</span>
+                    <span class="statLabel">⚡ ${window.I18N ? I18N.t("windBeaufort") : "Beaufort"}</span>
                     <span class="statValue">${getBeaufort(speed)} BF</span>
                 </div>
             </div>
@@ -271,8 +273,9 @@ function renderWindChart(hourly) {
     const startIdx = hourly.time.findIndex(t => new Date(t) >= now);
     const slice = (arr) => arr.slice(startIdx, startIdx + 24);
 
+    const locale = window.I18N ? I18N.lang : "es";
     const labels = slice(hourly.time).map(t =>
-        new Date(t).toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit", hour12: false })
+        new Date(t).toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit", hour12: false })
     );
     const windData = slice(hourly.wind_speed_10m).map(v => Math.round(v));
 
@@ -305,10 +308,10 @@ function renderWindChart(hourly) {
 }
 
 function renderRainChart(daily) {
-    const DAYS_ES = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
+    const DAYS = window.I18N ? I18N.t("daysShort") : ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
     const labels = daily.time.map((d, i) => {
         const date = new Date(d);
-        return i === 0 ? "Hoy" : DAYS_ES[date.getDay()];
+        return i === 0 ? (window.I18N ? I18N.t("today") : "Hoy") : DAYS[date.getDay()];
     });
     const rainProb = daily.precipitation_probability_max;
 
@@ -347,8 +350,9 @@ function renderTempChart(hourly) {
     const startIdx = hourly.time.findIndex(t => new Date(t) >= now);
     const slice = (arr) => arr.slice(startIdx, startIdx + 24);
 
+    const locale2 = window.I18N ? I18N.lang : "es";
     const labels = slice(hourly.time).map(t =>
-        new Date(t).toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit", hour12: false })
+        new Date(t).toLocaleTimeString(locale2, { hour: "2-digit", minute: "2-digit", hour12: false })
     );
     const temps = slice(hourly.temperature_2m).map(v => Math.round(v));
 
@@ -401,14 +405,15 @@ async function loadMarineData() {
         const waveParent = document.getElementById("waveChart")?.parentElement;
         if (waveParent) waveParent.style.display = "";
 
+        const t = k => window.I18N ? I18N.t(k) : k;
         document.getElementById("marineContent").innerHTML = `
             <div class="marineStatsGrid">
-                ${marineCard("🌊", "Altura olas", m.wave_height?.toFixed(2) ?? "—", "m")}
-                ${marineCard("⏱️", "Período olas", m.wave_period?.toFixed(1) ?? "—", "s")}
-                ${marineCard("💨", "Olas de viento", m.wind_wave_height?.toFixed(2) ?? "—", "m")}
-                ${marineCard("🌀", "Oleaje (swell)", m.swell_wave_height?.toFixed(2) ?? "—", "m")}
-                ${marineCard("🌊", "Corriente", m.ocean_current_velocity?.toFixed(2) ?? "—", "m/s")}
-                ${marineCard("🧭", "Dir. corriente", Math.round(m.ocean_current_direction ?? 0) + "°", "")}
+                ${marineCard("🌊", t("waveHeight"), m.wave_height?.toFixed(2) ?? "—", "m")}
+                ${marineCard("⏱️", t("wavePeriod"), m.wave_period?.toFixed(1) ?? "—", "s")}
+                ${marineCard("💨", t("windWave"), m.wind_wave_height?.toFixed(2) ?? "—", "m")}
+                ${marineCard("🌀", t("swell"), m.swell_wave_height?.toFixed(2) ?? "—", "m")}
+                ${marineCard("🌊", t("current"), m.ocean_current_velocity?.toFixed(2) ?? "—", "m/s")}
+                ${marineCard("🧭", t("currentDir"), Math.round(m.ocean_current_direction ?? 0) + "°", "")}
             </div>
         `;
 
@@ -441,8 +446,9 @@ function renderWaveChart(hourly) {
     const startIdx = hourly.time.findIndex(t => new Date(t) >= now);
     const slice = (arr) => arr.slice(startIdx, startIdx + 24);
 
+    const locale3 = window.I18N ? I18N.lang : "es";
     const labels = slice(hourly.time).map(t =>
-        new Date(t).toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit", hour12: false })
+        new Date(t).toLocaleTimeString(locale3, { hour: "2-digit", minute: "2-digit", hour12: false })
     );
 
     if (chartInstances.wave) chartInstances.wave.destroy();
@@ -462,7 +468,7 @@ function renderWaveChart(hourly) {
             labels,
             datasets: [
                 {
-                    label: "Altura olas (m)",
+                    label: window.I18N ? I18N.t("chartWaveDataset") : "Altura olas (m)",
                     data: slice(hourly.wave_height).map(v => v?.toFixed(2) ?? 0),
                     borderColor: "#00d9ff",
                     backgroundColor: g1,
@@ -472,7 +478,7 @@ function renderWaveChart(hourly) {
                     fill: true
                 },
                 {
-                    label: "Oleaje swell (m)",
+                    label: window.I18N ? I18N.t("chartSwellDataset") : "Oleaje swell (m)",
                     data: slice(hourly.swell_wave_height).map(v => v?.toFixed(2) ?? 0),
                     borderColor: "#00ff88",
                     backgroundColor: g2,
@@ -531,3 +537,8 @@ function showGlobalError(msg) {
         el.innerHTML = `<p class="notAvailable">⚠️ ${msg}</p>`;
     });
 }
+
+document.addEventListener("langChanged", () => {
+    document.querySelectorAll("[data-i18n]").forEach(el => { el.textContent = I18N.t(el.getAttribute("data-i18n")); });
+    if (currentLat !== null) applyCity({ name: currentCity, country: currentCountry, latitude: currentLat, longitude: currentLon });
+});

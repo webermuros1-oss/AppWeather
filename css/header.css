@@ -389,3 +389,99 @@
 @media (max-width: 360px) {
     .searchWrapper { max-width: none; }
 }
+
+
+
+
+/* ── Botón ajustes ── */
+.settingsBtnHeader {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 10px;
+    color: rgba(255,255,255,0.8);
+    width: 38px; height: 38px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 1rem;
+    transition: background 0.2s, color 0.2s;
+    flex-shrink: 0;
+}
+.settingsBtnHeader:hover { background: rgba(0,217,255,0.15); color: #00d9ff; }
+
+/* ── Settings overlay ── */
+.settings-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(4px);
+    z-index: 8000;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.25s;
+}
+.settings-overlay.show { opacity: 1; pointer-events: all; }
+
+/* ── Settings panel ── */
+.settings-panel {
+    position: fixed;
+    top: 0; right: 0; bottom: 0;
+    width: min(300px, 88vw);
+    background: linear-gradient(160deg, #0a1628 0%, #1a2f4a 100%);
+    border-left: 1px solid rgba(0,217,255,0.2);
+    z-index: 8001;
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    display: flex; flex-direction: column;
+    box-shadow: -8px 0 32px rgba(0,0,0,0.4);
+}
+.settings-panel.open { transform: translateX(0); }
+
+.settings-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 20px;
+    border-bottom: 1px solid rgba(0,217,255,0.15);
+    font-size: 1.05rem; font-weight: 600; color: #fff;
+}
+.settings-header i { color: #00d9ff; margin-right: 8px; }
+.settings-close-btn {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 50%; color: #fff;
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 0.95rem;
+    transition: background 0.2s;
+}
+.settings-close-btn:hover { background: rgba(255,71,87,0.35); }
+
+.settings-section { padding: 20px; }
+
+.settings-label {
+    display: block;
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 12px;
+}
+.settings-label i { color: #00d9ff; margin-right: 6px; }
+
+/* ── Grid de idiomas ── */
+.lang-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+.lang-btn {
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 10px 12px;
+    cursor: pointer;
+    color: rgba(255,255,255,0.75);
+    font-size: 0.85rem;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+.lang-btn:hover { background: rgba(0,217,255,0.1); border-color: rgba(0,217,255,0.3); color: #fff; }
+.lang-btn.active { background: rgba(0,217,255,0.15); border-color: rgba(0,217,255,0.6); color: #00d9ff; font-weight: 600; }
+.lang-flag { font-size: 1.25rem; line-height: 1; }
+.lang-name { font-size: 0.82rem; }

@@ -19,8 +19,8 @@
     <header-plus-weather></header-plus-weather>
 
     <div class="pageTitle">
-        <h2><i class="fa-solid fa-satellite-dish"></i> Radar de Precipitaciones</h2>
-        <p>Visualización en tiempo real de lluvias y tormentas · Se actualiza cada 10 minutos</p>
+        <h2><i class="fa-solid fa-satellite-dish"></i> <span data-i18n="radarTitle">Radar de Precipitaciones</span></h2>
+        <p data-i18n="radarSubtitle">Visualización en tiempo real de lluvias y tormentas · Se actualiza cada 10 minutos</p>
     </div>
 
     <div class="radarContainer">
@@ -28,18 +28,18 @@
             <div id="radarMap"></div>
             <div class="radarControls">
                 <div class="radarLegend">
-                    <span class="legendLabel">Lluvia débil</span>
+                    <span class="legendLabel" data-i18n="radarWeakRain">Lluvia débil</span>
                     <div class="legendBar"></div>
-                    <span class="legendLabel">Intensa</span>
+                    <span class="legendLabel" data-i18n="radarHeavy">Intensa</span>
                 </div>
                 <div class="opacityControl">
                     <i class="fa-solid fa-eye" style="color:var(--accent-teal)"></i>
-                    <span>Opacidad</span>
+                    <span data-i18n="radarOpacity">Opacidad</span>
                     <input type="range" id="opacitySlider" min="0" max="100" value="80">
                 </div>
                 <div class="radarTimestamp">
                     <i class="fa-solid fa-clock"></i>
-                    <span id="radarTime">Cargando...</span>
+                    <span id="radarTime" data-i18n="radarLoading">Cargando...</span>
                 </div>
             </div>
         </div>
@@ -47,29 +47,30 @@
         <div class="radarInfoCards">
             <div class="radarInfoCard">
                 <i class="fa-solid fa-satellite-dish"></i>
-                <h4>Fuente</h4>
+                <h4 data-i18n="radarSource">Fuente</h4>
                 <p>RainViewer</p>
             </div>
             <div class="radarInfoCard">
                 <i class="fa-solid fa-rotate"></i>
-                <h4>Actualización</h4>
-                <p>Cada 10 min</p>
+                <h4 data-i18n="radarUpdate">Actualización</h4>
+                <p data-i18n="radarUpdateVal">Cada 10 min</p>
             </div>
             <div class="radarInfoCard">
                 <i class="fa-solid fa-globe"></i>
-                <h4>Cobertura</h4>
-                <p>Global</p>
+                <h4 data-i18n="radarCoverage">Cobertura</h4>
+                <p data-i18n="radarCoverageVal">Global</p>
             </div>
             <div class="radarInfoCard">
                 <i class="fa-solid fa-layer-group"></i>
-                <h4>Capa activa</h4>
-                <p>Precipitación</p>
+                <h4 data-i18n="radarLayer">Capa activa</h4>
+                <p data-i18n="radarLayerVal">Precipitación</p>
             </div>
         </div>
     </div>
 
     <footer-plus-weather></footer-plus-weather>
 
+    <script src="../js/i18n.js"></script>
     <script src="../js/header.js"></script>
     <script src="../js/footer.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
@@ -103,10 +104,11 @@
                 radarLayer = L.tileLayer(radarUrl, { opacity: currentOpacity, attribution: "RainViewer" }).addTo(map);
 
                 const ts = new Date(latestFrame.time * 1000);
+                const lang = window.I18N ? I18N.lang : "es";
                 document.getElementById("radarTime").textContent =
-                    `Actualizado: ${ts.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" })}`;
+                    `${window.I18N ? I18N.t("radarUpdated") : "Actualizado:"} ${ts.toLocaleTimeString(lang, { hour: "2-digit", minute: "2-digit" })}`;
             } catch {
-                document.getElementById("radarTime").textContent = "Error al cargar el radar";
+                document.getElementById("radarTime").textContent = window.I18N ? I18N.t("radarError") : "Error al cargar el radar";
             }
         }
 
@@ -136,6 +138,13 @@
                 .openPopup();
 
             map.once("movestart", () => map.removeLayer(marker));
+        });
+
+        document.addEventListener("langChanged", () => {
+            document.querySelectorAll("[data-i18n]").forEach(el => {
+                if (el.id === "radarTime") return;
+                el.textContent = I18N.t(el.getAttribute("data-i18n"));
+            });
         });
 
         loadRadar();
