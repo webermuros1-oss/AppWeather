@@ -566,7 +566,7 @@ function initializeEventListeners() {
         changeBackgroundImage();
         try {
             const gps = await getCurrentLocation();
-            await fetchDataFromCoordinates(gps.latitude, gps.longitude, gps.name, gps.country);
+            await fetchDataFromCoordinates(gps.latitude, gps.longitude, gps.name, gps.country, gps.street);
             favoritesManager.addCity(gps);
         } catch {
             if (favoritesManager.getCount() > 0) await loadCityByIndex(favoritesManager.currentIndex);
@@ -581,16 +581,16 @@ function initializeEventListeners() {
         lastST = st <= 0 ? 0 : st;
     });
 
-    
+
     elements.cityInput.addEventListener("keypress", e => { if (e.key === "Enter") fetchDataFromApi(true); });
 
-    
+
     document.addEventListener("citySelected", async e => {
-        const { name, country, latitude, longitude } = e.detail;
+        const { name, country, latitude, longitude, street } = e.detail;
         favoritesManager.addCity({ name, country, latitude, longitude });
         try {
             const [w, m] = await Promise.all([fetchWeatherData(latitude, longitude), fetchMarineData(latitude, longitude)]);
-            updateUI({ name, country, ...w, ...m });
+            updateUI({ name, country, street, ...w, ...m });
         } catch (err) { console.error(err); alert("Error cargando datos de la ciudad seleccionada"); }
     });
     elements.prevArrow.addEventListener("click", async () => { const c = favoritesManager.goToPrevious(); if (c) await loadCityByName(c); });
@@ -617,21 +617,31 @@ async function getCurrentLocation() {
         navigator.geolocation.getCurrentPosition(async pos => {
             try {
                 const { latitude, longitude } = pos.coords;
-                const r = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=es`);
+                // Nominatim para nivel de calle
+                const r = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&addressdetails=1&zoom=16&accept-language=es`);
                 const d = await r.json();
-                if (d.city || d.locality)
-                    resolve({ name: d.city || d.locality, country: d.countryCode || d.countryName, latitude, longitude });
-                else reject("no city");
-            } catch (e) { reject(e); }
-        }, e => reject(e), { enableHighAccuracy: true, timeout: 10000, maximumAge: 30000 });
+                const a = d.address ?? {};
+                const name = a.neighbourhood || a.suburb || a.village || a.town || a.city || a.county || d.display_name.split(",")[0];
+                const street = a.road || a.pedestrian || a.path || a.footway || "";
+                const country = a.country_code?.toUpperCase() ?? "";
+                resolve({ name, street, country, latitude, longitude });
+            } catch {
+                // Fallback BigDataCloud
+                try {
+                    const r = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${pos.coords.latitude}&longitude=${pos.coords.longitude}&localityLanguage=es`);
+                    const d = await r.json();
+                    resolve({ name: d.city || d.locality || "Mi ubicación", street: "", country: d.countryCode || "", latitude: pos.coords.latitude, longitude: pos.coords.longitude });
+                } catch(e) { reject(e); }
+            }
+        }, e => reject(e), { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
     });
 }
 
 
 
-async function fetchDataFromCoordinates(lat, lon, name, country) {
+async function fetchDataFromCoordinates(lat, lon, name, country, street = "") {
     const [w, m] = await Promise.all([fetchWeatherData(lat, lon), fetchMarineData(lat, lon)]);
-    updateUI({ name, country, ...w, ...m });
+    updateUI({ name, country, street, ...w, ...m });
 }
 
 async function fetchDataFromApi(save = false) {
@@ -699,7 +709,7 @@ async function loadCityByIndex(i)  { const c = favoritesManager.goToIndex(i);   
 async function loadCityByName(c)   { await loadCityByCoordinates(c); }
 async function loadCityByCoordinates(c) {
     if (!c?.latitude || !c?.longitude) return;
-    try { await fetchDataFromCoordinates(c.latitude, c.longitude, c.name, c.country); favoritesManager.saveLastCity(c.name); }
+    try { await fetchDataFromCoordinates(c.latitude, c.longitude, c.name, c.country, c.street ?? ""); favoritesManager.saveLastCity(c.name); }
     catch { alert(`No se pudo cargar ${c.name}.`); }
 }
 
@@ -719,12 +729,18 @@ function updateUI(data) {
 }
 
 function updateMainCard(data) {
-    // Big animated Meteocon — day/night aware
-    elements.weatherIcon.innerHTML   = getMeteoconImg(data.weatherCode, data.isDay, "90px");
-    elements.cityName.innerHTML      = `${data.name}, ${data.country}`;
+    elements.weatherIcon.innerHTML = getMeteoconImg(data.weatherCode, data.isDay, "90px");
+
+    if (data.street) {
+        elements.cityName.innerHTML  = data.street;
+        elements.todayDate.innerHTML = `${data.name} · ${getCurrentDate()}`;
+    } else {
+        elements.cityName.innerHTML  = `${data.name}, ${data.country}`;
+        elements.todayDate.innerHTML = getCurrentDate();
+    }
+
     elements.cityTemp.innerHTML      = `${Math.round(data.temperature)}°C`;
     elements.cityCondition.innerHTML = getWeatherLabel(data.weatherCode);
-    elements.todayDate.innerHTML     = getCurrentDate();
 }
 
 
@@ -941,7 +957,7 @@ function scrollToTop() {
                 const top = target.getBoundingClientRect().top + window.pageYOffset - headerH - 16;
                 window.scrollTo({ top, behavior: 'smooth' });
             }
-            // Limpiar el hash para que próximas llamadas a updateUI vayan arriba
+            
             history.replaceState(null, '', window.location.pathname);
         }, 200);
     } else {
