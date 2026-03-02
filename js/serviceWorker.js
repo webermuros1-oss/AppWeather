@@ -1,4 +1,4 @@
-const CACHE_NAME = "meteo-cache-v3"; // Cambia versión para forzar actualización
+const CACHE_NAME = "meteo-cache-v3";
 
 const FILES_TO_CACHE = [
     "./",
