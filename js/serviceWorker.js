@@ -1,4 +1,4 @@
-const CACHE_NAME = "meteo-cache-v3";
+const CACHE_NAME = "meteo-cache-v3"; 
 
 const FILES_TO_CACHE = [
     "./",

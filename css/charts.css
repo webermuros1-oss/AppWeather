@@ -1,0 +1,464 @@
+@import url("https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600&display=swap");
+
+:root {
+    --metal-dark: #0a1628;
+    --metal-blue: #1a2f4a;
+    --metal-cyan: #2d4a5c;
+    --accent-teal: #00d9ff;
+    --accent-green: #00ff88;
+    --accent-orange: #ff9500;
+    --accent-red: #ff4757;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Barlow", sans-serif;
+    background: linear-gradient(135deg, var(--metal-dark) 0%, var(--metal-blue) 50%, var(--metal-cyan) 100%);
+    min-height: 100vh;
+    padding-top: 155px;
+    padding-bottom: 100px;
+    color: white;
+}
+
+
+.pageTitle {
+    text-align: center;
+    padding: 20px 20px 10px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.pageTitle h2 {
+    font-size: clamp(1.4rem, 4vw, 2rem);
+    color: var(--accent-teal);
+    text-shadow: 0 0 20px rgba(0, 217, 255, 0.4);
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.pageTitle p {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.95rem;
+}
+
+
+.cityBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, rgba(0, 217, 255, 0.2), rgba(0, 255, 136, 0.15));
+    border: 1px solid rgba(0, 255, 136, 0.4);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--accent-green);
+    margin-top: 10px;
+    text-shadow: 0 0 8px rgba(0, 255, 136, 0.4);
+}
+
+.cityBadge i {
+    color: var(--accent-teal);
+    font-size: 0.85rem;
+}
+
+
+.chartsGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px 15px 40px;
+}
+
+
+.chartCard {
+    background: linear-gradient(135deg, rgba(10, 22, 40, 0.95) 0%, rgba(26, 47, 74, 0.9) 100%);
+    border-radius: 24px;
+    padding: 24px;
+    border: 1px solid rgba(0, 217, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(0, 217, 255, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.chartCard::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent-teal), var(--accent-green), transparent);
+    opacity: 0.6;
+}
+
+.chartCard:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(0, 217, 255, 0.2), 0 0 0 1px rgba(0, 217, 255, 0.1);
+}
+
+.chartCardHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.chartCardTitle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.chartCardTitle i {
+    color: var(--accent-teal);
+    font-size: 1.1rem;
+    filter: drop-shadow(0 0 6px rgba(0, 217, 255, 0.5));
+}
+
+.chartCardTitle h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--accent-green);
+    text-shadow: 0 0 8px rgba(0, 255, 136, 0.3);
+}
+
+.chartCardBadge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 10px;
+    letter-spacing: 0.5px;
+}
+
+.badge-teal {
+    background: rgba(0, 217, 255, 0.15);
+    color: var(--accent-teal);
+    border: 1px solid rgba(0, 217, 255, 0.3);
+}
+
+.badge-green {
+    background: rgba(0, 255, 136, 0.15);
+    color: var(--accent-green);
+    border: 1px solid rgba(0, 255, 136, 0.3);
+}
+
+.badge-orange {
+    background: rgba(255, 149, 0, 0.15);
+    color: var(--accent-orange);
+    border: 1px solid rgba(255, 149, 0, 0.3);
+}
+
+
+.chartWrapper {
+    position: relative;
+    width: 100%;
+    height: 240px;
+}
+
+.chartWrapper canvas {
+    width: 100% !important;
+}
+
+
+.aqiGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.aqiItem {
+    background: rgba(0, 217, 255, 0.08);
+    border: 1px solid rgba(0, 217, 255, 0.15);
+    border-radius: 14px;
+    padding: 14px 12px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.aqiItem:hover {
+    background: rgba(0, 217, 255, 0.15);
+    border-color: rgba(0, 217, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.aqiItem .aqiLabel {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.55);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.aqiItem .aqiValue {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--accent-teal);
+    text-shadow: 0 0 10px rgba(0, 217, 255, 0.4);
+}
+
+.aqiItem .aqiUnit {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.4);
+    margin-top: 2px;
+}
+
+
+.aqiIndexBanner {
+    border-radius: 16px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.aqiIndexBanner .aqiBigNumber {
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 1;
+    text-shadow: 0 0 20px currentColor;
+}
+
+.aqiIndexBanner .aqiInfo {
+    flex: 1;
+}
+
+.aqiIndexBanner .aqiIndexLabel {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.aqiIndexBanner .aqiIndexDesc {
+    font-size: 0.82rem;
+    opacity: 0.8;
+    line-height: 1.4;
+}
+
+
+.aqi-good { background: rgba(0, 255, 136, 0.1); border-color: rgba(0, 255, 136, 0.4); color: #00ff88; }
+.aqi-moderate { background: rgba(255, 217, 0, 0.1); border-color: rgba(255, 217, 0, 0.4); color: #ffd900; }
+.aqi-unhealthy-sensitive { background: rgba(255, 149, 0, 0.1); border-color: rgba(255, 149, 0, 0.4); color: #ff9500; }
+.aqi-unhealthy { background: rgba(255, 71, 87, 0.1); border-color: rgba(255, 71, 87, 0.4); color: #ff4757; }
+.aqi-very-unhealthy { background: rgba(180, 0, 255, 0.1); border-color: rgba(180, 0, 255, 0.4); color: #b400ff; }
+.aqi-hazardous { background: rgba(128, 0, 0, 0.1); border-color: rgba(128, 0, 0, 0.4); color: #cc0000; }
+
+
+.windRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.compassWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.compass {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 217, 255, 0.4);
+    background: radial-gradient(circle, rgba(26, 47, 74, 0.9), rgba(10, 22, 40, 0.95));
+    position: relative;
+    box-shadow: 0 0 20px rgba(0, 217, 255, 0.2), inset 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.compassRose {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.compassNeedle {
+    width: 4px;
+    height: 50px;
+    background: linear-gradient(to bottom, var(--accent-teal) 50%, rgba(255,255,255,0.2) 50%);
+    border-radius: 2px;
+    transform-origin: center bottom;
+    transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+    filter: drop-shadow(0 0 6px rgba(0, 217, 255, 0.6));
+}
+
+.compassLabel {
+    position: absolute;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.compassLabel.n { top: 6px; left: 50%; transform: translateX(-50%); color: var(--accent-green); }
+.compassLabel.s { bottom: 6px; left: 50%; transform: translateX(-50%); }
+.compassLabel.e { right: 6px; top: 50%; transform: translateY(-50%); }
+.compassLabel.w { left: 6px; top: 50%; transform: translateY(-50%); }
+
+.compassDirLabel {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.7);
+    text-align: center;
+}
+
+.compassDirLabel strong {
+    color: var(--accent-teal);
+    font-size: 1.1rem;
+}
+
+.windStats {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: center;
+}
+
+.windStatItem {
+    background: rgba(0, 217, 255, 0.08);
+    border: 1px solid rgba(0, 217, 255, 0.15);
+    border-radius: 12px;
+    padding: 10px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.windStatItem .statLabel {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.55);
+}
+
+.windStatItem .statValue {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--accent-green);
+}
+
+
+.marineStatsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.marineStatCard {
+    background: rgba(0, 217, 255, 0.07);
+    border: 1px solid rgba(0, 217, 255, 0.15);
+    border-radius: 14px;
+    padding: 14px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.marineStatCard:hover {
+    background: rgba(0, 217, 255, 0.14);
+    border-color: rgba(0, 217, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.marineStatCard .statIcon {
+    font-size: 1.6rem;
+    margin-bottom: 6px;
+}
+
+.marineStatCard .statLabel {
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.marineStatCard .statValue {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--accent-teal);
+    text-shadow: 0 0 10px rgba(0, 217, 255, 0.4);
+}
+
+.marineStatCard .statUnit {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.4);
+}
+
+
+.loadingState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    gap: 16px;
+    color: rgba(255,255,255,0.5);
+}
+
+.loadingSpinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(0, 217, 255, 0.2);
+    border-top-color: var(--accent-teal);
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+
+.notAvailable {
+    text-align: center;
+    padding: 30px;
+    color: rgba(255,255,255,0.4);
+    font-style: italic;
+}
+
+
+@media (max-width: 768px) {
+    body {
+        padding-top: 130px;
+        padding-bottom: 100px;
+    }
+
+    .windRow {
+        grid-template-columns: 1fr;
+    }
+
+    .compassWrapper {
+        flex-direction: row;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding-top: 105px;
+    }
+
+    .chartWrapper {
+        height: 200px;
+    }
+
+    .aqiGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

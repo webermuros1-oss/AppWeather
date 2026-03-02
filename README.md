@@ -1,6 +1,6 @@
-# 🌤️ PlusWeather — PWA Meteorológica Inteligente  
+# 🌤️ PlusWeather — PWA Meteorológica Inteligente
 
-> Aplicación meteorológica progresiva (PWA) con pronóstico completo, datos marítimos, calidad del aire y sistema de favoritos.  
+> Aplicación meteorológica progresiva (PWA) con pronóstico completo, datos marítimos, calidad del aire, radar de precipitaciones, gráficas avanzadas y sistema de favoritos.
 > Funciona **100% offline** una vez instalada y ofrece una experiencia rápida, moderna y personalizable.
 
 ---
@@ -8,58 +8,26 @@
 ## ✨ Características principales
 
 | Característica | Descripción / Fuente |
-|----------------|----------------------|
+|---|---|
 | 🌦️ Datos meteorológicos en tiempo real | Open-Meteo API |
-| 🗓️ Pronóstico 7 días | ☀️🌧️❄️ Extendido |
-| 🌡️ Condiciones atmosféricas | Humedad, presión, UV, visibilidad |
-| 🌬️ Datos de viento | Velocidad, ráfagas, dirección |
+| 🕒 Pronóstico 24 horas | Con modal de detalle al tocar cada hora |
+| 🗓️ Pronóstico 7 días | Con modal de detalle al tocar cada día |
+| 🌡️ Condiciones atmosféricas | Humedad, presión, UV, visibilidad, CAPE |
+| 🌬️ Datos de viento | Velocidad, ráfagas, dirección, escala Beaufort |
 | 🌅 Datos astronómicos | Amanecer, atardecer, horas de sol |
-| 🌊 Datos marítimos | Altura de olas, corrientes |
-| 🫧 Calidad del aire | PM2.5, PM10, NO₂, O₃ |
-| ❤️ Sistema de favoritos (3 ciudades) | Persistente con LocalStorage |
-| 👆 Navegación intuitiva | Swipe + flechas |
-| 🖼️ Fondos dinámicos | Cambian según condiciones |
+| 🌊 Datos marítimos | Altura de olas, período, corrientes oceánicas |
+| 🫧 Calidad del aire | AQI, PM2.5, PM10, NO₂, O₃, SO₂, CO |
+| 📊 Gráficas detalladas | Viento, temperatura, lluvia, oleaje, AQI |
+| 🛰️ Radar de precipitaciones | RainViewer global, tiempo real, auto-refresh |
+| 🔍 Búsqueda con autocompletado | Sugerencias con bandera de país al escribir |
+| 📍 GPS de precisión | Nombre de calle exacta via Nominatim/OSM |
+| 🌙 Iconos día/noche | Meteocons SVG animados según hora local |
+| 🖼️ Fondos dinámicos día/noche | Cambian según clima e iluminación real |
+| ❤️ Sistema de favoritos | Persistente con LocalStorage, hasta 4 ciudades |
+| 👆 Navegación intuitiva | Swipe + flechas + footer con scroll automático |
 | 📲 Instalación PWA | Icono y splash personalizados |
 | ⚡ Offline-first | Cache adaptable con Service Worker |
 | 💻 Responsive | Compatible en móvil y desktop |
-
----
-
-## 🤖 Inteligencia Artificial en el desarrollo
-
-**PlusWeather** fue desarrollado con asistencia de **ChatGPT / Claude**, integrando IA en distintos puntos del proceso de construcción.  
-La IA sirvió como herramienta de apoyo humano, no como sistema autónomo.  
-
-🔧 Rol de la IA en el desarrollo
-
-Este proyecto fue desarrollado con asistencia intensiva de IA. La IA participó activamente en la generación inicial del código y en propuestas de arquitectura, mientras que el desarrollador humano se encargó de revisar, comprender, corregir y ajustar las soluciones generadas para asegurar su correcto funcionamiento y coherencia con los objetivos del proyecto.
-
-Las principales contribuciones de la IA fueron:
-
-**Factorización y estructuración del código**
-Propuesta y creación de funciones reutilizables para mejorar la legibilidad y el mantenimiento del proyecto.
-
-**Refactorización del Service Worker**
-Optimización de la estrategia de cacheo para mejorar el rendimiento offline y reducir accesos innecesarios a red.
-
-**Depuración asistida**
-Identificación y corrección de errores relacionados con la persistencia y restauración de datos usando LocalStorage, siempre validados manualmente.
-
-**Generación de documentación técnica**
-Creación de una base inicial de documentación estructurada y preparada para soporte multilingüe.
-
-**Sugerencias UX/UI**
-Recomendaciones sobre paleta de colores, contraste visual y comportamiento de fondos dinámicos, posteriormente ajustadas según criterio humano.
-
-En todos los casos, el código generado por la IA fue revisado, comprendido y adaptado manualmente antes de integrarse al proyecto.
-
-## 🚀 Posibles futuras integraciones con IA
-
-Predicción meteorológica híbrida combinando datos en tiempo real y análisis histórico.
-
-Asistente por voz para consultas locales.
-
-Notificaciones contextuales basadas en el tipo de actividad (surf, senderismo, etc.).
 
 ---
 
@@ -71,130 +39,185 @@ Notificaciones contextuales basadas en el tipo de actividad (surf, senderismo, e
 
 ## 📱 Demo en vivo
 
-👉 [[**https://webermuros1-oss.github.io/AppWeather/**](https://webermuros1-oss.github.io/AppWeather/)](https://webermuros1-oss/AppWeather/)
+👉 [**https://webermuros1-oss.github.io/AppWeather/**](https://webermuros1-oss.github.io/AppWeather/)
 
 ### Instalar como PWA
 
-1. Abre el enlace en **Chrome o Safari móvil**  
-2. Toca el menú → **“Añadir a pantalla de inicio”**  
-3. ¡Listo! La aplicación funcionará **sin conexión** 🌍  
+1. Abre el enlace en **Chrome o Safari móvil**
+2. Toca el menú → **"Añadir a pantalla de inicio"**
+3. ¡Listo! La aplicación funcionará **sin conexión** 🌍
 
 ---
 
-## 🏗️ Estructura del proyecto
+## 🗂️ Estructura del proyecto
+
+```
+AppWeather/
+├── index.html                  # Página principal
+├── json/
+│   └── manifest.json           # Configuración PWA
+├── css/
+│   ├── index.css               # Estilos principales
+│   ├── header.css              # Header + buscador + sidebar
+│   ├── footer.css              # Footer de navegación
+│   ├── charts.css              # Página de gráficas
+│   └── radar.css               # Página de radar
+├── js/
+│   ├── index.js                # Lógica principal + APIs + modales
+│   ├── header.js               # Componente Header (autocompletado + GPS)
+│   ├── footer.js               # Componente Footer (navegación + scroll)
+│   ├── charts.js               # Gráficas con Chart.js
+│   └── serviceWorker.js        # Lógica offline
+├── pages/
+│   ├── charts.html             # Página de gráficas y analíticas
+│   └── radar.html              # Página de radar de precipitaciones
+└── media/images/
+    ├── logoRemaster.png        # Logo app
+    ├── logoRemaster192.png     # Icono PWA (192px)
+    ├── logoRemaster512.png     # Icono PWA (512px)
+    ├── sunny1.jpg              # Fondos dinámicos de día
+    ├── night1.jpg              # Fondos dinámicos de noche
+    └── ...                     # Resto de fondos por condición
+```
+
+---
+
+## 🚀 Instalación local
 
 ```bash
-AppWeather/
-├── index.html                # Página principal
-├── json/
-│   └── manifest.json         # Configuración PWA
-├── css/
-│   ├── index.css             # Estilos principales
-│   ├── header.css            # Header
-│   └── footer.css            # Footer
-├── js/
-│   ├── index.js              # Lógica principal + APIs
-│   ├── header.js             # Componente Header
-│   ├── footer.js             # Componente Footer
-│   └── serviceWorker.js      # Lógica offline
-└── media/images/
-    ├── logoRemaster192.png   # Icono PWA (192px)
-    ├── logoRemaster512.png   # Icono PWA (512px)
-    └── fondos_climaticos/    # Fondos dinámicos según clima
-
-
-🚀 Instalación local
-bash
 # 1. Clona el repositorio
 git clone https://github.com/webermuros1-oss/AppWeather.git
 cd AppWeather
 
-# 2. Ejecuta un servidor local (requerido para PWA)
-# Opción fácil: usar "Live Server" en VSCode
+# 2. Ejecuta un servidor local (requerido para PWA y GPS)
+# Opción recomendada: extensión "Live Server" en VSCode
 
-# 3. Abre en navegador
-http://localhost:8000
+# 3. Abre en el navegador
+http://localhost:5500
+```
 
-🔧 APIs utilizadas
+> ⚠️ El GPS y el Service Worker **requieren servidor local o HTTPS**. No funcionarán abriendo el HTML directamente desde el explorador de archivos.
 
-https://open-meteo.com/
+---
 
-🎨 Personalización
-🏙️ Cambiar ciudad por defecto
-Modifica la ciudad principal que aparece al iniciar la app:
+## 🔧 APIs utilizadas
 
-js
-// js/index.js  — línea ~140
-const favoritesManager = new FavoritesManager(3, "Madrid"); // ← Cambia aquí
-🗺️ Añadir más ciudades favoritas
-Aumenta el número máximo de ciudades que pueden guardarse como favoritas:
+| API | Uso | Coste |
+|---|---|---|
+| [Open-Meteo](https://open-meteo.com/) | Meteorología, pronóstico, viento, UV | Gratuita |
+| [Open-Meteo Marine](https://marine-api.open-meteo.com/) | Olas, corrientes, oleaje | Gratuita |
+| [Open-Meteo Air Quality](https://air-quality-api.open-meteo.com/) | AQI, PM2.5, PM10, gases | Gratuita |
+| [Nominatim / OpenStreetMap](https://nominatim.org/) | Reverse geocoding de precisión (calle) | Gratuita |
+| [BigDataCloud](https://www.bigdatacloud.com/) | Fallback de reverse geocoding | Gratuita |
+| [RainViewer](https://www.rainviewer.com/api.html) | Radar de precipitaciones global | Gratuita |
+| [Meteocons](https://bas.dev/work/meteocons) | Iconos SVG animados día/noche | Gratuita (CDN) |
 
-js
-// js/index.js  — línea ~90
-constructor(maxFavorites = 5, defaultCity = "Valencia"); // ← Cambia el 3 por 5
-🖼️ Iconos personalizados
-Sustituye el icono por defecto de la aplicación por uno propio:
+---
 
-json
-// json/manifest.json
-"src": "/AppWeather/media/images/logoRemaster.png"
-💡 Consejo: usa imágenes en formato PNG de 192x192 y 512x512 px para lograr compatibilidad total con el instalador PWA.
+## 🌙 Fondos dinámicos día/noche
 
-🛠️ Tecnologías
-xml
-HTML5 | CSS3 | Vanilla JavaScript | PWA | Service Workers | Web Components | LocalStorage | Fetch API | Open-Meteo
+La app detecta si es de día o de noche en la ubicación consultada y cambia el fondo automáticamente. Coloca las imágenes en `media/images/` con estos nombres:
 
-🔄 Service Worker (Offline)
-Cachea: HTML, CSS, JS, iconos
+| Condición | Día | Noche |
+|---|---|---|
+| Despejado | `sunny1.jpg`, `sunny2.jpg`, `beach.jpg` | `nightClear1.jpg` |
+| Nublado | `cloudy1.jpg`, `cloudy2.jpg` | `nightCloudy1.jpg` |
+| Lluvia | `rainy1.jpg`, `rainy2.jpg`, `rainy3.jpg` | `nightRainy1.jpg` |
+| Nieve | `snowy1.jpg`, `snowy2.jpg` | `nightSnowy1.jpg` |
+| Tormenta | `stormy1.jpg`, `stormy2.jpg` | `nightStormy1.jpg` |
+| Niebla | `foggy1.jpg`, `foggy2.jpg` | `nightFoggy1.jpg` |
+| Por defecto | `bg1.jpg` … `bg5.jpg` | `night1.jpg`, `night2.jpg`, `night3.jpg` |
 
-Excluye: APIs meteorológicas (siempre frescas)
+---
 
-Estrategia: Cache-first (assets) + Network-first (APIs)
+## 📊 Páginas adicionales
 
-📱 Funcionalidades móviles
+### Gráficas (`pages/charts.html`)
+- Índice de Calidad del Aire (AQI) con estándares europeos y americanos
+- Gráfica de velocidad del viento 24h con brújula animada y escala Beaufort
+- Probabilidad de lluvia 7 días
+- Temperatura 24h
+- Altura de olas vs oleaje marino
 
-✅ Swipe izquierda/derecha → Cambiar ciudades
+### Radar (`pages/radar.html`)
+- Mapa interactivo con capa de precipitaciones de RainViewer
+- Control de opacidad
+- Auto-refresh cada 10 minutos
+- Centrado automático en la ubicación del usuario
 
-✅ Input predictivo → Buscar cualquier ciudad
+---
 
-✅ Persistencia → Favoritos guardados
+## 🤖 Inteligencia Artificial en el desarrollo
 
-✅ Modo oscuro → Automático
+**PlusWeather** fue desarrollado con asistencia de **Claude (Anthropic)**, integrando IA como herramienta de apoyo humano en distintos puntos del proceso.
 
-✅ Splash screen → Personalizado
+### 🔧 Rol de la IA
 
-### ⚠️ Posibles problemas y soluciones
+| Área | Contribución |
+|---|---|
+| Arquitectura del código | Propuesta de estructura modular con Web Components |
+| APIs y datos | Integración de Open-Meteo, RainViewer, Nominatim y Meteocons |
+| Modales interactivos | Diseño de bottom-sheet para detalle de horas y días |
+| Iconos animados | Implementación de Meteocons con soporte día/noche |
+| GPS de precisión | Reverse geocoding a nivel de calle con Nominatim |
+| Autocompletado | Buscador con sugerencias en tiempo real y banderas |
+| Gráficas | Visualizaciones con Chart.js para viento, lluvia y oleaje |
+| Radar | Integración de RainViewer sobre mapa Leaflet |
+| Fondos dinámicos | Sistema día/noche según `is_day` de la API |
+| Navegación | Footer con scroll automático a secciones via anchor hash |
+| Service Worker | Estrategia cache-first para assets, network-first para APIs |
+| Documentación | Generación de README estructurado y actualizado |
 
-| 🧩 Problema                                         | 💡 Solución |
-|-----------------------------|--------------------------------------------------------------------------------|
-| **Icono gris "G"**          | Verifica las rutas definidas en el archivo `manifest.json`. |
-| **No carga datos**          | Abre **DevTools → Application → Service Workers** y selecciona **Unregister**, luego recarga la página. |
-| **No funciona offline**     | Espera unos segundos tras la primera instalación para que el *Service Worker* complete su registro. |
-| **GitHub Pages lento**      | Espera de **2 a 5 minutos** después del último *push* hasta que se refresque el servicio. |
+En todos los casos, el código generado fue revisado, comprendido y adaptado manualmente antes de integrarse al proyecto.
 
+---
 
-bash
-git clone https://github.com/webermuros1-oss/AppWeather.git
-Crea una nueva rama para tu funcionalidad o mejora:
+## 🚀 Posibles futuras integraciones
 
-bash
-git checkout -b feature/nueva-ciudad
-Realiza tus cambios y haz un commit descriptivo:
+- Predicción meteorológica híbrida combinando datos en tiempo real y análisis histórico
+- Asistente por voz para consultas locales
+- Notificaciones push según condiciones meteorológicas (lluvia inminente, UV alto)
+- Alertas personalizadas por tipo de actividad (surf, senderismo, ciclismo)
+- Widget para pantalla de inicio con actualización periódica
 
-bash
-git commit -m "Añade nueva funcionalidad: ciudad adicional"
-Sube tu rama al repositorio remoto:
+---
 
-bash
-git push origin feature/nueva-ciudad
-Abre un Pull Request desde GitHub para revisión y merge.
+## ⚠️ Posibles problemas y soluciones
 
+| 🧩 Problema | 💡 Solución |
+|---|---|
+| **Icono gris "G"** | Verifica las rutas en `manifest.json` |
+| **No carga datos** | DevTools → Application → Service Workers → Unregister → Recargar |
+| **No funciona offline** | Espera unos segundos tras la primera instalación para que el SW se registre |
+| **GPS solo apunta al centro de la ciudad** | Asegúrate de dar permiso de ubicación precisa en el navegador |
+| **Imágenes nocturnas no aparecen** | Comprueba que los nombres de archivo coincidan exactamente (camelCase, sin doble extensión) |
+| **GitHub Pages lento** | Espera 2-5 minutos tras el último push |
+| **Autocompletado no aparece** | Escribe al menos 2 caracteres; comprueba la conexión a internet |
 
+---
 
-📄 Licencia
-Este proyecto está bajo la Licencia MIT - ver el archivo LICENSE para más detalles.
+## 🛠️ Tecnologías
 
+```
+HTML5 · CSS3 · Vanilla JavaScript · PWA · Service Workers
+Web Components · LocalStorage · Fetch API
+Open-Meteo · Nominatim · RainViewer · Chart.js · Leaflet · Meteocons
+```
 
-Made with ❤️ por webermuros1-oss
-¡Instala PlusWeather en tu móvil hoy! 🌟
+---
 
+## 📄 Licencia
+
+Este proyecto está bajo la **Licencia MIT** — ver el archivo [LICENSE](LICENSE) para más detalles.
+
+---
+
+<div align="center">
+
+Made with ❤️ por **webermuros1-oss**
+
+⭐ Si te gusta el proyecto, ¡dale una estrella en GitHub!
+
+[🌐 Demo en vivo](https://webermuros1-oss.github.io/AppWeather/) · [🐛 Reportar un bug](https://github.com/webermuros1-oss/AppWeather/issues) · [💡 Sugerir mejora](https://github.com/webermuros1-oss/AppWeather/issues)
+
+</div>

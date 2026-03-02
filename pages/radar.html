@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Radar - PlusWeather</title>
+
+    <link rel="stylesheet" href="../css/radar.css" />
+    <link rel="stylesheet" href="../css/header.css" />
+    <link rel="stylesheet" href="../css/footer.css" />
+    <link rel="manifest" href="../json/manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <link rel="icon" type="image/png" href="../media/images/logoRemaster.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+</head>
+<body>
+    <header-plus-weather></header-plus-weather>
+
+    <div class="pageTitle">
+        <h2><i class="fa-solid fa-satellite-dish"></i> <span data-i18n="radarTitle">Radar de Precipitaciones</span></h2>
+        <p data-i18n="radarSubtitle">Visualización en tiempo real de lluvias y tormentas · Se actualiza cada 10 minutos</p>
+    </div>
+
+    <div class="radarContainer">
+        <div class="radarCard">
+
+            <!-- Layer + base map switcher -->
+            <div class="layerBar">
+                <div class="baseBtns">
+                    <button class="baseBtn active" data-base="dark"  title="CARTO Dark">🌑</button>
+                    <button class="baseBtn"        data-base="light" title="CARTO Light">☀️</button>
+                    <button class="baseBtn"        data-base="osm"   title="OpenStreetMap">🗺️</button>
+                </div>
+            </div>
+
+            <!-- Map -->
+            <div id="radarMap"></div>
+
+            <!-- Playback timeline (rain only) -->
+            <div class="radarPlayback" id="radarPlayback">
+                <button id="playBtn" title="Play/Pause"><i class="fa-solid fa-play"></i></button>
+                <input type="range" id="timelineSlider" min="0" max="11" value="11">
+                <span class="radarTimestamp">
+                    <i class="fa-solid fa-clock"></i>
+                    <span id="radarTime" data-i18n="radarLoading">Cargando...</span>
+                </span>
+            </div>
+
+            <!-- Bottom controls -->
+            <div class="radarControls">
+                <!-- Rain legend -->
+                <div class="radarLegend" id="rainLegend">
+                    <span class="legendLabel" data-i18n="radarWeakRain">Lluvia débil</span>
+                    <div class="legendBar"></div>
+                    <span class="legendLabel" data-i18n="radarHeavy">Intensa</span>
+                </div>
+                <!-- Wind legend (hidden by default) -->
+                <div class="radarLegend" id="windLegend" style="display:none">
+                    <span class="legendLabel" data-i18n="radarWindCalm">Calma</span>
+                    <div class="legendBar windBar"></div>
+                    <span class="legendLabel" data-i18n="radarWindStrong">Fuerte</span>
+                </div>
+                <div class="opacityControl">
+                    <i class="fa-solid fa-eye" style="color:var(--accent-teal)"></i>
+                    <span data-i18n="radarOpacity">Opacidad</span>
+                    <input type="range" id="opacitySlider" min="0" max="100" value="80">
+                </div>
+            </div>
+        </div>
+
+        <!-- Info cards -->
+        <div class="radarInfoCards">
+            <div class="radarInfoCard">
+                <i class="fa-solid fa-satellite-dish"></i>
+                <h4 data-i18n="radarSource">Fuente</h4>
+                <p id="sourceLabel">RainViewer</p>
+            </div>
+            <div class="radarInfoCard">
+                <i class="fa-solid fa-map"></i>
+                <h4 data-i18n="radarMapCard">Mapa base</h4>
+                <p>
+                    <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener" class="osmLink">
+                        © OpenStreetMap
+                    </a>
+                </p>
+            </div>
+            <div class="radarInfoCard">
+                <i class="fa-solid fa-globe"></i>
+                <h4 data-i18n="radarCoverage">Cobertura</h4>
+                <p data-i18n="radarCoverageVal">Global</p>
+            </div>
+            <div class="radarInfoCard">
+                <i class="fa-solid fa-film"></i>
+                <h4 data-i18n="radarFramesCard">Fotogramas</h4>
+                <p><span id="frameCount">—</span> <span id="frameCountSuffix" data-i18n="radarFramesAvail">disponibles</span></p>
+            </div>
+        </div>
+    </div>
+
+    <footer-plus-weather></footer-plus-weather>
+
+    <script src="../js/i18n.js"></script>
+    <script src="../js/header.js"></script>
+    <script src="../js/footer.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <script>
+        // ─── WIND API KEY ──────────────────────────────────────────────────────────
+        // Clave gratuita de OpenWeatherMap para la capa de viento.
+        // Regístrate en: https://openweathermap.org/api  (sin tarjeta de crédito)
+        const OWM_KEY = "";
+        // ──────────────────────────────────────────────────────────────────────────
+
+        // === ATTRIBUTION (required by ODbL / OpenStreetMap) ===
+        const CARTO_ATTR = '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions" target="_blank">CARTO</a>';
+        const OSM_ATTR   = '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors';
+
+        // === MAP ===
+        const map = L.map("radarMap", {
+            center: [35, 10], zoom: 3,
+            zoomControl: true, attributionControl: true
+        });
+
+        const baseLayers = {
+            dark:  L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",  { attribution: CARTO_ATTR, subdomains: "abcd", maxZoom: 19 }),
+            light: L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", { attribution: CARTO_ATTR, subdomains: "abcd", maxZoom: 19 }),
+            osm:   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",             { attribution: OSM_ATTR,   maxZoom: 19 })
+        };
+        let currentBase = "dark";
+        baseLayers.dark.addTo(map);
+
+        // === STATE ===
+        let radarFrames  = [];
+        let tileHost     = "https://tilecache.rainviewer.com";
+        let activeLayer  = "rain";
+        let frameIdx     = 0;
+        let overlay      = null;
+        let opacity      = 0.8;
+        let playing      = false;
+        let playTimer    = null;
+
+        // === RAIN LAYER ===
+        function showRainFrame(idx) {
+            if (!radarFrames.length) return;
+            frameIdx = Math.max(0, Math.min(idx, radarFrames.length - 1));
+            const frame = radarFrames[frameIdx];
+            if (overlay) { map.removeLayer(overlay); overlay = null; }
+            overlay = L.tileLayer(
+                `${tileHost}${frame.path}/256/{z}/{x}/{y}/2/1_1.png`,
+                { opacity, zIndex: 2, attribution: '<a href="https://www.rainviewer.com/" target="_blank">RainViewer</a>' }
+            ).addTo(map);
+            document.getElementById("timelineSlider").value = frameIdx;
+            setTimestamp(frame.time);
+        }
+
+        function setTimestamp(ts) {
+            const el = document.getElementById("radarTime");
+            if (!ts) { el.textContent = I18N.t("radarLoading"); return; }
+            const d = new Date(ts * 1000);
+            el.textContent = `${I18N.t("radarUpdated")} ${d.toLocaleTimeString(I18N.lang, { hour: "2-digit", minute: "2-digit" })}`;
+        }
+
+        // === WIND LAYER ===
+        function showWindLayer() {
+            if (overlay) { map.removeLayer(overlay); overlay = null; }
+            const statusEl = document.getElementById("radarTime");
+            if (!OWM_KEY) {
+                statusEl.textContent = I18N.t("radarWindNoKey");
+                return;
+            }
+            overlay = L.tileLayer(
+                `https://tile.openweathermap.org/map/wind_new/{z}/{x}/{y}.png?appid=${OWM_KEY}`,
+                { opacity, zIndex: 2, attribution: '<a href="https://openweathermap.org" target="_blank">OpenWeatherMap</a>' }
+            ).addTo(map);
+            statusEl.textContent = I18N.t("radarWindLive");
+        }
+
+        // === LAYER SWITCH ===
+        function switchToLayer(type) {
+            stopPlay();
+            activeLayer = type;
+
+            const isRain = type === "rain";
+            document.getElementById("radarPlayback").style.display  = isRain ? "" : "none";
+            document.getElementById("rainLegend").style.display     = isRain ? "" : "none";
+            document.getElementById("windLegend").style.display     = isRain ? "none" : "";
+            document.getElementById("sourceLabel").textContent      = isRain ? "RainViewer" : "OpenWeatherMap";
+            document.getElementById("frameCount").textContent       = isRain ? (radarFrames.length || "—") : "—";
+            document.getElementById("frameCountSuffix").style.display = isRain ? "" : "none";
+
+            if (isRain) {
+                if (radarFrames.length) showRainFrame(radarFrames.length - 1);
+                else document.getElementById("radarTime").textContent = I18N.t("radarError");
+            } else {
+                showWindLayer();
+            }
+        }
+
+        // === DATA ===
+        async function loadData() {
+            try {
+                const res  = await fetch("https://api.rainviewer.com/public/weather-maps.json");
+                const data = await res.json();
+                tileHost    = data.host ?? tileHost;
+                radarFrames = data.radar?.past ?? [];
+                if (activeLayer === "rain") {
+                    const slider = document.getElementById("timelineSlider");
+                    slider.max = Math.max(0, radarFrames.length - 1);
+                    document.getElementById("frameCount").textContent = radarFrames.length || "—";
+                    showRainFrame(radarFrames.length - 1);
+                }
+            } catch {
+                document.getElementById("radarTime").textContent = I18N.t("radarError");
+            }
+        }
+
+        // === PLAYBACK ===
+        function stopPlay() {
+            if (!playing) return;
+            playing = false;
+            clearInterval(playTimer);
+            playTimer = null;
+            const icon = document.getElementById("playBtn")?.querySelector("i");
+            if (icon) icon.className = "fa-solid fa-play";
+        }
+
+        document.getElementById("playBtn").addEventListener("click", () => {
+            const icon = document.getElementById("playBtn").querySelector("i");
+            if (playing) {
+                stopPlay();
+            } else {
+                playing = true;
+                icon.className = "fa-solid fa-pause";
+                playTimer = setInterval(() => {
+                    if (!radarFrames.length) { stopPlay(); return; }
+                    showRainFrame((frameIdx + 1) % radarFrames.length);
+                }, 500);
+            }
+        });
+
+        // === LAYER BUTTONS ===
+        document.querySelectorAll(".layerBtn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                document.querySelectorAll(".layerBtn").forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                switchToLayer(btn.dataset.layer);
+            });
+        });
+
+        // === BASE MAP BUTTONS ===
+        document.querySelectorAll(".baseBtn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                document.querySelectorAll(".baseBtn").forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                map.removeLayer(baseLayers[currentBase]);
+                currentBase = btn.dataset.base;
+                baseLayers[currentBase].addTo(map);
+            });
+        });
+
+        // === CONTROLS ===
+        document.getElementById("timelineSlider").addEventListener("input", e => {
+            stopPlay();
+            showRainFrame(parseInt(e.target.value));
+        });
+
+        document.getElementById("opacitySlider").addEventListener("input", e => {
+            opacity = e.target.value / 100;
+            if (overlay) overlay.setOpacity(opacity);
+        });
+
+        // === GEOLOCATION ===
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                pos => map.setView([pos.coords.latitude, pos.coords.longitude], 6),
+                () => {},
+                { timeout: 5000 }
+            );
+        }
+
+        // === CITY SELECTED (from header search) ===
+        document.addEventListener("citySelected", e => {
+            map.setView([e.detail.latitude, e.detail.longitude], 8, { animate: true });
+        });
+
+        // === LANGUAGE CHANGE ===
+        document.addEventListener("langChanged", () => {
+            document.querySelectorAll("[data-i18n]").forEach(el => {
+                if (el.id === "radarTime") return;
+                el.textContent = I18N.t(el.getAttribute("data-i18n"));
+            });
+            // Refresh status text in current language
+            if (activeLayer === "rain") {
+                const ts = radarFrames[frameIdx]?.time;
+                if (ts) setTimestamp(ts);
+            } else {
+                document.getElementById("radarTime").textContent =
+                    OWM_KEY ? I18N.t("radarWindLive") : I18N.t("radarWindNoKey");
+            }
+        });
+
+        // === INIT ===
+        loadData();
+        setInterval(loadData, 600000);
+    </script>
+</body>
+</html>
