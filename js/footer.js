@@ -1,11 +1,11 @@
 class MyFooter extends HTMLElement {
     connectedCallback() {
-        // Detecta si estamos en pages/ o en la raíz
+        
         const inSubfolder = window.location.pathname.includes('/pages/');
         const root  = inSubfolder ? '../'    : '';        // hacia index.html
         const pages = inSubfolder ? ''       : 'pages/';  // hacia pages/charts.html
 
-        // Detecta página activa
+        
         const path = window.location.pathname;
         const isHome   = !path.includes('charts') && !path.includes('radar');
         const isCharts = path.includes('charts');
@@ -59,17 +59,17 @@ class MyFooter extends HTMLElement {
         </footer>
         `;
 
-        // Smooth scroll SOLO si el target existe en la página actual (index.html)
+
         this.querySelectorAll('.footerItem[data-section]').forEach(item => {
             item.addEventListener('click', (e) => {
                 const sectionClass = item.getAttribute('data-section');
                 const target = document.querySelector(`.${sectionClass}`);
 
                 if (target) {
-                    // Estamos en index.html: hacemos scroll suave
+                    
                     e.preventDefault();
 
-                    // Quitar active de todos y ponerlo en el clickeado
+                    
                     this.querySelectorAll('.footerItem').forEach(i => i.classList.remove('active'));
                     item.classList.add('active');
 
@@ -77,7 +77,7 @@ class MyFooter extends HTMLElement {
                     const offsetPosition = target.getBoundingClientRect().top + window.pageYOffset - headerHeight - 20;
                     window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
                 }
-                // Si no existe el target, navega normalmente al href (index.html#section)
+                
             });
         });
     }

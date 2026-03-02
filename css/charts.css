@@ -25,7 +25,7 @@ body {
     color: white;
 }
 
-/* ===== PAGE TITLE ===== */
+
 .pageTitle {
     text-align: center;
     padding: 20px 20px 10px;
@@ -46,7 +46,7 @@ body {
     font-size: 0.95rem;
 }
 
-/* ===== CITY BADGE ===== */
+
 .cityBadge {
     display: inline-flex;
     align-items: center;
@@ -67,7 +67,7 @@ body {
     font-size: 0.85rem;
 }
 
-/* ===== DASHBOARD GRID ===== */
+
 .chartsGrid {
     display: flex;
     flex-direction: column;
@@ -77,7 +77,7 @@ body {
     padding: 20px 15px 40px;
 }
 
-/* ===== CHART CARD ===== */
+
 .chartCard {
     background: linear-gradient(135deg, rgba(10, 22, 40, 0.95) 0%, rgba(26, 47, 74, 0.9) 100%);
     border-radius: 24px;
@@ -159,7 +159,7 @@ body {
     border: 1px solid rgba(255, 149, 0, 0.3);
 }
 
-/* ===== CANVAS WRAPPER ===== */
+
 .chartWrapper {
     position: relative;
     width: 100%;
@@ -170,7 +170,7 @@ body {
     width: 100% !important;
 }
 
-/* ===== AQI SECTION ===== */
+
 .aqiGrid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
@@ -214,7 +214,7 @@ body {
     margin-top: 2px;
 }
 
-/* AQI Index Banner */
+
 .aqiIndexBanner {
     border-radius: 16px;
     padding: 16px 20px;
@@ -249,7 +249,7 @@ body {
     line-height: 1.4;
 }
 
-/* AQI levels */
+
 .aqi-good { background: rgba(0, 255, 136, 0.1); border-color: rgba(0, 255, 136, 0.4); color: #00ff88; }
 .aqi-moderate { background: rgba(255, 217, 0, 0.1); border-color: rgba(255, 217, 0, 0.4); color: #ffd900; }
 .aqi-unhealthy-sensitive { background: rgba(255, 149, 0, 0.1); border-color: rgba(255, 149, 0, 0.4); color: #ff9500; }
@@ -257,7 +257,7 @@ body {
 .aqi-very-unhealthy { background: rgba(180, 0, 255, 0.1); border-color: rgba(180, 0, 255, 0.4); color: #b400ff; }
 .aqi-hazardous { background: rgba(128, 0, 0, 0.1); border-color: rgba(128, 0, 0, 0.4); color: #cc0000; }
 
-/* ===== WIND COMPASS ===== */
+
 .windRow {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -352,7 +352,7 @@ body {
     color: var(--accent-green);
 }
 
-/* ===== MARINE STATS ===== */
+
 .marineStatsGrid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -400,7 +400,7 @@ body {
     color: rgba(255,255,255,0.4);
 }
 
-/* ===== LOADING STATE ===== */
+
 .loadingState {
     display: flex;
     flex-direction: column;
@@ -424,7 +424,7 @@ body {
     to { transform: rotate(360deg); }
 }
 
-/* ===== NOT AVAILABLE ===== */
+
 .notAvailable {
     text-align: center;
     padding: 30px;
@@ -432,7 +432,7 @@ body {
     font-style: italic;
 }
 
-/* ===== RESPONSIVE ===== */
+
 @media (max-width: 768px) {
     body {
         padding-top: 130px;

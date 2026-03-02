@@ -19,7 +19,7 @@ body {
     padding-bottom: 100px;
 }
 
-/* ─── Dashboard ─── */
+
 .dashboard {
     display: flex;
     flex-direction: column;
@@ -29,7 +29,7 @@ body {
     padding: 30px 15px 40px;
 }
 
-/* ─── Base Card ─── */
+
 .card {
     background: linear-gradient(135deg, var(--metal-dark) 0%, var(--metal-blue) 50%, var(--metal-cyan) 100%);
     border-radius: 24px;
@@ -46,7 +46,7 @@ body {
     box-shadow: 0 12px 40px rgba(0,217,255,0.35);
 }
 
-/* ─── Collapsible header ─── */
+
 .card h4 {
     margin-bottom: 16px;
     font-size: 1.1rem;
@@ -80,7 +80,7 @@ body {
 }
 .card.collapsed .card-body { max-height: 0; opacity: 0; }
 
-/* ─── Main weather card ─── */
+
 .mainWeatherCard {
     background-size: cover;
     background-position: center;
@@ -112,7 +112,7 @@ body {
     flex-wrap: wrap;
 }
 
-/* Meteocon main icon — drop shadow for visibility */
+
 .weatherIconDisplay img {
     filter: drop-shadow(0 4px 12px rgba(0,0,0,0.7));
     width: clamp(70px, 18vw, 100px) !important;
@@ -131,7 +131,7 @@ body {
     opacity: 0.95;
 }
 
-/* ─── Grid stats ─── */
+
 .gridInfo, .windInfo, .marineInfo, .astroInfo {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -159,7 +159,7 @@ body {
     color: var(--accent-green);
 }
 
-/* ─── Analytics CTA ─── */
+
 .analytics-cta {
     display: flex;
     justify-content: center;
@@ -189,7 +189,7 @@ body {
 }
 .analytics-btn i { color: var(--accent-green); }
 
-/* ─── Hourly scroll ─── */
+
 .hourlyCard { overflow: hidden; }
 .hourlyInfo {
     display: flex;
@@ -202,7 +202,7 @@ body {
 }
 .hourlyInfo::-webkit-scrollbar { display: none; }
 
-/* ─── Hour item ─── */
+
 .hourItem {
     flex: 0 0 84px;
     background: rgba(0,217,255,0.12);
@@ -233,7 +233,7 @@ body {
     font-size: 0.82rem;
 }
 
-/* Meteocon inside hour item */
+
 .hourIcon img {
     width: 40px !important;
     height: 40px !important;
@@ -257,7 +257,7 @@ body {
 }
 .hourItem:hover .hourTapHint { color: rgba(0,255,136,0.65); }
 
-/* ─── Forecast ─── */
+
 .forecastInfo { display: flex; flex-direction: column; gap: 12px; }
 .forecastDay {
     background: rgba(0,217,255,0.10);
@@ -283,7 +283,7 @@ body {
     color: var(--accent-teal);
 }
 
-/* Meteocon inside forecast */
+
 .forecastIcon img {
     width: 38px !important;
     height: 38px !important;
@@ -302,7 +302,7 @@ body {
 }
 .forecastDay:hover .forecastTapHint { color: rgba(0,255,136,0.65); }
 
-/* ─── Nav arrows ─── */
+
 .navArrow {
     position: absolute;
     top: 50%;
@@ -346,7 +346,7 @@ body {
 
 .notAvailable { text-align: center; opacity: 0.7; font-style: italic; padding: 20px; }
 
-/* ─── Responsive ─── */
+
 @media (min-width: 768px) {
     .dashboard { max-width: 800px; }
     .currentWeather { gap: 30px; }

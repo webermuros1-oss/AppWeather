@@ -14,9 +14,7 @@
     box-sizing: border-box;
 }
 
-/* ═══════════════════════════════════════
-   HEADER
-════════════════════════════════════════ */
+
 .appHeader {
     background: linear-gradient(135deg, var(--metal-dark) 0%, var(--metal-blue) 100%);
     position: fixed;
@@ -79,9 +77,7 @@
     box-shadow: 0 4px 20px rgba(0, 217, 255, 0.4);
 }
 
-/* ═══════════════════════════════════════
-   HAMBURGER BUTTON
-════════════════════════════════════════ */
+
 .hamburger-btn {
     display: flex;
     flex-direction: column;
@@ -112,7 +108,7 @@
     box-shadow: 0 0 10px rgba(0, 217, 255, 0.8);
 }
 
-/* Animated X when open */
+
 .hamburger-btn.open span:nth-child(1) {
     transform: translateY(11.5px) rotate(45deg);
     background: var(--accent-green);
@@ -126,9 +122,7 @@
     background: var(--accent-green);
 }
 
-/* ═══════════════════════════════════════
-   SIDEBAR OVERLAY
-════════════════════════════════════════ */
+
 .sidebar-overlay {
     position: fixed;
     inset: 0;
@@ -145,9 +139,7 @@
     pointer-events: all;
 }
 
-/* ═══════════════════════════════════════
-   SIDEBAR
-════════════════════════════════════════ */
+
 .sidebar {
     position: fixed;
     top: 0;
@@ -169,7 +161,7 @@
     transform: translateX(0);
 }
 
-/* Sidebar header */
+
 .sidebar-header {
     display: flex;
     align-items: center;
@@ -217,7 +209,7 @@
     transform: rotate(90deg);
 }
 
-/* Section labels */
+
 .sidebar-section-label {
     font-size: 0.72rem;
     font-weight: 600;
@@ -227,7 +219,7 @@
     padding: 18px 20px 6px;
 }
 
-/* Nav list */
+
 .sidebar-nav {
     list-style: none;
     padding: 4px 12px;
@@ -287,7 +279,7 @@
     color: var(--accent-green);
 }
 
-/* Badge */
+
 .sidebar-badge {
     background: linear-gradient(135deg, var(--accent-teal), var(--accent-green));
     color: var(--metal-dark);
@@ -299,7 +291,7 @@
     flex-shrink: 0;
 }
 
-/* Sidebar footer */
+
 .sidebar-footer {
     margin-top: auto;
     padding: 20px;
@@ -311,9 +303,7 @@
     color: rgba(255,255,255,0.25);
 }
 
-/* ═══════════════════════════════════════
-   RESPONSIVE
-════════════════════════════════════════ */
+
 @media (max-width: 768px) {
     .appHeader {
         padding: 0.75rem 1.25rem;
