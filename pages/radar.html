@@ -117,7 +117,6 @@
             if (radarLayer) radarLayer.setOpacity(currentOpacity);
         });
 
-        // Centrar en GPS al cargar
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (pos) => map.setView([pos.coords.latitude, pos.coords.longitude], 8),
@@ -126,12 +125,10 @@
             );
         }
 
-        // Centrar en la ciudad buscada desde el header
         document.addEventListener("citySelected", (e) => {
             const { latitude, longitude, name } = e.detail;
             map.setView([latitude, longitude], 8, { animate: true });
 
-            // Marcador temporal que desaparece al mover el mapa
             const marker = L.marker([latitude, longitude])
                 .addTo(map)
                 .bindPopup(`<b>${name}</b>`)

@@ -43,8 +43,6 @@ let currentLat = null, currentLon = null, currentCity = "—", currentCountry = 
 const chartInstances = {};
 
 
-// ── Inicialización ────────────────────────────────────────────────────────────
-
 window.addEventListener("load", async () => {
     try {
         const saved = localStorage.getItem("favCities");
@@ -72,14 +70,11 @@ window.addEventListener("load", async () => {
     }
 });
 
-// Escuchar el evento citySelected que lanza el header
 document.addEventListener("citySelected", async (e) => {
     const { name, country, latitude, longitude } = e.detail;
     await applyCity({ name, country, latitude, longitude });
 });
 
-
-// ── Cambio de ciudad ──────────────────────────────────────────────────────────
 
 async function applyCity(cityData) {
     currentLat     = cityData.latitude;
@@ -87,7 +82,6 @@ async function applyCity(cityData) {
     currentCity    = cityData.name;
     currentCountry = cityData.country || "";
 
-    // Actualizar badge
     const badge = document.getElementById("currentCityBadge");
     const badgeText = document.getElementById("cityBadgeText");
     if (badge && badgeText) {
@@ -95,13 +89,11 @@ async function applyCity(cityData) {
         badge.style.display = "inline-flex";
     }
 
-    // Mostrar loading en los contenedores
     ["aqiContent", "windCompassContent", "marineContent"].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.innerHTML = `<p class="loadingState">Cargando...</p>`;
     });
 
-    // Recargar todo en paralelo
     await Promise.all([
         loadAirQuality(),
         loadWeatherCharts(),
@@ -109,8 +101,6 @@ async function applyCity(cityData) {
     ]);
 }
 
-
-// ── GPS ───────────────────────────────────────────────────────────────────────
 
 function getGPSLocation() {
     return new Promise((resolve, reject) => {
@@ -130,8 +120,6 @@ function getGPSLocation() {
     });
 }
 
-
-// ── Calidad del aire ──────────────────────────────────────────────────────────
 
 async function loadAirQuality() {
     const params = new URLSearchParams({
@@ -200,8 +188,6 @@ function getAQIInfo(aqi) {
     return              { cls: "aqi-hazardous",              label: labels[6], desc: descs[6], emoji: "☠️" };
 }
 
-
-// ── Viento + lluvia + temperatura ─────────────────────────────────────────────
 
 async function loadWeatherCharts() {
     const params = new URLSearchParams({
@@ -384,8 +370,6 @@ function renderTempChart(hourly) {
 }
 
 
-// ── Datos marítimos ───────────────────────────────────────────────────────────
-
 async function loadMarineData() {
     try {
         const params = new URLSearchParams({
@@ -401,7 +385,6 @@ async function loadMarineData() {
         const data = await res.json();
         const m = data.current;
 
-        // Restaurar visibilidad del chart de olas por si estaba oculto de una ciudad anterior sin costa
         const waveParent = document.getElementById("waveChart")?.parentElement;
         if (waveParent) waveParent.style.display = "";
 
@@ -508,8 +491,6 @@ function renderWaveChart(hourly) {
     });
 }
 
-
-// ── Utilidades ────────────────────────────────────────────────────────────────
 
 function getWindCardinal(degrees) {
     const dirs = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSO", "SO", "OSO", "O", "ONO", "NO", "NNO"];

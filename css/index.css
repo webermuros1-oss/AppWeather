@@ -204,7 +204,6 @@ body {
 
 
 .hourItem {
-    /* ~3.5 visible on 390px screen, ~4 on wider phones */
     flex: 0 0 calc(25vw - 14px);
     min-width: 72px;
     max-width: 90px;
@@ -378,7 +377,6 @@ body {
     }
 }
 @media (min-width: 600px) {
-    /* Fix to ~80px on tablets/desktop where vw calc gets too big */
     .hourItem {
         flex: 0 0 80px;
         max-width: 80px;

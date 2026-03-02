@@ -393,7 +393,6 @@
 
 
 
-/* ── Botón ajustes ── */
 .settingsBtnHeader {
     background: rgba(255,255,255,0.07);
     border: 1px solid rgba(255,255,255,0.12);
@@ -407,7 +406,6 @@
 }
 .settingsBtnHeader:hover { background: rgba(0,217,255,0.15); color: #00d9ff; }
 
-/* ── Settings overlay ── */
 .settings-overlay {
     position: fixed; inset: 0;
     background: rgba(0,0,0,0.5);
@@ -418,7 +416,6 @@
 }
 .settings-overlay.show { opacity: 1; pointer-events: all; }
 
-/* ── Settings panel ── */
 .settings-panel {
     position: fixed;
     top: 0; right: 0; bottom: 0;
@@ -463,7 +460,6 @@
 }
 .settings-label i { color: #00d9ff; margin-right: 6px; }
 
-/* ── Grid de idiomas ── */
 .lang-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;

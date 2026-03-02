@@ -84,7 +84,6 @@ class MyHeader extends HTMLElement {
     </header>
     `;
 
-        // ── Sidebar ───────────────────────────────────────────────────────────
         const hamburger = this.querySelector("#hamburgerBtn");
         const sidebar   = this.querySelector("#appSidebar");
         const overlay   = this.querySelector("#sidebarOverlay");
@@ -111,7 +110,6 @@ class MyHeader extends HTMLElement {
             });
         });
 
-        // ── Settings ─────────────────────────────────────────────────────────
         const settingsBtn     = this.querySelector("#settingsBtn");
         const settingsPanel   = this.querySelector("#settingsPanel");
         const settingsOverlay = this.querySelector("#settingsOverlay");
@@ -124,7 +122,6 @@ class MyHeader extends HTMLElement {
         settingsClose.addEventListener("click", closeSettings);
         settingsOverlay.addEventListener("click", closeSettings);
 
-        // ── Language grid ─────────────────────────────────────────────────────
         const langGrid = this.querySelector("#langGrid");
 
         const renderLangGrid = () => {
@@ -152,7 +149,6 @@ class MyHeader extends HTMLElement {
 
         document.addEventListener("langChanged", () => { applyI18n(); renderLangGrid(); });
 
-        // ── Search ────────────────────────────────────────────────────────────
         const input    = this.querySelector("#getCity");
         const dropdown = this.querySelector("#searchDropdown");
         let debounceTimer = null, currentResults = [], activeIndex = -1;
@@ -214,7 +210,6 @@ class MyHeader extends HTMLElement {
         function hideDropdown() { dropdown.classList.remove("open"); dropdown.innerHTML = ""; activeIndex = -1; }
         function getFlagEmoji(c) { return c.toUpperCase().split("").map(ch => String.fromCodePoint(0x1F1E0 - 65 + ch.charCodeAt(0))).join(""); }
 
-        // ── GPS ───────────────────────────────────────────────────────────────
         const gpsBtn = this.querySelector("#gpsBtn");
         gpsBtn.addEventListener("click", () => {
             if (!navigator.geolocation) { alert("Tu navegador no soporta geolocalización"); return; }

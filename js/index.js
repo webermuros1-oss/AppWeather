@@ -75,7 +75,6 @@ const BACKGROUND_IMAGES = {
     night: { sunny:["nightClear1","night1"], cloudy:["nightCloudy1","night2"], rainy:["nightRainy1","night1"], snowy:["night1"], stormy:["nightStormy1","night2"], foggy:["night2"], default:["night1","night2","night3"] }
 };
 
-// ── Modal styles ──────────────────────────────────────────────────────────────
 function injectModalStyles() {
     if (document.getElementById("sharedModalStyles")) return;
     const s = document.createElement("style");
@@ -257,7 +256,6 @@ function getUVLabel(uv) {
     return labels[5];
 }
 
-// ── FavoritesManager ─────────────────────────────────────────────────────────
 class FavoritesManager {
     constructor(max = 4) {
         this.max = max; this.favorites = this._load();
@@ -288,10 +286,8 @@ class FavoritesManager {
 }
 const favoritesManager = new FavoritesManager();
 
-// ── Datos guardados para re-render al cambiar idioma ──────────────────────────
 let _lastUIData = null;
 
-// ── Event listeners ───────────────────────────────────────────────────────────
 function initializeEventListeners() {
     window.addEventListener("load", async () => {
         changeBackgroundImage();
@@ -338,10 +334,8 @@ function initializeEventListeners() {
         h.addEventListener("click", () => h.closest(".card").classList.toggle("collapsed"));
     });
 
-    // Recargar UI al cambiar idioma
     document.addEventListener("langChanged", () => {
         if (_lastUIData) updateUI(_lastUIData);
-        // Actualizar textos fijos de las cards
         updateCardTitles();
     });
 }
@@ -358,13 +352,11 @@ function updateCardTitles() {
     Object.entries(map).forEach(([sel, key]) => {
         const el = document.querySelector(sel);
         if (el) {
-            // preservar el icono de chevron si existe
             const icon = el.querySelector("i");
             el.innerHTML = I18N.t(key);
             if (icon) el.appendChild(icon);
         }
     });
-    // Botones de charts
     const chartsBtn = document.querySelector(".windCard .analytics-btn");
     if (chartsBtn) chartsBtn.innerHTML = `<i class="fa-solid fa-chart-line"></i> ${I18N.t("cardChartsBtn")}`;
     const marineBtn = document.querySelector(".marineCard .analytics-btn");
