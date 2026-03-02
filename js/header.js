@@ -1,9 +1,9 @@
 class MyHeader extends HTMLElement {
     connectedCallback() {
-        const inSubfolder = window.location.pathname.includes('/pages/');
-        const base = inSubfolder ? '../' : '';
-        const root = inSubfolder ? '../' : '';
-        const pages = inSubfolder ? '' : 'pages/';
+        const inSubfolder = window.location.pathname.includes("/pages/");
+        const base = inSubfolder ? "../" : "";
+        const root = inSubfolder ? "../" : "";
+        const pages = inSubfolder ? "" : "pages/";
 
         this.innerHTML = `
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
@@ -16,27 +16,25 @@ class MyHeader extends HTMLElement {
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
-
         <div class="sidebar-section-label">Navegación</div>
         <ul class="sidebar-nav">
             <li>
-                <a href="${root}index.html" class="sidebar-link ${this.isCurrentPage('index') ? 'active' : ''}">
+                <a href="${root}index.html" class="sidebar-link ${this.isCurrentPage("index") ? "active" : ""}">
                     <i class="fa-solid fa-house"></i><span>Inicio</span>
                 </a>
             </li>
             <li>
-                <a href="${pages}charts.html" class="sidebar-link ${this.isCurrentPage('charts') ? 'active' : ''}">
+                <a href="${pages}charts.html" class="sidebar-link ${this.isCurrentPage("charts") ? "active" : ""}">
                     <i class="fa-solid fa-chart-line"></i><span>Gráficas</span>
                     <span class="sidebar-badge">NEW</span>
                 </a>
             </li>
             <li>
-                <a href="${pages}radar.html" class="sidebar-link ${this.isCurrentPage('radar') ? 'active' : ''}">
+                <a href="${pages}radar.html" class="sidebar-link ${this.isCurrentPage("radar") ? "active" : ""}">
                     <i class="fa-solid fa-satellite-dish"></i><span>Radar</span>
                 </a>
             </li>
         </ul>
-
         <div class="sidebar-section-label">Secciones</div>
         <ul class="sidebar-nav">
             <li>
@@ -65,7 +63,6 @@ class MyHeader extends HTMLElement {
                 </a>
             </li>
         </ul>
-
         <div class="sidebar-footer">
             <span>PlusWeather v2.0</span>
             <span>Powered by Open-Meteo</span>
@@ -76,23 +73,19 @@ class MyHeader extends HTMLElement {
         <button class="hamburger-btn" id="hamburgerBtn" aria-label="Abrir menú">
             <span></span><span></span><span></span>
         </button>
-
         <h1 class="title">
             <img class="weatherIcon" src="${base}media/images/logoRemaster.png" alt="PlusWeather">
         </h1>
-
-        <!-- Search with autocomplete -->
         <div class="searchWrapper" id="searchWrapper">
             <div class="searchInputRow">
                 <i class="fa-solid fa-magnifying-glass searchIcon"></i>
                 <input id="getCity" type="text" placeholder="Busca ciudad..." autocomplete="off" />
-
-
-
             </div>
             <ul class="searchDropdown" id="searchDropdown"></ul>
         </div>
-        <button class="gpsBtnHeader" id="gpsBtn" title="Mi ubicación"><i class="fa-solid fa-location-crosshairs"></i></button>
+        <button class="gpsBtnHeader" id="gpsBtn" title="Mi ubicación">
+            <i class="fa-solid fa-location-crosshairs"></i>
+        </button>
     </header>
     `;
 
@@ -123,7 +116,6 @@ class MyHeader extends HTMLElement {
             });
         });
 
-
         const input = this.querySelector("#getCity");
         const dropdown = this.querySelector("#searchDropdown");
         let debounceTimer = null;
@@ -146,11 +138,9 @@ class MyHeader extends HTMLElement {
                     e.preventDefault();
                     selectResult(currentResults[activeIndex]);
                 }
-
             }
             else if (e.key === "Escape") { hideDropdown(); }
         });
-
 
         document.addEventListener("click", e => {
             if (!this.querySelector("#searchWrapper").contains(e.target)) hideDropdown();
@@ -171,7 +161,6 @@ class MyHeader extends HTMLElement {
         function renderDropdown(results) {
             activeIndex = -1;
             if (!results.length) { hideDropdown(); return; }
-
             dropdown.innerHTML = results.map((r, i) => {
                 const admin = [r.admin1, r.country].filter(Boolean).join(", ");
                 const flag = r.country_code ? getFlagEmoji(r.country_code) : "🌍";
@@ -185,15 +174,12 @@ class MyHeader extends HTMLElement {
                     <span class="dropdownCoords">${r.latitude.toFixed(2)}, ${r.longitude.toFixed(2)}</span>
                 </li>`;
             }).join("");
-
             dropdown.querySelectorAll(".dropdownItem").forEach(item => {
                 item.addEventListener("mousedown", e => {
-                    e.preventDefault(); // prevent blur before click
-                    const idx = parseInt(item.dataset.index);
-                    selectResult(currentResults[idx]);
+                    e.preventDefault();
+                    selectResult(currentResults[parseInt(item.dataset.index)]);
                 });
             });
-
             dropdown.classList.add("open");
         }
 
@@ -208,13 +194,13 @@ class MyHeader extends HTMLElement {
         function selectResult(result) {
             input.value = result.name;
             hideDropdown();
-            
             document.dispatchEvent(new CustomEvent("citySelected", {
                 detail: {
                     name: result.name,
                     country: result.country_code ?? result.country,
                     latitude: result.latitude,
-                    longitude: result.longitude
+                    longitude: result.longitude,
+                    street: ""
                 }
             }));
         }
@@ -226,62 +212,49 @@ class MyHeader extends HTMLElement {
         }
 
         function getFlagEmoji(countryCode) {
-            return countryCode
-                .toUpperCase()
-                .split("")
-                .map(c => String.fromCodePoint(0x1F1E0 - 65 + c.charCodeAt(0)))
-                .join("");
+            return countryCode.toUpperCase().split("").map(c => String.fromCodePoint(0x1F1E0 - 65 + c.charCodeAt(0))).join("");
         }
 
-        
         const gpsBtn = this.querySelector("#gpsBtn");
 
         gpsBtn.addEventListener("click", () => {
             if (!navigator.geolocation) { alert("Tu navegador no soporta geolocalización"); return; }
-
-            
             gpsBtn.classList.add("loading");
 
             navigator.geolocation.getCurrentPosition(
                 async pos => {
                     gpsBtn.classList.remove("loading");
-                    const { latitude, longitude, accuracy } = pos.coords;
-
+                    const { latitude, longitude } = pos.coords;
                     try {
-                        
-                        const url = `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&addressdetails=1&zoom=16&accept-language=es`;
+                        const url = `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&addressdetails=1&zoom=18&accept-language=es`;
                         const res = await fetch(url, { headers: { "Accept-Language": "es" } });
                         const data = await res.json();
-
-                        
                         const a = data.address ?? {};
                         const name =
-                            a.neighbourhood ||  
-                            a.suburb ||  
-                            a.village ||  
-                            a.town ||  
-                            a.city ||  
-                            a.county ||  
+                            a.hamlet ||
+                            a.locality ||
+                            a.neighbourhood ||
+                            a.suburb ||
+                            a.village ||
+                            a.town ||
+                            a.city ||
+                            a.municipality ||
+                            a.county ||
                             data.display_name.split(",")[0];
-
                         const country = a.country_code?.toUpperCase() ?? a.country ?? "";
-
-
-                        const street = a.road || a.pedestrian || a.path || a.footway || "";
+                        const street = a.road || a.pedestrian || a.path || a.footway || a.track || "";
                         input.value = street ? `${street}, ${name}` : name;
-
                         document.dispatchEvent(new CustomEvent("citySelected", {
                             detail: { name, country, latitude, longitude, street }
                         }));
                     } catch {
-                        
                         try {
                             const fb = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=es`);
                             const fbd = await fb.json();
-                            const name = fbd.city || fbd.locality || "Mi ubicación";
+                            const name = fbd.locality || fbd.city || "Mi ubicación";
                             input.value = name;
                             document.dispatchEvent(new CustomEvent("citySelected", {
-                                detail: { name, country: fbd.countryCode ?? "", latitude, longitude }
+                                detail: { name, street: "", country: fbd.countryCode ?? "", latitude, longitude }
                             }));
                         } catch {
                             alert("No se pudo obtener el nombre de tu ubicación");
@@ -297,11 +270,7 @@ class MyHeader extends HTMLElement {
                     };
                     alert(msgs[err.code] || "Error de geolocalización");
                 },
-                {
-                    enableHighAccuracy: true,  
-                    timeout: 15000,
-                    maximumAge: 0           
-                }
+                { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
             );
         });
     }

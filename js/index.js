@@ -8,23 +8,23 @@ if ("serviceWorker" in navigator) {
 }
 
 const elements = {
-    cityInput:    document.querySelector("#getCity"),
-    cityName:     document.querySelector(".cityName"),
-    cityTemp:     document.querySelector(".weatherDeg"),
-    cityCondition:document.querySelector(".weatherCondition"),
-    todayDate:    document.querySelector(".date"),
-    weatherIcon:  document.querySelector(".weatherIconDisplay"),
-    header:       document.querySelector("header"),
-    mainCard:     document.querySelector(".mainWeatherCard"),
-    atmosphere:   document.querySelector(".atmosphereInfo"),
-    wind:         document.querySelector(".windInfo"),
-    marine:       document.querySelector(".marineInfo"),
-    forecast:     document.querySelector(".forecastInfo"),
-    astro:        document.querySelector(".astroInfo"),
-    hourly:       document.querySelector(".hourlyInfo"),
-    prevArrow:    document.querySelector(".prevArrow"),
-    nextArrow:    document.querySelector(".nextArrow"),
-    favDots:      document.getElementById("favDots")
+    cityInput:     document.querySelector("#getCity"),
+    cityName:      document.querySelector(".cityName"),
+    cityTemp:      document.querySelector(".weatherDeg"),
+    cityCondition: document.querySelector(".weatherCondition"),
+    todayDate:     document.querySelector(".date"),
+    weatherIcon:   document.querySelector(".weatherIconDisplay"),
+    header:        document.querySelector("header"),
+    mainCard:      document.querySelector(".mainWeatherCard"),
+    atmosphere:    document.querySelector(".atmosphereInfo"),
+    wind:          document.querySelector(".windInfo"),
+    marine:        document.querySelector(".marineInfo"),
+    forecast:      document.querySelector(".forecastInfo"),
+    astro:         document.querySelector(".astroInfo"),
+    hourly:        document.querySelector(".hourlyInfo"),
+    prevArrow:     document.querySelector(".prevArrow"),
+    nextArrow:     document.querySelector(".nextArrow"),
+    favDots:       document.getElementById("favDots")
 };
 
 const API_URLS = {
@@ -36,38 +36,34 @@ const API_URLS = {
 const MONTHS = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
 const DAYS   = ["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
 
-
-
 const METEOCONS_CDN = "https://bmcdn.nl/assets/weather-icons/v3.0/fill/svg";
 
-
 const WMO_MAP = {
-    0:  { day:"clear-day",          night:"clear-night",         label:"Despejado" },
-    1:  { day:"partly-cloudy-day",  night:"partly-cloudy-night", label:"Mayormente despejado" },
-    2:  { day:"partly-cloudy-day",  night:"partly-cloudy-night", label:"Parcialmente nublado" },
-    3:  { day:"overcast",           night:"overcast-night",      label:"Nublado" },
-    45: { day:"fog",                night:"fog-night",           label:"Niebla" },
-    48: { day:"fog",                night:"fog-night",           label:"Niebla con escarcha" },
-    51: { day:"drizzle",            night:"drizzle",             label:"Llovizna ligera" },
-    53: { day:"drizzle",            night:"drizzle",             label:"Llovizna moderada" },
-    55: { day:"drizzle",            night:"drizzle",             label:"Llovizna intensa" },
-    61: { day:"rain",               night:"rain",                label:"Lluvia ligera" },
-    63: { day:"rain",               night:"rain",                label:"Lluvia moderada" },
-    65: { day:"extreme-rain",       night:"extreme-rain",        label:"Lluvia intensa" },
-    71: { day:"snow",               night:"snow",                label:"Nieve ligera" },
-    73: { day:"snow",               night:"snow",                label:"Nieve moderada" },
-    75: { day:"extreme-snow",       night:"extreme-snow",        label:"Nieve intensa" },
-    77: { day:"hail",               night:"hail",                label:"Granizo" },
+    0:  { day:"clear-day",               night:"clear-night",              label:"Despejado" },
+    1:  { day:"partly-cloudy-day",       night:"partly-cloudy-night",      label:"Mayormente despejado" },
+    2:  { day:"partly-cloudy-day",       night:"partly-cloudy-night",      label:"Parcialmente nublado" },
+    3:  { day:"overcast",                night:"overcast-night",           label:"Nublado" },
+    45: { day:"fog",                     night:"fog-night",                label:"Niebla" },
+    48: { day:"fog",                     night:"fog-night",                label:"Niebla con escarcha" },
+    51: { day:"drizzle",                 night:"drizzle",                  label:"Llovizna ligera" },
+    53: { day:"drizzle",                 night:"drizzle",                  label:"Llovizna moderada" },
+    55: { day:"drizzle",                 night:"drizzle",                  label:"Llovizna intensa" },
+    61: { day:"rain",                    night:"rain",                     label:"Lluvia ligera" },
+    63: { day:"rain",                    night:"rain",                     label:"Lluvia moderada" },
+    65: { day:"extreme-rain",            night:"extreme-rain",             label:"Lluvia intensa" },
+    71: { day:"snow",                    night:"snow",                     label:"Nieve ligera" },
+    73: { day:"snow",                    night:"snow",                     label:"Nieve moderada" },
+    75: { day:"extreme-snow",            night:"extreme-snow",             label:"Nieve intensa" },
+    77: { day:"hail",                    night:"hail",                     label:"Granizo" },
     80: { day:"partly-cloudy-day-rain",  night:"partly-cloudy-night-rain", label:"Chubascos ligeros" },
-    81: { day:"rain",               night:"rain",                label:"Chubascos moderados" },
-    82: { day:"extreme-rain",       night:"extreme-rain",        label:"Chubascos intensos" },
-    85: { day:"snow",               night:"snow",                label:"Nevadas ligeras" },
-    86: { day:"extreme-snow",       night:"extreme-snow",        label:"Nevadas intensas" },
-    95: { day:"thunderstorms",      night:"thunderstorms-night", label:"Tormenta" },
-    96: { day:"thunderstorms-rain", night:"thunderstorms-night-rain", label:"Tormenta con granizo" },
-    99: { day:"thunderstorms-rain", night:"thunderstorms-night-rain", label:"Tormenta severa" },
+    81: { day:"rain",                    night:"rain",                     label:"Chubascos moderados" },
+    82: { day:"extreme-rain",            night:"extreme-rain",             label:"Chubascos intensos" },
+    85: { day:"snow",                    night:"snow",                     label:"Nevadas ligeras" },
+    86: { day:"extreme-snow",            night:"extreme-snow",             label:"Nevadas intensas" },
+    95: { day:"thunderstorms",           night:"thunderstorms-night",      label:"Tormenta" },
+    96: { day:"thunderstorms-rain",      night:"thunderstorms-night-rain", label:"Tormenta con granizo" },
+    99: { day:"thunderstorms-rain",      night:"thunderstorms-night-rain", label:"Tormenta severa" },
 };
-
 
 function getMeteoconImg(code, isDay = 1, size = "64px") {
     const entry = WMO_MAP[code] ?? { day:"not-available", night:"not-available", label:"Desconocido" };
@@ -75,14 +71,11 @@ function getMeteoconImg(code, isDay = 1, size = "64px") {
     return `<img src="${METEOCONS_CDN}/${name}.svg" width="${size}" height="${size}" alt="${entry.label}" style="display:inline-block;vertical-align:middle" loading="lazy">`;
 }
 
-
 function getMeteoconSmall(code, isDay = 1) { return getMeteoconImg(code, isDay, "48px"); }
 
 function getWeatherLabel(code) {
     return (WMO_MAP[code] ?? { label:"Desconocido" }).label;
 }
-
-
 
 const BACKGROUND_IMAGES = {
     day: {
@@ -105,192 +98,82 @@ const BACKGROUND_IMAGES = {
     }
 };
 
-
-
 function injectModalStyles() {
     if (document.getElementById("sharedModalStyles")) return;
     const s = document.createElement("style");
     s.id = "sharedModalStyles";
     s.textContent = `
-    .hmBackdrop {
-        position:fixed;inset:0;
-        background:rgba(0,0,0,.65);
-        backdrop-filter:blur(6px);
-        z-index:9000;
-        animation:hmFadeIn .25s ease;
-    }
+    .hmBackdrop{position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(6px);z-index:9000;animation:hmFadeIn .25s ease}
     @keyframes hmFadeIn{from{opacity:0}to{opacity:1}}
-
-    .hmPanel {
-        position:fixed;bottom:0;left:0;right:0;
-        background:linear-gradient(160deg,#0a1628 0%,#1a2f4a 60%,#2d4a5c 100%);
-        border-top:2px solid rgba(0,217,255,.4);
-        border-radius:24px 24px 0 0;
-        z-index:9001;
-        max-height:92vh;overflow-y:auto;
-        padding-bottom:env(safe-area-inset-bottom,16px);
-        box-shadow:0 -8px 40px rgba(0,0,0,.6),0 -2px 10px rgba(0,217,255,.15);
-        animation:hmSlideUp .32s cubic-bezier(.4,0,.2,1);
-    }
+    .hmPanel{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(160deg,#0a1628 0%,#1a2f4a 60%,#2d4a5c 100%);border-top:2px solid rgba(0,217,255,.4);border-radius:24px 24px 0 0;z-index:9001;max-height:92vh;overflow-y:auto;padding-bottom:env(safe-area-inset-bottom,16px);box-shadow:0 -8px 40px rgba(0,0,0,.6),0 -2px 10px rgba(0,217,255,.15);animation:hmSlideUp .32s cubic-bezier(.4,0,.2,1)}
     @keyframes hmSlideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
     .hmPanel.hmClosing{animation:hmSlideDown .28s cubic-bezier(.4,0,.2,1) forwards}
     @keyframes hmSlideDown{from{transform:translateY(0)}to{transform:translateY(100%)}}
-
-    .hmDrag{
-        width:40px;height:4px;background:rgba(255,255,255,.2);
-        border-radius:2px;margin:14px auto 0;display:block;
-    }
-
-    .hmHeader{
-        display:flex;align-items:center;justify-content:space-between;
-        padding:14px 20px;
-        border-bottom:1px solid rgba(0,217,255,.15);
-        position:sticky;top:0;
-        background:linear-gradient(160deg,#0a1628,#1a2f4a);
-        z-index:1;
-    }
+    .hmDrag{width:40px;height:4px;background:rgba(255,255,255,.2);border-radius:2px;margin:14px auto 0;display:block}
+    .hmHeader{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid rgba(0,217,255,.15);position:sticky;top:0;background:linear-gradient(160deg,#0a1628,#1a2f4a);z-index:1}
     .hmTitleGroup{display:flex;align-items:center;gap:12px}
     .hmTitleGroup h3{font-size:1.2rem;font-weight:700;color:#fff;margin-bottom:2px}
     .hmTitleGroup p{font-size:.82rem;color:rgba(255,255,255,.5)}
-    .hmCloseBtn{
-        background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);
-        border-radius:50%;color:#fff;width:34px;height:34px;
-        display:flex;align-items:center;justify-content:center;
-        cursor:pointer;font-size:1rem;transition:background .2s;flex-shrink:0;
-    }
+    .hmCloseBtn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:50%;color:#fff;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;transition:background .2s;flex-shrink:0}
     .hmCloseBtn:hover{background:rgba(255,71,87,.35)}
-
-    /* Big temp row */
-    .hmTempRow{
-        display:flex;align-items:center;justify-content:center;gap:24px;
-        padding:18px 20px 14px;
-        border-bottom:1px solid rgba(0,217,255,.1);
-        flex-wrap:wrap;
-    }
-    .hmBigTemp{
-        font-size:4rem;font-weight:700;color:#fff;line-height:1;
-        text-shadow:0 0 24px rgba(0,217,255,.25);
-    }
+    .hmTempRow{display:flex;align-items:center;justify-content:center;gap:24px;padding:18px 20px 14px;border-bottom:1px solid rgba(0,217,255,.1);flex-wrap:wrap}
+    .hmBigTemp{font-size:4rem;font-weight:700;color:#fff;line-height:1;text-shadow:0 0 24px rgba(0,217,255,.25)}
     .hmSubTemps{display:flex;flex-direction:column;gap:6px}
     .hmSubTemp{display:flex;flex-direction:column;gap:2px}
     .hmSubTemp span:first-child{font-size:.7rem;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.5px}
     .hmSubTemp span:last-child{font-size:1.2rem;font-weight:600;color:#00ff88}
     .hmSubTemp.cool span:last-child{color:#00d9ff}
-
-    /* Progress bar */
-    .hmBar{
-        margin:14px 20px;
-        background:rgba(0,217,255,.06);
-        border:1px solid rgba(0,217,255,.15);
-        border-radius:14px;padding:12px 14px;
-    }
-    .hmBarTop{
-        display:flex;justify-content:space-between;
-        font-size:.8rem;color:rgba(255,255,255,.55);margin-bottom:8px;
-    }
+    .hmBar{margin:14px 20px;background:rgba(0,217,255,.06);border:1px solid rgba(0,217,255,.15);border-radius:14px;padding:12px 14px}
+    .hmBarTop{display:flex;justify-content:space-between;font-size:.8rem;color:rgba(255,255,255,.55);margin-bottom:8px}
     .hmBarTop strong{color:#00d9ff}
     .hmTrack{height:8px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden}
     .hmFill{height:100%;border-radius:4px;background:linear-gradient(90deg,#00d9ff,#00ff88);width:0%;transition:width .7s cubic-bezier(.4,0,.2,1)}
-
-    /* Stats grid */
-    .hmGrid{
-        display:grid;grid-template-columns:repeat(2,1fr);
-        gap:10px;padding:14px 20px 22px;
-    }
-    .hmStat{
-        background:rgba(0,217,255,.08);
-        border:1px solid rgba(0,217,255,.14);
-        border-radius:14px;padding:14px;
-        display:flex;flex-direction:column;gap:4px;
-        transition:background .2s;
-    }
+    .hmGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:14px 20px 22px}
+    .hmStat{background:rgba(0,217,255,.08);border:1px solid rgba(0,217,255,.14);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:4px;transition:background .2s}
     .hmStat:hover{background:rgba(0,217,255,.15)}
     .hmStatIcon{font-size:1.3rem}
     .hmStatLabel{font-size:.7rem;color:rgba(255,255,255,.42);text-transform:uppercase;letter-spacing:.5px}
     .hmStatValue{font-size:1.05rem;font-weight:700;color:#00ff88;text-shadow:0 0 8px rgba(0,255,136,.3)}
     .hmStatSub{font-size:.7rem;color:rgba(255,255,255,.32)}
-
-    /* Sun timeline (day modal) */
-    .hmSunRow{
-        display:flex;align-items:center;justify-content:space-between;
-        margin:0 20px 16px;
-        background:rgba(255,180,0,.08);
-        border:1px solid rgba(255,180,0,.2);
-        border-radius:14px;padding:14px;
-        gap:10px;
-    }
+    .hmSunRow{display:flex;align-items:center;justify-content:space-between;margin:0 20px 16px;background:rgba(255,180,0,.08);border:1px solid rgba(255,180,0,.2);border-radius:14px;padding:14px;gap:10px}
     .hmSunItem{display:flex;flex-direction:column;align-items:center;gap:4px}
     .hmSunItem span:first-child{font-size:1.4rem}
     .hmSunItem span:last-child{font-size:.85rem;font-weight:600;color:#ffcc44}
     .hmSunItem small{font-size:.7rem;color:rgba(255,255,255,.4)}
     .hmSunDivider{flex:1;height:2px;background:linear-gradient(90deg,#ffcc44,rgba(255,204,68,0));border-radius:1px}
-
-    /* cursor on forecast cards */
     .forecastDay{cursor:pointer}
-    .forecastTapHint{
-        font-size:.62rem;color:rgba(0,217,255,.45);
-        flex-shrink:0;
-    }
+    .forecastTapHint{font-size:.62rem;color:rgba(0,217,255,.45);flex-shrink:0}
     .forecastDay:hover .forecastTapHint{color:rgba(0,255,136,.65)}
-
-    /* hour tap hint */
     .hourItem{cursor:pointer}
-    .hourTapHint{
-        font-size:.62rem;color:rgba(0,217,255,.45);
-        border-top:1px solid rgba(0,217,255,.12);
-        padding-top:5px;width:100%;text-align:center;
-    }
+    .hourTapHint{font-size:.62rem;color:rgba(0,217,255,.45);border-top:1px solid rgba(0,217,255,.12);padding-top:5px;width:100%;text-align:center}
     .hourItem:hover .hourTapHint{color:rgba(0,255,136,.65)}
-
-    /* desktop */
     @media(min-width:600px){
-        .hmPanel{
-            bottom:auto;top:50%;left:50%;
-            transform:translate(-50%,-50%);
-            border-radius:24px;
-            border:1px solid rgba(0,217,255,.3);
-            max-width:440px;width:calc(100% - 40px);
-            animation:hmPopIn .3s cubic-bezier(.4,0,.2,1);
-        }
-        @keyframes hmPopIn{
-            from{opacity:0;transform:translate(-50%,-48%) scale(.95)}
-            to  {opacity:1;transform:translate(-50%,-50%) scale(1)}
-        }
-        .hmPanel.hmClosing{
-            animation:hmPopOut .25s cubic-bezier(.4,0,.2,1) forwards;
-        }
-        @keyframes hmPopOut{
-            from{opacity:1;transform:translate(-50%,-50%) scale(1)}
-            to  {opacity:0;transform:translate(-50%,-48%) scale(.95)}
-        }
+        .hmPanel{bottom:auto;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:24px;border:1px solid rgba(0,217,255,.3);max-width:440px;width:calc(100% - 40px);animation:hmPopIn .3s cubic-bezier(.4,0,.2,1)}
+        @keyframes hmPopIn{from{opacity:0;transform:translate(-50%,-48%) scale(.95)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+        .hmPanel.hmClosing{animation:hmPopOut .25s cubic-bezier(.4,0,.2,1) forwards}
+        @keyframes hmPopOut{from{opacity:1;transform:translate(-50%,-50%) scale(1)}to{opacity:0;transform:translate(-50%,-48%) scale(.95)}}
         .hmDrag{display:none}
-        .hmGrid{grid-template-columns:repeat(2,1fr)}
     }
     `;
     document.head.appendChild(s);
 }
 
-
 function _buildModal(innerHTML) {
     injectModalStyles();
     _closeModal(true);
-
     const backdrop = document.createElement("div");
-    backdrop.className = "hmBackdrop"; backdrop.id = "hmBackdrop";
-
+    backdrop.className = "hmBackdrop";
+    backdrop.id = "hmBackdrop";
     const panel = document.createElement("div");
-    panel.className = "hmPanel"; panel.id = "hmPanel";
+    panel.className = "hmPanel";
+    panel.id = "hmPanel";
     panel.innerHTML = innerHTML;
-
     document.body.appendChild(backdrop);
     document.body.appendChild(panel);
     document.body.style.overflow = "hidden";
-
-    const close = () => _closeModal();
-    panel.querySelector(".hmCloseBtn")?.addEventListener("click", close);
-    backdrop.addEventListener("click", close);
+    panel.querySelector(".hmCloseBtn")?.addEventListener("click", () => _closeModal());
+    backdrop.addEventListener("click", () => _closeModal());
     document.addEventListener("keydown", _escH);
-
     return panel;
 }
 
@@ -308,8 +191,6 @@ function _closeModal(instant = false) {
     }, { once: true });
 }
 
-
-
 function openHourModal(d) {
     const pct  = d.precip > 0 ? Math.min(d.precip * 25, 100) : (d.rainProb ?? 0);
     const vis  = d.visibility != null ? (d.visibility / 1000).toFixed(1) : "—";
@@ -324,61 +205,26 @@ function openHourModal(d) {
             </div>
             <button class="hmCloseBtn">✕</button>
         </div>
-
         <div class="hmTempRow">
             <span class="hmBigTemp">${Math.round(d.temp)}°C</span>
             <div class="hmSubTemps">
-                <div class="hmSubTemp">
-                    <span>Sensación</span><span>${feels}°C</span>
-                </div>
-                <div class="hmSubTemp cool">
-                    <span>Humedad</span><span>${d.humidity ?? "—"}%</span>
-                </div>
+                <div class="hmSubTemp"><span>Sensación</span><span>${feels}°C</span></div>
+                <div class="hmSubTemp cool"><span>Humedad</span><span>${d.humidity ?? "—"}%</span></div>
             </div>
         </div>
-
         <div class="hmBar">
             <div class="hmBarTop">
-                <span>${d.precip > 0
-                    ? `💧 Precipitación: <strong>${d.precip} mm</strong>`
-                    : `💧 Prob. lluvia: <strong>${d.rainProb ?? 0}%</strong>`}
-                </span>
+                <span>${d.precip > 0 ? `💧 Precipitación: <strong>${d.precip} mm</strong>` : `💧 Prob. lluvia: <strong>${d.rainProb ?? 0}%</strong>`}</span>
             </div>
             <div class="hmTrack"><div class="hmFill" id="hmFill"></div></div>
         </div>
-
         <div class="hmGrid">
-            <div class="hmStat">
-                <span class="hmStatIcon">💨</span>
-                <span class="hmStatLabel">Viento</span>
-                <span class="hmStatValue">${Math.round(d.windSpeed ?? 0)} km/h</span>
-                <span class="hmStatSub">${getWindDirection(d.windDir)}</span>
-            </div>
-            <div class="hmStat">
-                <span class="hmStatIcon">👁️</span>
-                <span class="hmStatLabel">Visibilidad</span>
-                <span class="hmStatValue">${vis} km</span>
-            </div>
-            <div class="hmStat">
-                <span class="hmStatIcon">☁️</span>
-                <span class="hmStatLabel">Nubosidad</span>
-                <span class="hmStatValue">${d.cloudCover ?? "—"}%</span>
-            </div>
-            <div class="hmStat">
-                <span class="hmStatIcon">🌡️</span>
-                <span class="hmStatLabel">Punto rocío</span>
-                <span class="hmStatValue">${d.dewPoint != null ? d.dewPoint.toFixed(1) : "—"}°C</span>
-            </div>
-            <div class="hmStat">
-                <span class="hmStatIcon">🌧️</span>
-                <span class="hmStatLabel">${d.precip > 0 ? "Precipitación" : "Prob. lluvia"}</span>
-                <span class="hmStatValue">${d.precip > 0 ? d.precip + " mm" : (d.rainProb ?? 0) + "%"}</span>
-            </div>
-            <div class="hmStat">
-                <span class="hmStatIcon">🌬️</span>
-                <span class="hmStatLabel">Escala</span>
-                <span class="hmStatValue">${getBeaufort(d.windSpeed ?? 0)} Beaufort</span>
-            </div>
+            <div class="hmStat"><span class="hmStatIcon">💨</span><span class="hmStatLabel">Viento</span><span class="hmStatValue">${Math.round(d.windSpeed ?? 0)} km/h</span><span class="hmStatSub">${getWindDirection(d.windDir)}</span></div>
+            <div class="hmStat"><span class="hmStatIcon">👁️</span><span class="hmStatLabel">Visibilidad</span><span class="hmStatValue">${vis} km</span></div>
+            <div class="hmStat"><span class="hmStatIcon">☁️</span><span class="hmStatLabel">Nubosidad</span><span class="hmStatValue">${d.cloudCover ?? "—"}%</span></div>
+            <div class="hmStat"><span class="hmStatIcon">🌡️</span><span class="hmStatLabel">Punto rocío</span><span class="hmStatValue">${d.dewPoint != null ? d.dewPoint.toFixed(1) : "—"}°C</span></div>
+            <div class="hmStat"><span class="hmStatIcon">🌧️</span><span class="hmStatLabel">${d.precip > 0 ? "Precipitación" : "Prob. lluvia"}</span><span class="hmStatValue">${d.precip > 0 ? d.precip + " mm" : (d.rainProb ?? 0) + "%"}</span></div>
+            <div class="hmStat"><span class="hmStatIcon">🌬️</span><span class="hmStatLabel">Escala</span><span class="hmStatValue">${getBeaufort(d.windSpeed ?? 0)} Beaufort</span></div>
         </div>
     `);
 
@@ -388,12 +234,10 @@ function openHourModal(d) {
     }, 60));
 }
 
-
-
 function openDayModal(d) {
-    const rainPct  = d.rainProb ?? 0;
-    const precip   = d.precipSum ?? 0;
-    const snow     = d.snowSum  ?? 0;
+    const rainPct = d.rainProb ?? 0;
+    const precip  = d.precipSum ?? 0;
+    const snow    = d.snowSum   ?? 0;
 
     const panel = _buildModal(`
         <span class="hmDrag"></span>
@@ -404,8 +248,6 @@ function openDayModal(d) {
             </div>
             <button class="hmCloseBtn">✕</button>
         </div>
-
-        <!-- Max / Min / Feels -->
         <div class="hmTempRow">
             <div class="hmSubTemps" style="align-items:center;gap:10px;flex-direction:row">
                 <div class="hmSubTemp" style="align-items:center">
@@ -419,29 +261,13 @@ function openDayModal(d) {
                 </div>
             </div>
         </div>
-
-        <!-- Sunrise / Sunset -->
         <div class="hmSunRow">
-            <div class="hmSunItem">
-                <span>🌅</span>
-                <span>${d.sunrise}</span>
-                <small>Amanecer</small>
-            </div>
+            <div class="hmSunItem"><span>🌅</span><span>${d.sunrise}</span><small>Amanecer</small></div>
             <div class="hmSunDivider"></div>
-            <div class="hmSunItem">
-                <span>☀️</span>
-                <span>${d.sunshineH} h</span>
-                <small>Sol real</small>
-            </div>
+            <div class="hmSunItem"><span>☀️</span><span>${d.sunshineH} h</span><small>Sol real</small></div>
             <div class="hmSunDivider" style="background:linear-gradient(90deg,rgba(255,204,68,0),#ffcc44)"></div>
-            <div class="hmSunItem">
-                <span>🌇</span>
-                <span>${d.sunset}</span>
-                <small>Atardecer</small>
-            </div>
+            <div class="hmSunItem"><span>🌇</span><span>${d.sunset}</span><small>Atardecer</small></div>
         </div>
-
-        <!-- Rain bar -->
         <div class="hmBar">
             <div class="hmBarTop">
                 <span>💧 Probabilidad de lluvia: <strong>${rainPct}%</strong></span>
@@ -449,48 +275,15 @@ function openDayModal(d) {
             </div>
             <div class="hmTrack"><div class="hmFill" id="hmFill"></div></div>
         </div>
-
-        <!-- Stats grid -->
         <div class="hmGrid">
-            <div class="hmStat">
-                <span class="hmStatIcon">💨</span>
-                <span class="hmStatLabel">Viento máx.</span>
-                <span class="hmStatValue">${Math.round(d.windMax ?? 0)} km/h</span>
-                <span class="hmStatSub">${getWindDirection(d.windDir)}</span>
-            </div>
-            <div class="hmStat">
-                <span class="hmStatIcon">💥</span>
-                <span class="hmStatLabel">Rachas máx.</span>
-                <span class="hmStatValue">${Math.round(d.gustMax ?? 0)} km/h</span>
-            </div>
-            <div class="hmStat">
-                <span class="hmStatIcon">☀️</span>
-                <span class="hmStatLabel">Índice UV máx.</span>
-                <span class="hmStatValue">${d.uvMax ?? "—"}</span>
-                <span class="hmStatSub">${getUVLabel(d.uvMax)}</span>
-            </div>
-            <div class="hmStat">
-                <span class="hmStatIcon">🌤️</span>
-                <span class="hmStatLabel">Luz del día</span>
-                <span class="hmStatValue">${d.daylightH} h</span>
-            </div>
-            <div class="hmStat">
-                <span class="hmStatIcon">🌧️</span>
-                <span class="hmStatLabel">Precipitación</span>
-                <span class="hmStatValue">${precip > 0 ? precip + " mm" : "Sin lluvia"}</span>
-            </div>
-            ${snow > 0 ? `
-            <div class="hmStat">
-                <span class="hmStatIcon">❄️</span>
-                <span class="hmStatLabel">Nieve</span>
-                <span class="hmStatValue">${snow} cm</span>
-            </div>` : `
-            <div class="hmStat">
-                <span class="hmStatIcon">🌬️</span>
-                <span class="hmStatLabel">Viento dir.</span>
-                <span class="hmStatValue">${getWindDirection(d.windDir)}</span>
-                <span class="hmStatSub">${Math.round(d.windDir ?? 0)}°</span>
-            </div>`}
+            <div class="hmStat"><span class="hmStatIcon">💨</span><span class="hmStatLabel">Viento máx.</span><span class="hmStatValue">${Math.round(d.windMax ?? 0)} km/h</span><span class="hmStatSub">${getWindDirection(d.windDir)}</span></div>
+            <div class="hmStat"><span class="hmStatIcon">💥</span><span class="hmStatLabel">Rachas máx.</span><span class="hmStatValue">${Math.round(d.gustMax ?? 0)} km/h</span></div>
+            <div class="hmStat"><span class="hmStatIcon">☀️</span><span class="hmStatLabel">Índice UV máx.</span><span class="hmStatValue">${d.uvMax ?? "—"}</span><span class="hmStatSub">${getUVLabel(d.uvMax)}</span></div>
+            <div class="hmStat"><span class="hmStatIcon">🌤️</span><span class="hmStatLabel">Luz del día</span><span class="hmStatValue">${d.daylightH} h</span></div>
+            <div class="hmStat"><span class="hmStatIcon">🌧️</span><span class="hmStatLabel">Precipitación</span><span class="hmStatValue">${precip > 0 ? precip + " mm" : "Sin lluvia"}</span></div>
+            ${snow > 0
+                ? `<div class="hmStat"><span class="hmStatIcon">❄️</span><span class="hmStatLabel">Nieve</span><span class="hmStatValue">${snow} cm</span></div>`
+                : `<div class="hmStat"><span class="hmStatIcon">🌬️</span><span class="hmStatLabel">Viento dir.</span><span class="hmStatValue">${getWindDirection(d.windDir)}</span><span class="hmStatSub">${Math.round(d.windDir ?? 0)}°</span></div>`}
         </div>
     `);
 
@@ -501,15 +294,13 @@ function openDayModal(d) {
 }
 
 function getUVLabel(uv) {
-    if (!uv) return "—";
+    if (!uv)    return "—";
     if (uv <= 2)  return "Bajo";
     if (uv <= 5)  return "Moderado";
     if (uv <= 7)  return "Alto";
     if (uv <= 10) return "Muy alto";
     return "Extremo";
 }
-
-
 
 class FavoritesManager {
     constructor(max = 4) {
@@ -519,13 +310,15 @@ class FavoritesManager {
         if (last && this.favorites.length) {
             const i = this.favorites.findIndex(c => c.name === last);
             this.currentIndex = i !== -1 ? i : 0;
-        } else { this.currentIndex = 0; }
+        } else {
+            this.currentIndex = 0;
+        }
     }
     _load() {
         try { const s = localStorage.getItem("favCities"); return s ? JSON.parse(s) : []; }
         catch { return []; }
     }
-    _save()    { localStorage.setItem("favCities", JSON.stringify(this.favorites)); }
+    _save() { localStorage.setItem("favCities", JSON.stringify(this.favorites)); }
     saveLastCity(n) { localStorage.setItem("lastCity", n); }
     addCity(d) {
         if (!d?.name || !d.latitude || !d.longitude) return false;
@@ -559,8 +352,6 @@ class FavoritesManager {
 
 const favoritesManager = new FavoritesManager();
 
-
-
 function initializeEventListeners() {
     window.addEventListener("load", async () => {
         changeBackgroundImage();
@@ -581,9 +372,7 @@ function initializeEventListeners() {
         lastST = st <= 0 ? 0 : st;
     });
 
-
     elements.cityInput.addEventListener("keypress", e => { if (e.key === "Enter") fetchDataFromApi(true); });
-
 
     document.addEventListener("citySelected", async e => {
         const { name, country, latitude, longitude, street } = e.detail;
@@ -593,6 +382,7 @@ function initializeEventListeners() {
             updateUI({ name, country, street, ...w, ...m });
         } catch (err) { console.error(err); alert("Error cargando datos de la ciudad seleccionada"); }
     });
+
     elements.prevArrow.addEventListener("click", async () => { const c = favoritesManager.goToPrevious(); if (c) await loadCityByName(c); });
     elements.nextArrow.addEventListener("click", async () => { const c = favoritesManager.goToNext();     if (c) await loadCityByName(c); });
 
@@ -609,35 +399,48 @@ function initializeEventListeners() {
     });
 }
 
-
-
 async function getCurrentLocation() {
     return new Promise((resolve, reject) => {
         if (!navigator.geolocation) { reject("no geo"); return; }
         navigator.geolocation.getCurrentPosition(async pos => {
+            const { latitude, longitude } = pos.coords;
             try {
-                const { latitude, longitude } = pos.coords;
-                // Nominatim para nivel de calle
-                const r = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&addressdetails=1&zoom=16&accept-language=es`);
+                const r = await fetch(
+                    `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&addressdetails=1&zoom=18&accept-language=es`,
+                    { headers: { "Accept-Language": "es" } }
+                );
                 const d = await r.json();
                 const a = d.address ?? {};
-                const name = a.neighbourhood || a.suburb || a.village || a.town || a.city || a.county || d.display_name.split(",")[0];
-                const street = a.road || a.pedestrian || a.path || a.footway || "";
+                const name =
+                    a.hamlet        ||
+                    a.locality      ||
+                    a.neighbourhood ||
+                    a.suburb        ||
+                    a.village       ||
+                    a.town          ||
+                    a.city          ||
+                    a.municipality  ||
+                    a.county        ||
+                    d.display_name.split(",")[0];
+                const street =
+                    a.road       ||
+                    a.pedestrian ||
+                    a.path       ||
+                    a.footway    ||
+                    a.track      ||
+                    "";
                 const country = a.country_code?.toUpperCase() ?? "";
                 resolve({ name, street, country, latitude, longitude });
             } catch {
-                // Fallback BigDataCloud
                 try {
-                    const r = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${pos.coords.latitude}&longitude=${pos.coords.longitude}&localityLanguage=es`);
+                    const r = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=es`);
                     const d = await r.json();
-                    resolve({ name: d.city || d.locality || "Mi ubicación", street: "", country: d.countryCode || "", latitude: pos.coords.latitude, longitude: pos.coords.longitude });
+                    resolve({ name: d.locality || d.city || "Mi ubicación", street: "", country: d.countryCode || "", latitude, longitude });
                 } catch(e) { reject(e); }
             }
-        }, e => reject(e), { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
+        }, e => reject(e), { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 });
     });
 }
-
-
 
 async function fetchDataFromCoordinates(lat, lon, name, country, street = "") {
     const [w, m] = await Promise.all([fetchWeatherData(lat, lon), fetchMarineData(lat, lon)]);
@@ -654,7 +457,7 @@ async function fetchDataFromApi(save = false) {
         if (save) favoritesManager.addCity({ name, country, latitude, longitude });
         else favoritesManager.saveLastCity(name);
         const [w, m] = await Promise.all([fetchWeatherData(latitude, longitude), fetchMarineData(latitude, longitude)]);
-        updateUI({ name, country, ...w, ...m });
+        updateUI({ name, country, street: "", ...w, ...m });
         elements.cityInput.value = "";
     } catch (e) { console.error(e); alert("Error obteniendo datos meteorológicos"); }
 }
@@ -713,8 +516,6 @@ async function loadCityByCoordinates(c) {
     catch { alert(`No se pudo cargar ${c.name}.`); }
 }
 
-
-
 function updateUI(data) {
     updateMainCard(data);
     updateAtmosphere(data);
@@ -730,7 +531,6 @@ function updateUI(data) {
 
 function updateMainCard(data) {
     elements.weatherIcon.innerHTML = getMeteoconImg(data.weatherCode, data.isDay, "90px");
-
     if (data.street) {
         elements.cityName.innerHTML  = data.street;
         elements.todayDate.innerHTML = `${data.name} · ${getCurrentDate()}`;
@@ -738,11 +538,9 @@ function updateMainCard(data) {
         elements.cityName.innerHTML  = `${data.name}, ${data.country}`;
         elements.todayDate.innerHTML = getCurrentDate();
     }
-
     elements.cityTemp.innerHTML      = `${Math.round(data.temperature)}°C`;
     elements.cityCondition.innerHTML = getWeatherLabel(data.weatherCode);
 }
-
 
 function updateHourly(data) {
     if (!data.hourlyForecast) {
@@ -755,17 +553,17 @@ function updateHourly(data) {
     const h     = data.hourlyForecast;
 
     elements.hourly.innerHTML = h.time.slice(idx, idx + 24).map((time, i) => {
-        const hi     = idx + i;
-        const t      = new Date(time).toLocaleTimeString("es-ES", { hour:"2-digit", minute:"2-digit", hour12:false });
-        const temp   = Math.round(h.temperature_2m[hi]);
-        const code   = h.weather_code[hi];
-        const isDay  = h.is_day?.[hi] ?? 1;
-        const rain   = h.precipitation_probability[hi] ?? 0;
-        const prec   = h.precipitation[hi] ?? 0;
+        const hi    = idx + i;
+        const t     = new Date(time).toLocaleTimeString("es-ES", { hour:"2-digit", minute:"2-digit", hour12:false });
+        const temp  = Math.round(h.temperature_2m[hi]);
+        const code  = h.weather_code[hi];
+        const isDay = h.is_day?.[hi] ?? 1;
+        const rain  = h.precipitation_probability[hi] ?? 0;
+        const prec  = h.precipitation[hi] ?? 0;
 
         const detail = {
             time: t, code, isDay, description: getWeatherLabel(code),
-            temp: h.temperature_2m[hi],
+            temp:        h.temperature_2m[hi],
             feelsLike:   h.apparent_temperature?.[hi],
             humidity:    h.relative_humidity_2m?.[hi],
             windSpeed:   h.wind_speed_10m?.[hi],
@@ -794,10 +592,8 @@ function updateHourly(data) {
     });
 }
 
-
 function updateForecast(data) {
     const df = data.dailyForecast;
-
     elements.forecast.innerHTML = df.time.slice(0, 7).map((date, i) => {
         const d       = new Date(date);
         const dayName = i === 0 ? "Hoy" : DAYS[d.getDay()];
@@ -806,9 +602,7 @@ function updateForecast(data) {
         const maxT    = Math.round(df.temperature_2m_max[i]);
         const minT    = Math.round(df.temperature_2m_min[i]);
         const rain    = df.precipitation_probability_max?.[i] ?? 0;
-
-        
-        const detail = {
+        const detail  = {
             dayName, dateStr, code,
             label:      getWeatherLabel(code),
             maxTemp:    df.temperature_2m_max[i],
@@ -825,7 +619,6 @@ function updateForecast(data) {
             gustMax:    df.wind_gusts_10m_max?.[i] ?? 0,
             windDir:    df.wind_direction_10m_dominant?.[i] ?? 0,
         };
-
         return `
         <div class="forecastDay" data-day='${JSON.stringify(detail).replace(/'/g,"&#39;")}'>
             <span class="forecastDayName">${dayName}</span>
@@ -838,7 +631,6 @@ function updateForecast(data) {
             <span class="forecastTapHint">+ info</span>
         </div>`;
     }).join("");
-
     elements.forecast.querySelectorAll(".forecastDay").forEach(card => {
         card.addEventListener("click", () => {
             try { openDayModal(JSON.parse(card.getAttribute("data-day"))); }
@@ -853,9 +645,9 @@ function updateAtmosphere(data) {
         `🌡️ <strong>${Math.round(data.apparentTemperature)}°C</strong> Sensación térmica`,
         `💧 <strong>${data.dewPoint?.toFixed(1) ?? 0}°C</strong> Punto de rocío`,
         `🌧️ <strong>${data.precipitation ?? 0} mm</strong> Precipitación`,
-        data.rain    > 0 ? `🌧️ <strong>${data.rain} mm</strong> Lluvia`      : null,
-        data.showers > 0 ? `🌦️ <strong>${data.showers} mm</strong> Chubascos`  : null,
-        data.snowfall > 0 ? `❄️ <strong>${data.snowfall} cm</strong> Nieve`    : null,
+        data.rain    > 0 ? `🌧️ <strong>${data.rain} mm</strong> Lluvia`     : null,
+        data.showers > 0 ? `🌦️ <strong>${data.showers} mm</strong> Chubascos` : null,
+        data.snowfall > 0 ? `❄️ <strong>${data.snowfall} cm</strong> Nieve`   : null,
         `📊 <strong>${Math.round(data.pressure)} hPa</strong> Presión atmosférica`,
         `📉 <strong>${Math.round(data.surfacePressure)} hPa</strong> Presión superficial`,
         `☁️ <strong>${data.cloudCover}%</strong> Nubosidad`,
@@ -876,8 +668,8 @@ function updateWind(data) {
 }
 
 function updateAstro(data) {
-    const rise = new Date(data.dailyForecast.sunrise[0]).toLocaleTimeString("es-ES",{ hour:"2-digit", minute:"2-digit" });
-    const set  = new Date(data.dailyForecast.sunset[0]).toLocaleTimeString("es-ES", { hour:"2-digit", minute:"2-digit" });
+    const rise = new Date(data.dailyForecast.sunrise[0]).toLocaleTimeString("es-ES", { hour:"2-digit", minute:"2-digit" });
+    const set  = new Date(data.dailyForecast.sunset[0]).toLocaleTimeString("es-ES",  { hour:"2-digit", minute:"2-digit" });
     elements.astro.innerHTML = `
         <p>🌅 <strong>${rise}</strong> Amanecer</p>
         <p>🌇 <strong>${set}</strong> Atardecer</p>
@@ -905,31 +697,25 @@ function updateMarine(data) {
 
 function updateDots() {
     elements.favDots.innerHTML = favoritesManager.getAllCities()
-        .map((_, i) => `<div class="dot ${i === favoritesManager.currentIndex ? "active":""}"></div>`)
+        .map((_, i) => `<div class="dot ${i === favoritesManager.currentIndex ? "active" : ""}"></div>`)
         .join("");
 }
 
-
 function changeBackgroundImage(code = null, isDay = 1) {
     if (!elements.mainCard) return;
-
     let cat = "default";
     if (code !== null) {
-        if ([0,1].includes(code))                                           cat = "sunny";
-        else if ([2,3].includes(code))                                      cat = "cloudy";
-        else if ((code>=51&&code<=67)||(code>=80&&code<=82))                cat = "rainy";
-        else if ((code>=71&&code<=77)||(code>=85&&code<=86))                cat = "snowy";
-        else if (code>=95&&code<=99)                                        cat = "stormy";
-        else if ([45,48].includes(code))                                    cat = "foggy";
+        if ([0,1].includes(code))                                cat = "sunny";
+        else if ([2,3].includes(code))                           cat = "cloudy";
+        else if ((code>=51&&code<=67)||(code>=80&&code<=82))     cat = "rainy";
+        else if ((code>=71&&code<=77)||(code>=85&&code<=86))     cat = "snowy";
+        else if (code>=95&&code<=99)                             cat = "stormy";
+        else if ([45,48].includes(code))                         cat = "foggy";
     }
-
     const set  = isDay ? BACKGROUND_IMAGES.day : BACKGROUND_IMAGES.night;
     const imgs = set[cat] ?? set.default;
-    elements.mainCard.style.backgroundImage =
-        `url('media/images/${imgs[Math.floor(Math.random() * imgs.length)]}.jpg')`;
+    elements.mainCard.style.backgroundImage = `url('media/images/${imgs[Math.floor(Math.random() * imgs.length)]}.jpg')`;
 }
-
-
 
 function getWindDirection(deg) {
     const d = ["N","NE","E","SE","S","SO","O","NO"];
@@ -951,17 +737,15 @@ function scrollToTop() {
     const hash = window.location.hash?.slice(1);
     if (hash) {
         setTimeout(() => {
-            const target = document.getElementById(hash) || document.querySelector('.' + hash);
+            const target = document.getElementById(hash) || document.querySelector("." + hash);
             if (target) {
-                const headerH = document.querySelector('.appHeader')?.offsetHeight || 0;
-                const top = target.getBoundingClientRect().top + window.pageYOffset - headerH - 16;
-                window.scrollTo({ top, behavior: 'smooth' });
+                const headerH = document.querySelector(".appHeader")?.offsetHeight || 0;
+                window.scrollTo({ top: target.getBoundingClientRect().top + window.pageYOffset - headerH - 16, behavior: "smooth" });
             }
-            
-            history.replaceState(null, '', window.location.pathname);
+            history.replaceState(null, "", window.location.pathname);
         }, 200);
     } else {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, behavior: "smooth" });
     }
 }
 
