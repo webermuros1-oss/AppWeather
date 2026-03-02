@@ -1,5 +1,3 @@
-
-
 const API = {
     geocoding: "https://geocoding-api.open-meteo.com/v1/search",
     weather:   "https://api.open-meteo.com/v1/forecast",
@@ -8,11 +6,9 @@ const API = {
     reverseGeo:"https://api.bigdatacloud.net/data/reverse-geocode-client"
 };
 
-
 Chart.defaults.color = "rgba(255,255,255,0.65)";
 Chart.defaults.borderColor = "rgba(255,255,255,0.07)";
 Chart.defaults.font.family = "Barlow, sans-serif";
-
 
 function baseChartOptions(yLabel = "") {
     return {
@@ -43,14 +39,14 @@ function baseChartOptions(yLabel = "") {
     };
 }
 
-
 let currentLat = null, currentLon = null, currentCity = "—", currentCountry = "";
 const chartInstances = {};
 
 
+// ── Inicialización ────────────────────────────────────────────────────────────
+
 window.addEventListener("load", async () => {
     try {
-        
         const saved = localStorage.getItem("favCities");
         let cityData = null;
 
@@ -64,26 +60,11 @@ window.addEventListener("load", async () => {
         }
 
         if (!cityData) {
-            showGlobalError("No se pudo detectar tu ubicación. Ve al inicio y busca una ciudad.");
+            showGlobalError("No se pudo detectar tu ubicación. Busca una ciudad en el buscador de arriba.");
             return;
         }
 
-        currentLat = cityData.latitude;
-        currentLon = cityData.longitude;
-        currentCity = cityData.name;
-        currentCountry = cityData.country || "";
-
-        
-        const badge = document.getElementById("currentCityBadge");
-        document.getElementById("cityBadgeText").textContent = `${currentCity}, ${currentCountry}`;
-        badge.style.display = "inline-flex";
-
-        
-        await Promise.all([
-            loadAirQuality(),
-            loadWeatherCharts(),
-            loadMarineData()
-        ]);
+        await applyCity(cityData);
 
     } catch (err) {
         console.error("Error inicializando charts:", err);
@@ -91,6 +72,45 @@ window.addEventListener("load", async () => {
     }
 });
 
+// Escuchar el evento citySelected que lanza el header
+document.addEventListener("citySelected", async (e) => {
+    const { name, country, latitude, longitude } = e.detail;
+    await applyCity({ name, country, latitude, longitude });
+});
+
+
+// ── Cambio de ciudad ──────────────────────────────────────────────────────────
+
+async function applyCity(cityData) {
+    currentLat     = cityData.latitude;
+    currentLon     = cityData.longitude;
+    currentCity    = cityData.name;
+    currentCountry = cityData.country || "";
+
+    // Actualizar badge
+    const badge = document.getElementById("currentCityBadge");
+    const badgeText = document.getElementById("cityBadgeText");
+    if (badge && badgeText) {
+        badgeText.textContent = `${currentCity}, ${currentCountry}`;
+        badge.style.display = "inline-flex";
+    }
+
+    // Mostrar loading en los contenedores
+    ["aqiContent", "windCompassContent", "marineContent"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = `<p class="loadingState">Cargando...</p>`;
+    });
+
+    // Recargar todo en paralelo
+    await Promise.all([
+        loadAirQuality(),
+        loadWeatherCharts(),
+        loadMarineData()
+    ]);
+}
+
+
+// ── GPS ───────────────────────────────────────────────────────────────────────
 
 function getGPSLocation() {
     return new Promise((resolve, reject) => {
@@ -110,6 +130,8 @@ function getGPSLocation() {
     });
 }
 
+
+// ── Calidad del aire ──────────────────────────────────────────────────────────
 
 async function loadAirQuality() {
     const params = new URLSearchParams({
@@ -154,8 +176,6 @@ async function loadAirQuality() {
             ${makeAQIItem("O₃",    c.ozone?.toFixed(1) ?? "—", "μg/m³")}
         </div>
     `;
-
-
 }
 
 function makeAQIItem(label, value, unit) {
@@ -169,15 +189,17 @@ function makeAQIItem(label, value, unit) {
 }
 
 function getAQIInfo(aqi) {
-    if (aqi <= 20)  return { cls: "aqi-good",              label: "Muy buena",       desc: "Calidad del aire excelente. Ideal para actividades al aire libre.",    emoji: "😊" };
-    if (aqi <= 40)  return { cls: "aqi-good",              label: "Buena",           desc: "La calidad del aire es satisfactoria.",                                emoji: "🙂" };
-    if (aqi <= 60)  return { cls: "aqi-moderate",          label: "Moderada",        desc: "Acceptable, pero puede haber problemas para personas sensibles.",       emoji: "😐" };
-    if (aqi <= 80)  return { cls: "aqi-unhealthy-sensitive",label:"Mala para sensibles", desc: "Personas con enfermedades respiratorias deben reducir exposición.", emoji: "😷" };
-    if (aqi <= 100) return { cls: "aqi-unhealthy",         label: "Mala",            desc: "Toda la población puede notar efectos. Evita salir mucho al exterior.", emoji: "🤢" };
-    if (aqi <= 150) return { cls: "aqi-very-unhealthy",    label: "Muy mala",        desc: "Alerta sanitaria. Reduce actividades al aire libre.",                   emoji: "🚨" };
-    return              { cls: "aqi-hazardous",            label: "Peligrosa",       desc: "Emergencia sanitaria. Permanece en interiores.",                        emoji: "☠️" };
+    if (aqi <= 20)  return { cls: "aqi-good",                label: "Muy buena",           desc: "Calidad del aire excelente. Ideal para actividades al aire libre.",    emoji: "😊" };
+    if (aqi <= 40)  return { cls: "aqi-good",                label: "Buena",               desc: "La calidad del aire es satisfactoria.",                                emoji: "🙂" };
+    if (aqi <= 60)  return { cls: "aqi-moderate",            label: "Moderada",            desc: "Acceptable, pero puede haber problemas para personas sensibles.",       emoji: "😐" };
+    if (aqi <= 80)  return { cls: "aqi-unhealthy-sensitive", label: "Mala para sensibles", desc: "Personas con enfermedades respiratorias deben reducir exposición.",     emoji: "😷" };
+    if (aqi <= 100) return { cls: "aqi-unhealthy",           label: "Mala",                desc: "Toda la población puede notar efectos. Evita salir mucho al exterior.", emoji: "🤢" };
+    if (aqi <= 150) return { cls: "aqi-very-unhealthy",      label: "Muy mala",            desc: "Alerta sanitaria. Reduce actividades al aire libre.",                   emoji: "🚨" };
+    return              { cls: "aqi-hazardous",              label: "Peligrosa",           desc: "Emergencia sanitaria. Permanece en interiores.",                        emoji: "☠️" };
 }
 
+
+// ── Viento + lluvia + temperatura ─────────────────────────────────────────────
 
 async function loadWeatherCharts() {
     const params = new URLSearchParams({
@@ -194,17 +216,10 @@ async function loadWeatherCharts() {
     const data = await res.json();
 
     renderWindCompass(data.current);
-
-    
     renderWindChart(data.hourly);
-
-    
     renderRainChart(data.daily);
-
-    
     renderTempChart(data.hourly);
 }
-
 
 function renderWindCompass(current) {
     const dir = current.wind_direction_10m ?? 0;
@@ -251,7 +266,6 @@ function renderWindCompass(current) {
     `;
 }
 
-
 function renderWindChart(hourly) {
     const now = new Date();
     const startIdx = hourly.time.findIndex(t => new Date(t) >= now);
@@ -260,7 +274,6 @@ function renderWindChart(hourly) {
     const labels = slice(hourly.time).map(t =>
         new Date(t).toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit", hour12: false })
     );
-
     const windData = slice(hourly.wind_speed_10m).map(v => Math.round(v));
 
     if (chartInstances.wind) chartInstances.wind.destroy();
@@ -290,7 +303,6 @@ function renderWindChart(hourly) {
         options: baseChartOptions("km/h")
     });
 }
-
 
 function renderRainChart(daily) {
     const DAYS_ES = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
@@ -330,7 +342,6 @@ function renderRainChart(daily) {
     });
 }
 
-
 function renderTempChart(hourly) {
     const now = new Date();
     const startIdx = hourly.time.findIndex(t => new Date(t) >= now);
@@ -369,6 +380,8 @@ function renderTempChart(hourly) {
 }
 
 
+// ── Datos marítimos ───────────────────────────────────────────────────────────
+
 async function loadMarineData() {
     try {
         const params = new URLSearchParams({
@@ -384,6 +397,10 @@ async function loadMarineData() {
         const data = await res.json();
         const m = data.current;
 
+        // Restaurar visibilidad del chart de olas por si estaba oculto de una ciudad anterior sin costa
+        const waveParent = document.getElementById("waveChart")?.parentElement;
+        if (waveParent) waveParent.style.display = "";
+
         document.getElementById("marineContent").innerHTML = `
             <div class="marineStatsGrid">
                 ${marineCard("🌊", "Altura olas", m.wave_height?.toFixed(2) ?? "—", "m")}
@@ -395,14 +412,14 @@ async function loadMarineData() {
             </div>
         `;
 
-        
         renderWaveChart(data.hourly);
 
     } catch {
         document.getElementById("marineContent").innerHTML = `
             <p class="notAvailable">⚓ Datos marítimos no disponibles para esta ubicación (solo disponibles en zonas costeras/oceánicas)</p>
         `;
-        document.getElementById("waveChart").parentElement.style.display = "none";
+        const waveParent = document.getElementById("waveChart")?.parentElement;
+        if (waveParent) waveParent.style.display = "none";
     }
 }
 
@@ -485,6 +502,8 @@ function renderWaveChart(hourly) {
     });
 }
 
+
+// ── Utilidades ────────────────────────────────────────────────────────────────
 
 function getWindCardinal(degrees) {
     const dirs = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSO", "SO", "OSO", "O", "ONO", "NO", "NNO"];
