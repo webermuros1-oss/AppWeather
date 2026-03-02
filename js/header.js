@@ -86,15 +86,15 @@ class MyHeader extends HTMLElement {
             <div class="searchInputRow">
                 <i class="fa-solid fa-magnifying-glass searchIcon"></i>
                 <input id="getCity" type="text" placeholder="Busca ciudad..." autocomplete="off" />
-                <button class="gpsBtn" id="gpsBtn" title="Usar mi ubicación">
-                    <i class="fa-solid fa-location-crosshairs"></i>
-                </button>
+
+
+
             </div>
             <ul class="searchDropdown" id="searchDropdown"></ul>
         </div>
+        <button class="gpsBtnHeader" id="gpsBtn" title="Mi ubicación"><i class="fa-solid fa-location-crosshairs"></i></button>
     </header>
     `;
-
 
         const hamburger = this.querySelector("#hamburgerBtn");
         const sidebar = this.querySelector("#appSidebar");
@@ -188,7 +188,7 @@ class MyHeader extends HTMLElement {
 
             dropdown.querySelectorAll(".dropdownItem").forEach(item => {
                 item.addEventListener("mousedown", e => {
-                    e.preventDefault(); 
+                    e.preventDefault(); // prevent blur before click
                     const idx = parseInt(item.dataset.index);
                     selectResult(currentResults[idx]);
                 });
@@ -248,6 +248,7 @@ class MyHeader extends HTMLElement {
                     const { latitude, longitude, accuracy } = pos.coords;
 
                     try {
+                        
                         const url = `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&addressdetails=1&zoom=16&accept-language=es`;
                         const res = await fetch(url, { headers: { "Accept-Language": "es" } });
                         const data = await res.json();
@@ -265,12 +266,12 @@ class MyHeader extends HTMLElement {
 
                         const country = a.country_code?.toUpperCase() ?? a.country ?? "";
 
-                        
-                        const street = a.road || a.pedestrian || a.path || "";
+
+                        const street = a.road || a.pedestrian || a.path || a.footway || "";
                         input.value = street ? `${street}, ${name}` : name;
 
                         document.dispatchEvent(new CustomEvent("citySelected", {
-                            detail: { name, country, latitude, longitude, accuracy }
+                            detail: { name, country, latitude, longitude, street }
                         }));
                     } catch {
                         
@@ -297,9 +298,9 @@ class MyHeader extends HTMLElement {
                     alert(msgs[err.code] || "Error de geolocalización");
                 },
                 {
-                    enableHighAccuracy: true, 
+                    enableHighAccuracy: true,  
                     timeout: 15000,
-                    maximumAge: 0              
+                    maximumAge: 0           
                 }
             );
         });

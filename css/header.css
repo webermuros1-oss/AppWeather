@@ -88,26 +88,36 @@
 }
 
 
-.gpsBtn {
-    background: none;
-    border: none;
-    color: rgba(255,255,255,0.4);
-    cursor: pointer;
-    font-size: 0.95rem;
-    padding: 4px 2px;
-    transition: color 0.2s, transform 0.2s;
+.gpsBtnHeader {
     flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(0,217,255,0.2), rgba(0,255,136,0.15));
+    border: 1px solid rgba(0,217,255,0.4);
+    color: var(--accent-teal);
+    font-size: 1.1rem;
     display: flex;
     align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0,217,255,0.2);
 }
 
-.gpsBtn:hover { color: var(--accent-teal); transform: scale(1.15); }
+.gpsBtnHeader:hover {
+    background: linear-gradient(135deg, rgba(0,217,255,0.35), rgba(0,255,136,0.25));
+    transform: scale(1.08);
+    box-shadow: 0 4px 16px rgba(0,217,255,0.4);
+}
 
+.gpsBtnHeader:active { transform: scale(0.95); }
 
-.gpsBtn.loading i {
+.gpsBtnHeader.loading i {
     animation: gpsSpin 1s linear infinite;
-    color: var(--accent-teal);
+    color: var(--accent-green);
 }
+
 @keyframes gpsSpin {
     from { transform: rotate(0deg); }
     to   { transform: rotate(360deg); }
@@ -128,7 +138,7 @@
     max-height: 320px;
     overflow-y: auto;
 
-   
+
     display: none;
     opacity: 0;
     transform: translateY(-6px);
