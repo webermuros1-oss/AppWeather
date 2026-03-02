@@ -28,7 +28,6 @@
 
     <main class="dashboard">
 
-        <!-- ── Main Weather Card ── -->
         <div class="card mainWeatherCard">
             <button class="navArrow prevArrow">❮</button>
             <button class="navArrow nextArrow">❯</button>
@@ -46,8 +45,8 @@
             <div class="favDots" id="favDots"></div>
         </div>
 
-        <!-- ── Hourly: 24h, tap for detail ── -->
-        <div class="card hourlyCard">
+
+        <div class="card hourlyCard" id="hourlyCard">
             <h4>
                 🕒 Próximas 24 horas
                 <i class="fa-solid fa-chevron-down card-toggle-icon"></i>
@@ -57,8 +56,8 @@
             </div>
         </div>
 
-        <!-- ── 7-Day Forecast ── -->
-        <div class="card forecastCard">
+
+        <div class="card forecastCard" id="forecastCard">
             <h4>
                 📅 Pronóstico 7 días
                 <i class="fa-solid fa-chevron-down card-toggle-icon"></i>
@@ -68,8 +67,8 @@
             </div>
         </div>
 
-        <!-- ── Atmosphere ── -->
-        <div class="card atmosphereCard">
+
+        <div class="card atmosphereCard" id="atmosphereCard">
             <h4>
                 ☁️ Condiciones atmosféricas
                 <i class="fa-solid fa-chevron-down card-toggle-icon"></i>
@@ -79,7 +78,7 @@
             </div>
         </div>
 
-        <!-- ── Wind (stats only, link to charts) ── -->
+
         <div class="card windCard">
             <h4>
                 💨 Viento
@@ -96,7 +95,7 @@
             </div>
         </div>
 
-        <!-- ── Astronomy ── -->
+
         <div class="card astroCard">
             <h4>
                 🌅 Datos astronómicos
@@ -107,8 +106,8 @@
             </div>
         </div>
 
-        <!-- ── Marine (stats only, link to radar) ── -->
-        <div class="card marineCard">
+
+        <div class="card marineCard" id="marineCard">
             <h4>
                 🌊 Datos marítimos
                 <i class="fa-solid fa-chevron-down card-toggle-icon"></i>
@@ -116,9 +115,9 @@
             <div class="card-body">
                 <div class="marineInfo"></div>
                 <div class="analytics-cta">
-                    <a href="pages/radar.html" class="analytics-btn">
-                        <i class="fa-solid fa-satellite-dish"></i>
-                        Ver radar de precipitaciones
+                    <a href="pages/charts.html#marineCard" class="analytics-btn">
+                        <i class="fa-solid fa-water"></i>
+                        Ver gráficas marítimas
                     </a>
                 </div>
             </div>

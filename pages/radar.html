@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Radar - PlusWeather</title>
 
+    <link rel="stylesheet" href="../css/radar.css" />
     <link rel="stylesheet" href="../css/header.css" />
     <link rel="stylesheet" href="../css/footer.css" />
     <link rel="manifest" href="../json/manifest.json">
@@ -13,182 +14,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
-
-    <style>
-        @import url("https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600&display=swap");
-
-        :root {
-            --metal-dark: #0a1628;
-            --metal-blue: #1a2f4a;
-            --metal-cyan: #2d4a5c;
-            --accent-teal: #00d9ff;
-            --accent-green: #00ff88;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: "Barlow", sans-serif;
-            background: linear-gradient(135deg, var(--metal-dark) 0%, var(--metal-blue) 50%, var(--metal-cyan) 100%);
-            min-height: 100vh;
-            padding-top: 155px;
-            padding-bottom: 100px;
-            color: white;
-        }
-
-        .pageTitle {
-            text-align: center;
-            padding: 20px 20px 16px;
-        }
-
-        .pageTitle h2 {
-            font-size: clamp(1.4rem, 4vw, 2rem);
-            color: var(--accent-teal);
-            text-shadow: 0 0 20px rgba(0, 217, 255, 0.4);
-            margin-bottom: 6px;
-            font-weight: 600;
-        }
-
-        .pageTitle p {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.95rem;
-        }
-
-        .radarContainer {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 0 15px 30px;
-        }
-
-        .radarCard {
-            background: linear-gradient(135deg, rgba(10, 22, 40, 0.95), rgba(26, 47, 74, 0.9));
-            border-radius: 24px;
-            border: 1px solid rgba(0, 217, 255, 0.2);
-            overflow: hidden;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-            position: relative;
-        }
-
-        .radarCard::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--accent-teal), var(--accent-green), transparent);
-            opacity: 0.6;
-            z-index: 10;
-        }
-
-        #radarMap {
-            width: 100%;
-            height: 500px;
-        }
-
-        .radarControls {
-            padding: 16px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            flex-wrap: wrap;
-            border-top: 1px solid rgba(0, 217, 255, 0.15);
-        }
-
-        .radarLegend {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .legendLabel {
-            font-size: 0.8rem;
-            color: rgba(255,255,255,0.6);
-        }
-
-        .legendBar {
-            height: 12px;
-            width: 180px;
-            border-radius: 6px;
-            background: linear-gradient(to right, #00d9ff, #00ff88, #ffcc00, #ff9500, #ff4757, #cc00ff);
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-
-        .radarTimestamp {
-            font-size: 0.8rem;
-            color: rgba(255,255,255,0.5);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .radarTimestamp i { color: var(--accent-teal); }
-
-        .opacityControl {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 0.82rem;
-            color: rgba(255,255,255,0.6);
-        }
-
-        .opacityControl input[type="range"] {
-            width: 90px;
-            accent-color: var(--accent-teal);
-        }
-
-        .radarInfoCards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 14px;
-            margin-top: 20px;
-        }
-
-        .radarInfoCard {
-            background: linear-gradient(135deg, rgba(10, 22, 40, 0.95), rgba(26, 47, 74, 0.9));
-            border-radius: 18px;
-            border: 1px solid rgba(0, 217, 255, 0.2);
-            padding: 18px;
-            text-align: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .radarInfoCard:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 24px rgba(0, 217, 255, 0.2);
-        }
-
-        .radarInfoCard i {
-            font-size: 1.6rem;
-            color: var(--accent-teal);
-            margin-bottom: 8px;
-            filter: drop-shadow(0 0 8px rgba(0,217,255,0.5));
-            display: block;
-        }
-
-        .radarInfoCard h4 {
-            font-size: 0.85rem;
-            color: rgba(255,255,255,0.55);
-            margin-bottom: 4px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .radarInfoCard p {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--accent-green);
-        }
-
-        @media (max-width: 768px) {
-            body { padding-top: 130px; }
-            #radarMap { height: 380px; }
-        }
-        @media (max-width: 480px) {
-            body { padding-top: 105px; }
-            #radarMap { height: 300px; }
-        }
-    </style>
 </head>
 <body>
     <header-plus-weather></header-plus-weather>
@@ -290,7 +115,6 @@
             if (radarLayer) radarLayer.setOpacity(currentOpacity);
         });
 
-        // Centra en la ubicación del usuario
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (pos) => map.setView([pos.coords.latitude, pos.coords.longitude], 8),

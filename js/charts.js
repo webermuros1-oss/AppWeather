@@ -50,7 +50,7 @@ const chartInstances = {};
 
 window.addEventListener("load", async () => {
     try {
-        // Try GPS first, fallback to saved city
+        
         const saved = localStorage.getItem("favCities");
         let cityData = null;
 
@@ -193,7 +193,10 @@ async function loadWeatherCharts() {
     const res = await fetch(`${API.weather}?${params}`);
     const data = await res.json();
 
+<<<<<<< HEAD
     
+=======
+>>>>>>> feat/reat
     renderWindCompass(data.current);
 
     
