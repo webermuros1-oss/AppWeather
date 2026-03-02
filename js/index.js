@@ -404,40 +404,51 @@ async function getCurrentLocation() {
         if (!navigator.geolocation) { reject("no geo"); return; }
         navigator.geolocation.getCurrentPosition(async pos => {
             const { latitude, longitude } = pos.coords;
+
+            const fetchWithTimeout = (url, options = {}, ms = 4000) => {
+                const controller = new AbortController();
+                const timer = setTimeout(() => controller.abort(), ms);
+                return fetch(url, { ...options, signal: controller.signal })
+                    .finally(() => clearTimeout(timer));
+            };
+
+            const pickName = a =>
+                a.hamlet || a.locality || a.neighbourhood || a.suburb ||
+                a.village || a.town || a.city || a.municipality || a.county || null;
+
+            const pickStreet = a =>
+                a.road || a.pedestrian || a.path || a.footway || a.track || "";
+
             try {
-                const r = await fetch(
+                const r = await fetchWithTimeout(
                     `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&addressdetails=1&zoom=18&accept-language=es`,
                     { headers: { "Accept-Language": "es" } }
                 );
                 const d = await r.json();
                 const a = d.address ?? {};
+                const name = pickName(a) || d.display_name.split(",")[0];
+                resolve({ name, street: pickStreet(a), country: a.country_code?.toUpperCase() ?? "", latitude, longitude });
+                return;
+            } catch {}
+
+            try {
+                const r = await fetchWithTimeout(
+                    `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=es`
+                );
+                const d = await r.json();
                 const name =
-                    a.hamlet        ||
-                    a.locality      ||
-                    a.neighbourhood ||
-                    a.suburb        ||
-                    a.village       ||
-                    a.town          ||
-                    a.city          ||
-                    a.municipality  ||
-                    a.county        ||
-                    d.display_name.split(",")[0];
-                const street =
-                    a.road       ||
-                    a.pedestrian ||
-                    a.path       ||
-                    a.footway    ||
-                    a.track      ||
-                    "";
-                const country = a.country_code?.toUpperCase() ?? "";
-                resolve({ name, street, country, latitude, longitude });
-            } catch {
-                try {
-                    const r = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=es`);
-                    const d = await r.json();
-                    resolve({ name: d.locality || d.city || "Mi ubicación", street: "", country: d.countryCode || "", latitude, longitude });
-                } catch(e) { reject(e); }
-            }
+                    d.locality ||
+                    d.localityInfo?.administrative?.find(x => x.order === 8)?.name ||
+                    d.localityInfo?.administrative?.find(x => x.order === 7)?.name ||
+                    d.city || d.principalSubdivision || null;
+                if (name) {
+                    resolve({ name, street: "", country: d.countryCode || "", latitude, longitude });
+                    return;
+                }
+            } catch {}
+
+            resolve({ name: "Mi ubicación", street: "", country: "", latitude, longitude });
+
         }, e => reject(e), { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 });
     });
 }
