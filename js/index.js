@@ -36,15 +36,11 @@ const API_URLS = {
 const MONTHS = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
 const DAYS   = ["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
 
-// ═══════════════════════════════════════════════
-// METEOCONS — Animated SVG weather icons
-// CDN: https://bas.dev/work/meteocons
-// We map WMO codes → Meteocon name, day/night aware
-// ═══════════════════════════════════════════════
+
 
 const METEOCONS_CDN = "https://bmcdn.nl/assets/weather-icons/v3.0/fill/svg";
 
-// Map: WMO code → { day: iconName, night: iconName, label }
+
 const WMO_MAP = {
     0:  { day:"clear-day",          night:"clear-night",         label:"Despejado" },
     1:  { day:"partly-cloudy-day",  night:"partly-cloudy-night", label:"Mayormente despejado" },
@@ -72,25 +68,21 @@ const WMO_MAP = {
     99: { day:"thunderstorms-rain", night:"thunderstorms-night-rain", label:"Tormenta severa" },
 };
 
-// isDay: 1 = day, 0 = night. For forecast (no is_day available) we default to day.
+
 function getMeteoconImg(code, isDay = 1, size = "64px") {
     const entry = WMO_MAP[code] ?? { day:"not-available", night:"not-available", label:"Desconocido" };
     const name  = isDay ? entry.day : entry.night;
     return `<img src="${METEOCONS_CDN}/${name}.svg" width="${size}" height="${size}" alt="${entry.label}" style="display:inline-block;vertical-align:middle" loading="lazy">`;
 }
 
-// Small inline version for cards (returns just the img tag)
+
 function getMeteoconSmall(code, isDay = 1) { return getMeteoconImg(code, isDay, "48px"); }
 
 function getWeatherLabel(code) {
     return (WMO_MAP[code] ?? { label:"Desconocido" }).label;
 }
 
-// ── Background images: day vs night per condition ──────────────
-// Place images in media/images/ with these exact names:
-//   DAY:   sunny-day, cloudy-day, rainy-day, snowy-day, stormy-day, foggy-day, default-day
-//   NIGHT: clear-night, cloudy-night, rainy-night, snowy-night, stormy-night, foggy-night, default-night
-// You can have multiples: sunny-day1, sunny-day2, etc.
+
 
 const BACKGROUND_IMAGES = {
     day: {
@@ -113,9 +105,7 @@ const BACKGROUND_IMAGES = {
     }
 };
 
-// ═══════════════════════════════════════════════
-// MODAL STYLES (shared by hour + day modals)
-// ═══════════════════════════════════════════════
+
 
 function injectModalStyles() {
     if (document.getElementById("sharedModalStyles")) return;
@@ -280,7 +270,7 @@ function injectModalStyles() {
     document.head.appendChild(s);
 }
 
-// ─── Generic modal open/close ──────────────────
+
 function _buildModal(innerHTML) {
     injectModalStyles();
     _closeModal(true);
@@ -318,9 +308,7 @@ function _closeModal(instant = false) {
     }, { once: true });
 }
 
-// ═══════════════════════════════════════════════
-// HOUR DETAIL MODAL
-// ═══════════════════════════════════════════════
+
 
 function openHourModal(d) {
     const pct  = d.precip > 0 ? Math.min(d.precip * 25, 100) : (d.rainProb ?? 0);
@@ -400,9 +388,7 @@ function openHourModal(d) {
     }, 60));
 }
 
-// ═══════════════════════════════════════════════
-// DAY DETAIL MODAL
-// ═══════════════════════════════════════════════
+
 
 function openDayModal(d) {
     const rainPct  = d.rainProb ?? 0;
@@ -523,9 +509,7 @@ function getUVLabel(uv) {
     return "Extremo";
 }
 
-// ═══════════════════════════════════════════════
-// FAVORITES MANAGER
-// ═══════════════════════════════════════════════
+
 
 class FavoritesManager {
     constructor(max = 4) {
@@ -575,9 +559,7 @@ class FavoritesManager {
 
 const favoritesManager = new FavoritesManager();
 
-// ═══════════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════════
+
 
 function initializeEventListeners() {
     window.addEventListener("load", async () => {
@@ -599,7 +581,18 @@ function initializeEventListeners() {
         lastST = st <= 0 ? 0 : st;
     });
 
+    
     elements.cityInput.addEventListener("keypress", e => { if (e.key === "Enter") fetchDataFromApi(true); });
+
+    
+    document.addEventListener("citySelected", async e => {
+        const { name, country, latitude, longitude } = e.detail;
+        favoritesManager.addCity({ name, country, latitude, longitude });
+        try {
+            const [w, m] = await Promise.all([fetchWeatherData(latitude, longitude), fetchMarineData(latitude, longitude)]);
+            updateUI({ name, country, ...w, ...m });
+        } catch (err) { console.error(err); alert("Error cargando datos de la ciudad seleccionada"); }
+    });
     elements.prevArrow.addEventListener("click", async () => { const c = favoritesManager.goToPrevious(); if (c) await loadCityByName(c); });
     elements.nextArrow.addEventListener("click", async () => { const c = favoritesManager.goToNext();     if (c) await loadCityByName(c); });
 
@@ -616,9 +609,7 @@ function initializeEventListeners() {
     });
 }
 
-// ═══════════════════════════════════════════════
-// GEO (GPS — unchanged)
-// ═══════════════════════════════════════════════
+
 
 async function getCurrentLocation() {
     return new Promise((resolve, reject) => {
@@ -636,9 +627,7 @@ async function getCurrentLocation() {
     });
 }
 
-// ═══════════════════════════════════════════════
-// FETCH
-// ═══════════════════════════════════════════════
+
 
 async function fetchDataFromCoordinates(lat, lon, name, country) {
     const [w, m] = await Promise.all([fetchWeatherData(lat, lon), fetchMarineData(lat, lon)]);
@@ -714,9 +703,7 @@ async function loadCityByCoordinates(c) {
     catch { alert(`No se pudo cargar ${c.name}.`); }
 }
 
-// ═══════════════════════════════════════════════
-// UI
-// ═══════════════════════════════════════════════
+
 
 function updateUI(data) {
     updateMainCard(data);
@@ -740,7 +727,7 @@ function updateMainCard(data) {
     elements.todayDate.innerHTML     = getCurrentDate();
 }
 
-// ─── Hourly: 24h + modal ──────────────────────
+
 function updateHourly(data) {
     if (!data.hourlyForecast) {
         elements.hourly.innerHTML = `<p class="notAvailable">Pronóstico horario no disponible</p>`;
@@ -791,7 +778,7 @@ function updateHourly(data) {
     });
 }
 
-// ─── 7-day forecast + modal ───────────────────
+
 function updateForecast(data) {
     const df = data.dailyForecast;
 
@@ -804,7 +791,7 @@ function updateForecast(data) {
         const minT    = Math.round(df.temperature_2m_min[i]);
         const rain    = df.precipitation_probability_max?.[i] ?? 0;
 
-        // Pack all day detail into data attribute
+        
         const detail = {
             dayName, dateStr, code,
             label:      getWeatherLabel(code),
@@ -906,7 +893,7 @@ function updateDots() {
         .join("");
 }
 
-// ─── Background: day/night aware ──────────────
+
 function changeBackgroundImage(code = null, isDay = 1) {
     if (!elements.mainCard) return;
 
@@ -926,9 +913,7 @@ function changeBackgroundImage(code = null, isDay = 1) {
         `url('media/images/${imgs[Math.floor(Math.random() * imgs.length)]}.jpg')`;
 }
 
-// ═══════════════════════════════════════════════
-// UTILS
-// ═══════════════════════════════════════════════
+
 
 function getWindDirection(deg) {
     const d = ["N","NE","E","SE","S","SO","O","NO"];
@@ -946,6 +931,22 @@ function getCurrentDate() {
     return `${DAYS[d.getDay()]}, ${d.getDate()} de ${MONTHS[d.getMonth()]} de ${d.getFullYear()}`;
 }
 
-function scrollToTop() { window.scrollTo({ top:0, behavior:"smooth" }); }
+function scrollToTop() {
+    const hash = window.location.hash?.slice(1);
+    if (hash) {
+        setTimeout(() => {
+            const target = document.getElementById(hash) || document.querySelector('.' + hash);
+            if (target) {
+                const headerH = document.querySelector('.appHeader')?.offsetHeight || 0;
+                const top = target.getBoundingClientRect().top + window.pageYOffset - headerH - 16;
+                window.scrollTo({ top, behavior: 'smooth' });
+            }
+            // Limpiar el hash para que próximas llamadas a updateUI vayan arriba
+            history.replaceState(null, '', window.location.pathname);
+        }, 200);
+    } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+}
 
 initializeEventListeners();

@@ -1,8 +1,4 @@
-// ============================================================
-// PlusWeather - charts.js
-// Página de gráficas: viento, marítimo y calidad del aire
-// Usa Open-Meteo (gratuito, sin API key)
-// ============================================================
+
 
 const API = {
     geocoding: "https://geocoding-api.open-meteo.com/v1/search",
@@ -12,12 +8,12 @@ const API = {
     reverseGeo:"https://api.bigdatacloud.net/data/reverse-geocode-client"
 };
 
-// Chart.js default styles
+
 Chart.defaults.color = "rgba(255,255,255,0.65)";
 Chart.defaults.borderColor = "rgba(255,255,255,0.07)";
 Chart.defaults.font.family = "Barlow, sans-serif";
 
-// ---- Shared chart options ----
+
 function baseChartOptions(yLabel = "") {
     return {
         responsive: true,
@@ -47,14 +43,14 @@ function baseChartOptions(yLabel = "") {
     };
 }
 
-// ---- State ----
+
 let currentLat = null, currentLon = null, currentCity = "—", currentCountry = "";
 const chartInstances = {};
 
-// ---- Entry Point ----
+
 window.addEventListener("load", async () => {
     try {
-        // Try GPS first, fallback to saved city
+        
         const saved = localStorage.getItem("favCities");
         let cityData = null;
 
@@ -77,12 +73,12 @@ window.addEventListener("load", async () => {
         currentCity = cityData.name;
         currentCountry = cityData.country || "";
 
-        // Show city badge
+        
         const badge = document.getElementById("currentCityBadge");
         document.getElementById("cityBadgeText").textContent = `${currentCity}, ${currentCountry}`;
         badge.style.display = "inline-flex";
 
-        // Load all data in parallel
+        
         await Promise.all([
             loadAirQuality(),
             loadWeatherCharts(),
@@ -95,7 +91,7 @@ window.addEventListener("load", async () => {
     }
 });
 
-// ---- GPS ----
+
 function getGPSLocation() {
     return new Promise((resolve, reject) => {
         if (!navigator.geolocation) { reject("No GPS"); return; }
@@ -114,9 +110,7 @@ function getGPSLocation() {
     });
 }
 
-// ============================================================
-// AIR QUALITY
-// ============================================================
+
 async function loadAirQuality() {
     const params = new URLSearchParams({
         latitude: currentLat,
@@ -161,9 +155,7 @@ async function loadAirQuality() {
         </div>
     `;
 
-    // Hourly AQI chart (reuse rainChart canvas slot but create a new one)
-    // Actually render in a small inline chart below the grid:
-    // (We already have a separate canvas in the wind chart section)
+
 }
 
 function makeAQIItem(label, value, unit) {
@@ -186,9 +178,7 @@ function getAQIInfo(aqi) {
     return              { cls: "aqi-hazardous",            label: "Peligrosa",       desc: "Emergencia sanitaria. Permanece en interiores.",                        emoji: "☠️" };
 }
 
-// ============================================================
-// WEATHER CHARTS (wind + rain + temperature)
-// ============================================================
+
 async function loadWeatherCharts() {
     const params = new URLSearchParams({
         latitude: currentLat,
@@ -203,20 +193,19 @@ async function loadWeatherCharts() {
     const res = await fetch(`${API.weather}?${params}`);
     const data = await res.json();
 
-    // Wind compass from current data
     renderWindCompass(data.current);
 
-    // Hourly wind chart (next 24h)
+    
     renderWindChart(data.hourly);
 
-    // Daily rain chart
+    
     renderRainChart(data.daily);
 
-    // Hourly temperature chart (next 24h)
+    
     renderTempChart(data.hourly);
 }
 
-// ---- Wind Compass ----
+
 function renderWindCompass(current) {
     const dir = current.wind_direction_10m ?? 0;
     const speed = current.wind_speed_10m ?? 0;
@@ -262,7 +251,7 @@ function renderWindCompass(current) {
     `;
 }
 
-// ---- Wind chart (24h) ----
+
 function renderWindChart(hourly) {
     const now = new Date();
     const startIdx = hourly.time.findIndex(t => new Date(t) >= now);
@@ -302,7 +291,7 @@ function renderWindChart(hourly) {
     });
 }
 
-// ---- Rain chart (7 days) ----
+
 function renderRainChart(daily) {
     const DAYS_ES = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
     const labels = daily.time.map((d, i) => {
@@ -341,7 +330,7 @@ function renderRainChart(daily) {
     });
 }
 
-// ---- Temperature chart (24h) ----
+
 function renderTempChart(hourly) {
     const now = new Date();
     const startIdx = hourly.time.findIndex(t => new Date(t) >= now);
@@ -379,9 +368,7 @@ function renderTempChart(hourly) {
     });
 }
 
-// ============================================================
-// MARINE DATA
-// ============================================================
+
 async function loadMarineData() {
     try {
         const params = new URLSearchParams({
@@ -408,7 +395,7 @@ async function loadMarineData() {
             </div>
         `;
 
-        // Wave height hourly chart
+        
         renderWaveChart(data.hourly);
 
     } catch {
@@ -498,9 +485,7 @@ function renderWaveChart(hourly) {
     });
 }
 
-// ============================================================
-// UTILS
-// ============================================================
+
 function getWindCardinal(degrees) {
     const dirs = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSO", "SO", "OSO", "O", "ONO", "NO", "NNO"];
     return dirs[Math.round(degrees / 22.5) % 16];
