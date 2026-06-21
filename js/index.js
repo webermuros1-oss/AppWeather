@@ -29,8 +29,12 @@ const elements = {
 const API_URLS = {
     geocoding: "https://geocoding-api.open-meteo.com/v1/search",
     weather:   "https://api.open-meteo.com/v1/forecast",
-    marine:    "https://marine-api.open-meteo.com/v1/marine"
+    marine:    "https://marine-api.open-meteo.com/v1/marine",
+    tides:     "https://www.worldtides.info/api/v3"
 };
+
+// Registrate gratis en https://www.worldtides.info/developer y pega tu clave aqui
+const WORLDTIDES_KEY = "";
 
 const METEOCONS_CDN = "https://bmcdn.nl/assets/weather-icons/v3.0/fill/svg";
 
@@ -328,8 +332,8 @@ function initializeEventListeners() {
         const { name, country, latitude, longitude, street } = e.detail;
         favoritesManager.addCity({ name, country, latitude, longitude });
         try {
-            const [w, m] = await Promise.all([fetchWeatherData(latitude, longitude), fetchMarineData(latitude, longitude)]);
-            updateUI({ name, country, street, ...w, ...m });
+            const [w, m, ti] = await Promise.all([fetchWeatherData(latitude, longitude), fetchMarineData(latitude, longitude), fetchTideData(latitude, longitude)]);
+            updateUI({ name, country, street, ...w, ...m, ...ti });
         } catch (err) { console.error(err); alert("Error cargando datos de la ciudad seleccionada"); }
     });
 
@@ -393,8 +397,8 @@ async function getCurrentLocation() {
 }
 
 async function fetchDataFromCoordinates(lat, lon, name, country, street = "") {
-    const [w, m] = await Promise.all([fetchWeatherData(lat, lon), fetchMarineData(lat, lon)]);
-    updateUI({ name, country, street, ...w, ...m });
+    const [w, m, ti] = await Promise.all([fetchWeatherData(lat, lon), fetchMarineData(lat, lon), fetchTideData(lat, lon)]);
+    updateUI({ name, country, street, ...w, ...m, ...ti });
 }
 
 async function fetchDataFromApi(save = false) {
@@ -406,8 +410,8 @@ async function fetchDataFromApi(save = false) {
         const { latitude, longitude, name, country } = geo;
         if (save) favoritesManager.addCity({ name, country, latitude, longitude });
         else favoritesManager.saveLastCity(name);
-        const [w, m] = await Promise.all([fetchWeatherData(latitude, longitude), fetchMarineData(latitude, longitude)]);
-        updateUI({ name, country, street: "", ...w, ...m });
+        const [w, m, ti] = await Promise.all([fetchWeatherData(latitude, longitude), fetchMarineData(latitude, longitude), fetchTideData(latitude, longitude)]);
+        updateUI({ name, country, street: "", ...w, ...m, ...ti });
         elements.cityInput.value = "";
     } catch (e) { console.error(e); alert("Error obteniendo datos meteorológicos"); }
 }
@@ -452,6 +456,20 @@ async function fetchMarineData(lat, lon) {
         const d = await r.json();
         return { hasMarineData: true, marine: d.current };
     } catch { return { hasMarineData: false }; }
+}
+
+async function fetchTideData(lat, lon) {
+    if (!WORLDTIDES_KEY) return { hasTideData: false };
+    try {
+        const url = `${API_URLS.tides}?extremes&lat=${lat}&lon=${lon}&key=${WORLDTIDES_KEY}&days=2`;
+        const r = await fetch(url);
+        if (!r.ok) return { hasTideData: false };
+        const d = await r.json();
+        if (d.status !== 200 || !d.extremes?.length) return { hasTideData: false };
+        const now = Date.now() / 1000;
+        const upcoming = d.extremes.filter(e => e.dt > now).slice(0, 4);
+        return { hasTideData: true, tides: upcoming };
+    } catch { return { hasTideData: false }; }
 }
 
 async function loadCityByIndex(i)  { const c = favoritesManager.goToIndex(i);  if (c) await loadCityByCoordinates(c); }
@@ -609,18 +627,40 @@ function updateAstro(data) {
 
 function updateMarine(data) {
     const t = k => I18N.t(k);
-    if (!data.hasMarineData || !data.marine) {
-        elements.marine.innerHTML = `<p class="notAvailable">${t("notAvailable")}</p>`; return;
+    let html = "";
+
+    if (data.hasMarineData && data.marine) {
+        const m = data.marine;
+        html += `
+            <p>🌊 <strong>${m.wave_height?.toFixed(2) ?? 0} m</strong> ${t("waveHeight")}</p>
+            <p>🧭 <strong>${Math.round(m.wave_direction ?? 0)}°</strong> ${t("waveDir")}</p>
+            <p>⏱️ <strong>${m.wave_period?.toFixed(1) ?? 0} s</strong> ${t("wavePeriod")}</p>
+            <p>💨 <strong>${m.wind_wave_height?.toFixed(2) ?? 0} m</strong> ${t("windWave")}</p>
+            <p>🌀 <strong>${m.swell_wave_height?.toFixed(2) ?? 0} m</strong> ${t("swell")}</p>
+            <p>🌊 <strong>${m.ocean_current_velocity?.toFixed(2) ?? 0} m/s</strong> ${t("current")}</p>
+        `;
     }
-    const m = data.marine;
-    elements.marine.innerHTML = `
-        <p>🌊 <strong>${m.wave_height?.toFixed(2) ?? 0} m</strong> ${t("waveHeight")}</p>
-        <p>🧭 <strong>${Math.round(m.wave_direction ?? 0)}°</strong> ${t("waveDir")}</p>
-        <p>⏱️ <strong>${m.wave_period?.toFixed(1) ?? 0} s</strong> ${t("wavePeriod")}</p>
-        <p>💨 <strong>${m.wind_wave_height?.toFixed(2) ?? 0} m</strong> ${t("windWave")}</p>
-        <p>🌀 <strong>${m.swell_wave_height?.toFixed(2) ?? 0} m</strong> ${t("swell")}</p>
-        <p>🌊 <strong>${m.ocean_current_velocity?.toFixed(2) ?? 0} m/s</strong> ${t("current")}</p>
-    `;
+
+    if (data.hasTideData && data.tides?.length) {
+        const tideCards = data.tides.map(tide => {
+            const time = new Date(tide.dt * 1000).toLocaleTimeString(I18N.lang, { hour: "2-digit", minute: "2-digit" });
+            const isHigh = tide.type === "High";
+            return `
+            <div class="tideItem ${isHigh ? "high" : "low"}">
+                <span class="tideIcon">${isHigh ? "⬆️" : "⬇️"}</span>
+                <span class="tideType">${isHigh ? t("highTide") : t("lowTide")}</span>
+                <span class="tideTime">${time}</span>
+                <span class="tideHeight">${tide.height.toFixed(2)} m</span>
+            </div>`;
+        }).join("");
+        html += `
+        <div class="tideSection">
+            <p class="tideSectionTitle">🌊 ${t("tides")}</p>
+            <div class="tideGrid">${tideCards}</div>
+        </div>`;
+    }
+
+    elements.marine.innerHTML = html || `<p class="notAvailable">${t("notAvailable")}</p>`;
 }
 
 function updateDots() {
