@@ -68,12 +68,18 @@ const WMO_EMOJI_FALLBACK = {
     85:"🌨️",86:"❄️",95:"⛈️",96:"⛈️",99:"⛈️"
 };
 
+window._wxErr = function(img) {
+    const emoji = WMO_EMOJI_FALLBACK[+img.dataset.code] ?? "🌡️";
+    const w = +img.getAttribute("width") || 48;
+    img.outerHTML = `<span style="font-size:${Math.round(w*0.8)}px;display:inline-flex;align-items:center;justify-content:center;width:${w}px;height:${w}px">${emoji}</span>`;
+};
+
 function getMeteoconImg(code, isDay = 1, size = "64px") {
     const entry = WMO_MAP[code] ?? { day:"not-available", night:"not-available" };
     const name  = isDay ? entry.day : entry.night;
     const label = I18N.wmo(code);
-    const emoji = WMO_EMOJI_FALLBACK[code] ?? "🌡️";
-    return `<img src="${METEOCONS_CDN}/${name}.svg" width="${size}" height="${size}" alt="${label}" style="display:inline-block;vertical-align:middle" loading="lazy" onerror="this.outerHTML='<span style=\\"font-size:${size};line-height:1\\">${emoji}</span>'">`;
+    const w = parseInt(size);
+    return `<span style="display:inline-flex;overflow:hidden;width:${w}px;height:${w}px;flex-shrink:0;vertical-align:middle"><img src="${METEOCONS_CDN}/${name}.svg" data-code="${code}" width="${w}" height="${w}" alt="${label}" loading="lazy" onerror="_wxErr(this)" style="width:100%;height:100%;object-fit:contain"></span>`;
 }
 function getMeteoconSmall(code, isDay = 1) { return getMeteoconImg(code, isDay, "48px"); }
 function getWeatherLabel(code) { return I18N.wmo(code); }
