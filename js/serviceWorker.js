@@ -1,4 +1,4 @@
-const CACHE_NAME = "meteo-cache-v3"; 
+const CACHE_NAME = "meteo-cache-v4";
 
 const FILES_TO_CACHE = [
     "./",
@@ -7,6 +7,7 @@ const FILES_TO_CACHE = [
     "./css/index.css",
     "./css/header.css",
     "./css/footer.css",
+    "./js/i18n.js",
     "./js/index.js",
     "./js/header.js",
     "./js/footer.js",
