@@ -663,7 +663,6 @@ function updateMarine(data) {
     }
 
     if (data.hasTideData && data.tides?.length) {
-        const springLabel = data.isSpring ? t("tidesSpring") : t("tidesNeap");
         const tideCards = data.tides.map(tide => {
             const time = new Date(tide.dt * 1000).toLocaleTimeString(I18N.lang, { hour: "2-digit", minute: "2-digit" });
             const isHigh = tide.type === "High";
@@ -676,7 +675,7 @@ function updateMarine(data) {
         }).join("");
         html += `
         <div class="tideSection">
-            <p class="tideSectionTitle">🌊 ${t("tides")} · <span class="tideSpring">${springLabel}</span> <span class="tideApprox">${t("tideApprox")}</span></p>
+            <p class="tideSectionTitle">🌊 ${t("tides")}</p>
             <div class="tideGrid">${tideCards}</div>
         </div>`;
     }
