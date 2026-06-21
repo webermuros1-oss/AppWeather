@@ -679,6 +679,7 @@ function updateMarine(data) {
             <p class="tideSectionTitle">🌊 ${t("tides")} · <span class="tideSpring">${springLabel}</span> <span class="tideApprox">${t("tideApprox")}</span></p>
             <div class="tideGrid">${tideCards}</div>
         </div>`;
+    }
 
     elements.marine.innerHTML = html || `<p class="notAvailable">${t("notAvailable")}</p>`;
 }
