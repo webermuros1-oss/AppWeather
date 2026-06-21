@@ -394,8 +394,8 @@ body {
 .tideType { font-size: 0.65rem; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.5px; }
 .tideTime { font-size: 1.1rem; font-weight: 700; color: var(--accent-teal); }
 .tideItem.low .tideTime { color: #ffb347; }
-.tideHeight { font-size: 0.9rem; font-weight: 600; color: var(--accent-green); }
-.tideItem.low .tideHeight { color: #ffb347; }
+.tideApprox { font-size: 0.6rem; color: rgba(255,255,255,0.3); font-style: italic; }
+.tideSpring { font-size: 0.65rem; color: rgba(0,217,255,0.7); font-weight: 600; }
 
 
 @media (min-width: 768px) {

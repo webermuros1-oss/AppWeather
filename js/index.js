@@ -29,12 +29,8 @@ const elements = {
 const API_URLS = {
     geocoding: "https://geocoding-api.open-meteo.com/v1/search",
     weather:   "https://api.open-meteo.com/v1/forecast",
-    marine:    "https://marine-api.open-meteo.com/v1/marine",
-    tides:     "https://www.worldtides.info/api/v3"
+    marine:    "https://marine-api.open-meteo.com/v1/marine"
 };
-
-// Registrate gratis en https://www.worldtides.info/developer y pega tu clave aqui
-const WORLDTIDES_KEY = "";
 
 const METEOCONS_CDN = "https://bmcdn.nl/assets/weather-icons/v3.0/fill/svg";
 
@@ -332,8 +328,8 @@ function initializeEventListeners() {
         const { name, country, latitude, longitude, street } = e.detail;
         favoritesManager.addCity({ name, country, latitude, longitude });
         try {
-            const [w, m, ti] = await Promise.all([fetchWeatherData(latitude, longitude), fetchMarineData(latitude, longitude), fetchTideData(latitude, longitude)]);
-            updateUI({ name, country, street, ...w, ...m, ...ti });
+            const [w, m] = await Promise.all([fetchWeatherData(latitude, longitude), fetchMarineData(latitude, longitude)]);
+            updateUI({ name, country, street, ...w, ...m, ...computeLunarTides(latitude, longitude) });
         } catch (err) { console.error(err); alert("Error cargando datos de la ciudad seleccionada"); }
     });
 
@@ -397,8 +393,8 @@ async function getCurrentLocation() {
 }
 
 async function fetchDataFromCoordinates(lat, lon, name, country, street = "") {
-    const [w, m, ti] = await Promise.all([fetchWeatherData(lat, lon), fetchMarineData(lat, lon), fetchTideData(lat, lon)]);
-    updateUI({ name, country, street, ...w, ...m, ...ti });
+    const [w, m] = await Promise.all([fetchWeatherData(lat, lon), fetchMarineData(lat, lon)]);
+    updateUI({ name, country, street, ...w, ...m, ...computeLunarTides(lat, lon) });
 }
 
 async function fetchDataFromApi(save = false) {
@@ -410,8 +406,8 @@ async function fetchDataFromApi(save = false) {
         const { latitude, longitude, name, country } = geo;
         if (save) favoritesManager.addCity({ name, country, latitude, longitude });
         else favoritesManager.saveLastCity(name);
-        const [w, m, ti] = await Promise.all([fetchWeatherData(latitude, longitude), fetchMarineData(latitude, longitude), fetchTideData(latitude, longitude)]);
-        updateUI({ name, country, street: "", ...w, ...m, ...ti });
+        const [w, m] = await Promise.all([fetchWeatherData(latitude, longitude), fetchMarineData(latitude, longitude)]);
+        updateUI({ name, country, street: "", ...w, ...m, ...computeLunarTides(latitude, longitude) });
         elements.cityInput.value = "";
     } catch (e) { console.error(e); alert("Error obteniendo datos meteorológicos"); }
 }
@@ -458,18 +454,43 @@ async function fetchMarineData(lat, lon) {
     } catch { return { hasMarineData: false }; }
 }
 
-async function fetchTideData(lat, lon) {
-    if (!WORLDTIDES_KEY) return { hasTideData: false };
-    try {
-        const url = `${API_URLS.tides}?extremes&lat=${lat}&lon=${lon}&key=${WORLDTIDES_KEY}&days=2`;
-        const r = await fetch(url);
-        if (!r.ok) return { hasTideData: false };
-        const d = await r.json();
-        if (d.status !== 200 || !d.extremes?.length) return { hasTideData: false };
-        const now = Date.now() / 1000;
-        const upcoming = d.extremes.filter(e => e.dt > now).slice(0, 4);
-        return { hasTideData: true, tides: upcoming };
-    } catch { return { hasTideData: false }; }
+function computeLunarTides(lat, lon) {
+    const now  = new Date();
+    const d    = now.getTime() / 86400000 + 2440587.5 - 2451545.0; // días desde J2000
+    const toRad = Math.PI / 180;
+
+    // Longitud media y anomalía de la Luna (Meeus simplificado)
+    const Lm  = (218.316 + 13.176396 * d) % 360;
+    const Mm  = (134.963 + 13.064993 * d) % 360;
+    const lam = ((Lm + 6.289 * Math.sin(Mm * toRad)) % 360 + 360) % 360;
+
+    // Tiempo sidéreo de Greenwich → ángulo horario local de la Luna
+    const GMST = ((280.46061837 + 360.98564736629 * d) % 360 + 360) % 360;
+    const HA   = ((GMST + lon - lam) % 360 + 360) % 360;
+
+    // Horas hasta el próximo tránsito superior (pleamar ≈)
+    const moonDegPerHr   = 360 / 24.8414;
+    const hoursToTransit = ((360 - HA) % 360) / moonDegPerHr;
+
+    // Período M2 (semidiurno lunar)
+    const M2 = 12.4207;
+
+    // Fase lunar: 0=novilunio, 14.77=plenilunio
+    const moonAge   = ((d % 29.530588853) + 29.530588853) % 29.530588853;
+    const isSpring  = moonAge < 2.5 || (moonAge > 13 && moonAge < 16.5) || moonAge > 27;
+
+    const nowMs       = now.getTime();
+    const firstHighMs = nowMs + hoursToTransit * 3600000;
+    const tides       = [];
+
+    for (let i = 0; tides.length < 4; i++) {
+        const highMs = firstHighMs + i * M2 * 3600000;
+        const lowMs  = firstHighMs + (i + 0.5) * M2 * 3600000;
+        if (highMs > nowMs) tides.push({ dt: Math.round(highMs / 1000), type: "High" });
+        if (lowMs  > nowMs) tides.push({ dt: Math.round(lowMs  / 1000), type: "Low"  });
+    }
+
+    return { hasTideData: true, tides: tides.sort((a, b) => a.dt - b.dt).slice(0, 4), isSpring };
 }
 
 async function loadCityByIndex(i)  { const c = favoritesManager.goToIndex(i);  if (c) await loadCityByCoordinates(c); }
@@ -642,6 +663,7 @@ function updateMarine(data) {
     }
 
     if (data.hasTideData && data.tides?.length) {
+        const springLabel = data.isSpring ? t("tidesSpring") : t("tidesNeap");
         const tideCards = data.tides.map(tide => {
             const time = new Date(tide.dt * 1000).toLocaleTimeString(I18N.lang, { hour: "2-digit", minute: "2-digit" });
             const isHigh = tide.type === "High";
@@ -650,15 +672,13 @@ function updateMarine(data) {
                 <span class="tideIcon">${isHigh ? "⬆️" : "⬇️"}</span>
                 <span class="tideType">${isHigh ? t("highTide") : t("lowTide")}</span>
                 <span class="tideTime">${time}</span>
-                <span class="tideHeight">${tide.height.toFixed(2)} m</span>
             </div>`;
         }).join("");
         html += `
         <div class="tideSection">
-            <p class="tideSectionTitle">🌊 ${t("tides")}</p>
+            <p class="tideSectionTitle">🌊 ${t("tides")} · <span class="tideSpring">${springLabel}</span> <span class="tideApprox">${t("tideApprox")}</span></p>
             <div class="tideGrid">${tideCards}</div>
         </div>`;
-    }
 
     elements.marine.innerHTML = html || `<p class="notAvailable">${t("notAvailable")}</p>`;
 }
