@@ -61,17 +61,25 @@ const WMO_MAP = {
     99: { day:"thunderstorms-rain",      night:"thunderstorms-night-rain" },
 };
 
+const WMO_EMOJI_FALLBACK = {
+    0:"☀️",1:"🌤️",2:"⛅",3:"☁️",45:"🌫️",48:"🌫️",
+    51:"🌦️",53:"🌦️",55:"🌧️",61:"🌧️",63:"🌧️",65:"🌧️",
+    71:"🌨️",73:"🌨️",75:"❄️",77:"🌨️",80:"🌦️",81:"🌧️",82:"🌧️",
+    85:"🌨️",86:"❄️",95:"⛈️",96:"⛈️",99:"⛈️"
+};
+
 function getMeteoconImg(code, isDay = 1, size = "64px") {
     const entry = WMO_MAP[code] ?? { day:"not-available", night:"not-available" };
     const name  = isDay ? entry.day : entry.night;
     const label = I18N.wmo(code);
-    return `<img src="${METEOCONS_CDN}/${name}.svg" width="${size}" height="${size}" alt="${label}" style="display:inline-block;vertical-align:middle" loading="lazy">`;
+    const emoji = WMO_EMOJI_FALLBACK[code] ?? "🌡️";
+    return `<img src="${METEOCONS_CDN}/${name}.svg" width="${size}" height="${size}" alt="${label}" style="display:inline-block;vertical-align:middle" loading="lazy" onerror="this.outerHTML='<span style=\\"font-size:${size};line-height:1\\">${emoji}</span>'">`;
 }
 function getMeteoconSmall(code, isDay = 1) { return getMeteoconImg(code, isDay, "48px"); }
 function getWeatherLabel(code) { return I18N.wmo(code); }
 
 const BACKGROUND_IMAGES = {
-    day:   { sunny:["sunny1","sunny2","beach"], cloudy:["cloudy1","cloudy2"], rainy:["rainy1","rainy2","rainy3"], snowy:["snowy1","snowy2"], stormy:["stormy1","stormy2"], foggy:["foggy1","foggy2"], default:["bg1","bg2","bg3","bg4","bg5"] },
+    day:   { sunny:["sunny1","sunny2","beach"], cloudy:["cloudy1","cloudy2"], rainy:["rainy1","rainy2","rainy3"], snowy:["snowy1","snowy2"], stormy:["stormy1","stormy2"], foggy:["foggy1","foggy2"], default:["sunny1","cloudy1","rainy1"] },
     night: { sunny:["nightClear1","night1"], cloudy:["nightCloudy1","night2"], rainy:["nightRainy1","night1"], snowy:["night1"], stormy:["nightStormy1","night2"], foggy:["night2"], default:["night1","night2","night3"] }
 };
 
