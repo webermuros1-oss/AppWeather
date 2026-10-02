@@ -5,6 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gráficas - PlusWeather</title>
 
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        base-uri 'self';
+        object-src 'none';
+        script-src 'self' https://cdnjs.cloudflare.com;
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
+        font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:;
+        img-src 'self' data: https:;
+        connect-src 'self' https://api.open-meteo.com https://geocoding-api.open-meteo.com https://marine-api.open-meteo.com https://air-quality-api.open-meteo.com https://nominatim.openstreetmap.org https://api.bigdatacloud.net https://api.rainviewer.com;
+        manifest-src 'self';
+        worker-src 'self';
+    " />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+
     <link rel="stylesheet" href="../css/charts.css" />
     <link rel="stylesheet" href="../css/header.css" />
     <link rel="stylesheet" href="../css/footer.css" />
@@ -14,7 +28,10 @@
 
     <link rel="icon" type="image/png" href="../media/images/logoRemaster.png">
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+          integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0"
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
 <body>
@@ -32,7 +49,6 @@
 
         <div class="chartsGrid">
 
-            
             <div class="chartCard">
                 <div class="chartCardHeader">
                     <div class="chartCardTitle">
@@ -41,7 +57,6 @@
                     </div>
                     <span class="chartCardBadge badge-orange" id="aqiBadgeLabel">AQI</span>
                 </div>
-
                 <div id="aqiContent">
                     <div class="loadingState">
                         <div class="loadingSpinner"></div>
@@ -50,7 +65,6 @@
                 </div>
             </div>
 
-            
             <div class="chartCard">
                 <div class="chartCardHeader">
                     <div class="chartCardTitle">
@@ -64,7 +78,6 @@
                 </div>
             </div>
 
-            
             <div class="chartCard">
                 <div class="chartCardHeader">
                     <div class="chartCardTitle">
@@ -81,7 +94,6 @@
                 </div>
             </div>
 
-            
             <div class="chartCard">
                 <div class="chartCardHeader">
                     <div class="chartCardTitle">
@@ -95,7 +107,6 @@
                 </div>
             </div>
 
-            
             <div class="chartCard">
                 <div class="chartCardHeader">
                     <div class="chartCardTitle">
@@ -109,7 +120,6 @@
                 </div>
             </div>
 
-            
             <div class="chartCard" id="marineCard">
                 <div class="chartCardHeader">
                     <div class="chartCardTitle">
@@ -134,10 +144,9 @@
 
     <footer-plus-weather></footer-plus-weather>
 
-    <script src="../js/i18n.js"></script>
-    <script src="../js/header.js"></script>
-    <script src="../js/footer.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
-    <script src="../js/charts.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"
+            integrity="sha384-DhxhYObIMeMNGyAG7iK11OHzBIKyEIeRL0ad1iFPAOwZB8iirUlTT0O/WJJUk8+o"
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script type="module" src="../src/pages/charts-page.js"></script>
 </body>
 </html>

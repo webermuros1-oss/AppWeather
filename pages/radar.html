@@ -5,6 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Radar - PlusWeather</title>
 
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        base-uri 'self';
+        object-src 'none';
+        script-src 'self' https://cdnjs.cloudflare.com;
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
+        font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:;
+        img-src 'self' data: https:;
+        connect-src 'self' https://api.open-meteo.com https://geocoding-api.open-meteo.com https://marine-api.open-meteo.com https://air-quality-api.open-meteo.com https://nominatim.openstreetmap.org https://api.bigdatacloud.net https://api.rainviewer.com;
+        manifest-src 'self';
+        worker-src 'self';
+    " />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+
     <link rel="stylesheet" href="../css/radar.css" />
     <link rel="stylesheet" href="../css/header.css" />
     <link rel="stylesheet" href="../css/footer.css" />
@@ -12,8 +26,14 @@
     <meta name="theme-color" content="#0f172a">
     <link rel="icon" type="image/png" href="../media/images/logoRemaster.png">
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+          integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0"
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"
+          integrity="sha384-c6Rcwz4e4CITMbu/NBmnNS8yN2sC3cUElMEMfP3vqqKFp7GOYaaBBCqmaWBjmkjb"
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
     <header-plus-weather></header-plus-weather>
@@ -70,82 +90,9 @@
 
     <footer-plus-weather></footer-plus-weather>
 
-    <script src="../js/i18n.js"></script>
-    <script src="../js/header.js"></script>
-    <script src="../js/footer.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-    <script>
-        const map = L.map("radarMap", {
-            center: [40.4, -3.7],
-            zoom: 6,
-            zoomControl: true,
-            attributionControl: true
-        });
-
-        L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
-            attribution: '© OpenStreetMap © CARTO',
-            subdomains: "abcd",
-            maxZoom: 19
-        }).addTo(map);
-
-        let radarLayer = null;
-        let currentOpacity = 0.8;
-
-        async function loadRadar() {
-            try {
-                const res  = await fetch("https://api.rainviewer.com/public/weather-maps.json");
-                const data = await res.json();
-                if (!data.radar?.past?.length) return;
-
-                const latestFrame = data.radar.past[data.radar.past.length - 1];
-                const radarUrl = `https://tilecache.rainviewer.com${latestFrame.path}/256/{z}/{x}/{y}/2/1_1.png`;
-
-                if (radarLayer) map.removeLayer(radarLayer);
-                radarLayer = L.tileLayer(radarUrl, { opacity: currentOpacity, attribution: "RainViewer" }).addTo(map);
-
-                const ts = new Date(latestFrame.time * 1000);
-                const lang = window.I18N ? I18N.lang : "es";
-                document.getElementById("radarTime").textContent =
-                    `${window.I18N ? I18N.t("radarUpdated") : "Actualizado:"} ${ts.toLocaleTimeString(lang, { hour: "2-digit", minute: "2-digit" })}`;
-            } catch {
-                document.getElementById("radarTime").textContent = window.I18N ? I18N.t("radarError") : "Error al cargar el radar";
-            }
-        }
-
-        document.getElementById("opacitySlider").addEventListener("input", (e) => {
-            currentOpacity = e.target.value / 100;
-            if (radarLayer) radarLayer.setOpacity(currentOpacity);
-        });
-
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (pos) => map.setView([pos.coords.latitude, pos.coords.longitude], 8),
-                () => {},
-                { timeout: 5000 }
-            );
-        }
-
-        document.addEventListener("citySelected", (e) => {
-            const { latitude, longitude, name } = e.detail;
-            map.setView([latitude, longitude], 8, { animate: true });
-
-            const marker = L.marker([latitude, longitude])
-                .addTo(map)
-                .bindPopup(`<b>${name}</b>`)
-                .openPopup();
-
-            map.once("movestart", () => map.removeLayer(marker));
-        });
-
-        document.addEventListener("langChanged", () => {
-            document.querySelectorAll("[data-i18n]").forEach(el => {
-                if (el.id === "radarTime") return;
-                el.textContent = I18N.t(el.getAttribute("data-i18n"));
-            });
-        });
-
-        loadRadar();
-        setInterval(loadRadar, 600000);
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"
+            integrity="sha384-NElt3Op+9NBMCYaef5HxeJmU4Xeard/Lku8ek6hoPTvYkQPh3zLIrJP7KiRocsxO"
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script type="module" src="../src/pages/radar-page.js"></script>
 </body>
 </html>
