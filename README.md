@@ -51,33 +51,33 @@
 
 ## 🗂️ Estructura del proyecto
 
+Desde la v3.0 la app está organizada por **capas con ES Modules nativos**
+(detalle en [ARCHITECTURE.md](ARCHITECTURE.md)):
+
 ```
 AppWeather/
-├── index.html                  # Página principal
-├── json/
-│   └── manifest.json           # Configuración PWA
-├── css/
-│   ├── index.css               # Estilos principales
-│   ├── header.css              # Header + buscador + sidebar
-│   ├── footer.css              # Footer de navegación
-│   ├── charts.css              # Página de gráficas
-│   └── radar.css               # Página de radar
-├── js/
-│   ├── index.js                # Lógica principal + APIs + modales
-│   ├── header.js               # Componente Header (autocompletado + GPS)
-│   ├── footer.js               # Componente Footer (navegación + scroll)
-│   ├── charts.js               # Gráficas con Chart.js
-│   └── serviceWorker.js        # Lógica offline
+├── index.html                  # Página principal (+ CSP y SRI)
+├── service-worker.js           # Offline (scope raíz)
 ├── pages/
-│   ├── charts.html             # Página de gráficas y analíticas
-│   └── radar.html              # Página de radar de precipitaciones
-└── media/images/
-    ├── logoRemaster.png        # Logo app
-    ├── logoRemaster192.png     # Icono PWA (192px)
-    ├── logoRemaster512.png     # Icono PWA (512px)
-    ├── sunny1.jpg              # Fondos dinámicos de día
-    ├── night1.jpg              # Fondos dinámicos de noche
-    └── ...                     # Resto de fondos por condición
+│   ├── charts.html             # Gráficas y analíticas
+│   └── radar.html              # Radar de precipitaciones
+├── src/
+│   ├── main.js                 # Entry point de la home
+│   ├── core/                   # config, http (timeout/errores), dom seguro, eventos
+│   ├── domain/                 # lógica pura: tides, wind, uv, air-quality, backgrounds, weather-codes
+│   ├── services/               # clientes de API: weather, marine, air-quality, geocoding, geolocation
+│   ├── state/                  # favorites (persistencia validada)
+│   ├── i18n/                   # traducciones (5 idiomas) + controlador
+│   ├── ui/                     # render: cards, modal, icons, charts, radar, format
+│   │   └── components/         # Web Components: header, footer
+│   ├── app/                    # dashboard (controlador de la home)
+│   └── pages/                  # entry points de charts/radar
+├── tests/                      # suite Vitest (dominio, core, estado, i18n, servicios)
+├── css/                        # estilos (index, header, footer, charts, radar)
+├── json/manifest.json          # Configuración PWA
+├── vite.config.js              # dev server + build + config de Vitest
+├── package.json
+└── media/images/               # logos y fondos dinámicos día/noche
 ```
 
 ---
@@ -89,14 +89,55 @@ AppWeather/
 git clone https://github.com/webermuros1-oss/AppWeather.git
 cd AppWeather
 
-# 2. Ejecuta un servidor local (requerido para PWA y GPS)
-# Opción recomendada: extensión "Live Server" en VSCode
+# 2a. Opción rápida: servidor estático (Live Server en VSCode, o cualquiera)
+#     La app funciona SIN build (ES Modules nativos).
 
-# 3. Abre en el navegador
-http://localhost:5500
+# 2b. Opción desarrollador (recarga en caliente):
+npm install
+npm run dev
 ```
 
 > ⚠️ El GPS y el Service Worker **requieren servidor local o HTTPS**. No funcionarán abriendo el HTML directamente desde el explorador de archivos.
+
+---
+
+## 🧱 Arquitectura
+
+Aplicación **modular por capas** (UI → servicios/dominio → core) con ES Modules
+nativos. El dominio es puro (sin DOM ni red) y por eso es testeable. Ver el
+documento completo en **[ARCHITECTURE.md](ARCHITECTURE.md)**.
+
+---
+
+## 🧪 Desarrollo y tests
+
+```bash
+npm install            # instala el tooling (dev-only)
+npm run dev            # servidor de desarrollo (Vite)
+npm test              # tests unitarios (Vitest) — 52 tests
+npm run test:coverage # cobertura
+npm run build         # bundle opcional de validación en dist/ (no se despliega)
+```
+
+> El **despliegue** en GitHub Pages sigue siendo servir la raíz del repo tal
+> cual (no hay paso de build ni CI). `dist/` está ignorado por git.
+
+---
+
+## 🔒 Seguridad
+
+- **Sanitización anti-XSS** (`escapeHtml`/`safeHtml`) en todo HTML generado con
+  datos externos (nombres de ciudad/calle de las APIs).
+- **Content-Security-Policy** en los 3 HTML: `connect-src` limitado a las APIs
+  realmente usadas; `object-src 'none'`; `base-uri 'self'`.
+- **Subresource Integrity (SRI)** en los scripts/estilos de CDN (Chart.js,
+  Leaflet, Font Awesome).
+- **Sin secretos**: todas las APIs son gratuitas y sin clave.
+- **Cliente HTTP** con timeout + `AbortController` y manejo homogéneo de errores.
+- Validación de `localStorage` y de las queries (`URLSearchParams`).
+
+> `npm audit` reporta avisos en *devDependencies* (dev-server/test runner), que
+> **no se envían al usuario**. Detalle en [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ---
 
@@ -199,8 +240,9 @@ En todos los casos, el código generado fue revisado, comprendido y adaptado man
 ## 🛠️ Tecnologías
 
 ```
-HTML5 · CSS3 · Vanilla JavaScript · PWA · Service Workers
-Web Components · LocalStorage · Fetch API
+HTML5 · CSS3 · Vanilla JavaScript (ES Modules) · PWA · Service Workers
+Web Components · LocalStorage · Fetch API · Arquitectura por capas
+Vite (dev) · Vitest + jsdom (tests) · CSP · SRI
 Open-Meteo · Nominatim · RainViewer · Chart.js · Leaflet · Meteocons
 ```
 

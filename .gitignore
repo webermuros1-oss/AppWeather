@@ -1,0 +1,13 @@
+# Dependencias
+node_modules/
+
+# Artefactos de build / test (el deploy NO usa dist: GitHub Pages sirve la raíz)
+dist/
+coverage/
+.vite/
+
+# Logs y sistema
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
